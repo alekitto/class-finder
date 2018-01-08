@@ -92,21 +92,18 @@ final class FilteredComposerIterator extends ClassIterator
             return;
         }
 
-        foreach ($this->classLoader->getPrefixesPsr4() as $ns => $dirs) {
-            if (! $this->validNamespace($ns)) {
-                continue;
-            }
-
-            foreach ($dirs as $dir) {
-                if (! $this->validDir($dir)) {
-                    continue;
-                }
-
-                yield from (new Psr4Iterator($ns, $dir));
-            }
+        foreach ($this->traversePrefixes($this->classLoader->getPrefixesPsr4()) as $ns => $dir) {
+            yield from (new Psr4Iterator($ns, $dir));
         }
 
-        foreach ($this->classLoader->getPrefixes() as $ns => $dirs) {
+        foreach ($this->traversePrefixes($this->classLoader->getPrefixes()) as $ns => $dir) {
+            yield from (new Psr0Iterator($ns, $dir));
+        }
+    }
+
+    private function traversePrefixes(array $prefixes): \Generator
+    {
+        foreach ($prefixes as $ns => $dirs) {
             if (! $this->validNamespace($ns)) {
                 continue;
             }
@@ -116,7 +113,7 @@ final class FilteredComposerIterator extends ClassIterator
                     continue;
                 }
 
-                yield from (new Psr0Iterator($ns, $dir));
+                yield $ns => $dir;
             }
         }
     }
