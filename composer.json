@@ -1,0 +1,32 @@
+{
+    "name": "kcs/class-finder",
+    "description": "Utility classes to help discover other classes/namespaces",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alessandro Chitolina",
+            "email": "alekitto@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kcs\\ClassFinder\\": "lib/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kcs\\ClassFinder\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
