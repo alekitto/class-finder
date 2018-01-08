@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Finder\Iterator;
+namespace Kcs\ClassFinder\Iterator;
 
 use Kcs\ClassFinder\PathNormalizer;
 
-final class Psr4Iterator extends ClassIterator
+final class Psr0Iterator extends ClassIterator
 {
     /**
      * @var string
@@ -19,13 +19,13 @@ final class Psr4Iterator extends ClassIterator
     /**
      * @var int
      */
-    private $prefixLen;
+    private $pathLen;
 
     public function __construct(string $namespace, string $path, int $flags = 0)
     {
         $this->namespace = $namespace;
         $this->path = PathNormalizer::resolvePath($path);
-        $this->prefixLen = strlen($this->path);
+        $this->pathLen = strlen($this->path);
 
         parent::__construct($flags);
     }
@@ -39,7 +39,11 @@ final class Psr4Iterator extends ClassIterator
                 continue;
             }
 
-            $class = $this->namespace.ltrim(str_replace('/', '\\', substr($path, $this->prefixLen, -strlen($m[0]))), '\\');
+            $class = ltrim(str_replace('/', '\\', substr($path, $this->pathLen, -strlen($m[0]))), '\\');
+            if (strpos($class, $this->namespace) !== 0) {
+                continue;
+            }
+
             if (! preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+$/', $class)) {
                 continue;
             }

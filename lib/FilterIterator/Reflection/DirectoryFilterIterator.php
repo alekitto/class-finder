@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Finder\FilterIterator\Reflection;
+namespace Kcs\ClassFinder\FilterIterator\Reflection;
 
 use Kcs\ClassFinder\PathNormalizer;
 

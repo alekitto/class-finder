@@ -3,8 +3,8 @@
 namespace Kcs\ClassFinder\Finder;
 
 use Composer\Autoload\ClassLoader;
-use Kcs\ClassFinder\Finder\Iterator\ComposerIterator;
-use Kcs\ClassFinder\Finder\Iterator\FilteredComposerIterator;
+use Kcs\ClassFinder\Iterator\ComposerIterator;
+use Kcs\ClassFinder\Iterator\FilteredComposerIterator;
 
 /**
  * Finds classes/namespaces using the registered autoloader by composer.

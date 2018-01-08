@@ -2,7 +2,7 @@
 
 namespace Kcs\ClassFinder\Finder;
 
-use Kcs\ClassFinder\Finder\FilterIterator\Reflection as Filters;
+use Kcs\ClassFinder\FilterIterator\Reflection as Filters;
 use Kcs\ClassFinder\PathNormalizer;
 
 trait FinderTrait

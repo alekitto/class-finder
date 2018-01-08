@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Finder\Iterator;
+namespace Kcs\ClassFinder\Iterator;
 
 /**
  * Abstract class iterator.

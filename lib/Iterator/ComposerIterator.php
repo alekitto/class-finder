@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Finder\Iterator;
+namespace Kcs\ClassFinder\Iterator;
 
 use Composer\Autoload\ClassLoader;
+use Kcs\ClassFinder\PathNormalizer;
 
 /**
  * Iterates over classes defined in a composer-generated ClassLoader.
@@ -38,7 +39,7 @@ final class ComposerIterator extends ClassIterator
     private function searchInClassMap(): \Generator
     {
         foreach ($this->classLoader->getClassMap() as $class => $file) {
-            yield $class => $file;
+            yield $class => PathNormalizer::resolvePath($file);
         }
     }
 

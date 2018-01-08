@@ -2,6 +2,9 @@
 
 Utility classes to help discover other classes/namespaces
 
+[![Build Status](https://travis-ci.org/alekitto/class-finder.svg?branch=master)](https://travis-ci.org/alekitto/class-finder)
+[![Code Coverage](https://scrutinizer-ci.com/g/alekitto/class-finder/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/alekitto/class-finder/?branch=master)
+
 ---
 
 ## Installation

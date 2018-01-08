@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Finder\FilterIterator\Reflection;
+namespace Kcs\ClassFinder\FilterIterator\Reflection;
 
 final class InterfaceImplementationFilterIterator extends \FilterIterator
 {
@@ -21,9 +21,11 @@ final class InterfaceImplementationFilterIterator extends \FilterIterator
      */
     public function accept()
     {
-        $reflectionClass = new \ReflectionClass($this->getInnerIterator()->key());
+        $className = $this->getInnerIterator()->key();
+
+        $reflectionClass = new \ReflectionClass($className);
         foreach ($this->interfaces as $interface) {
-            if ($reflectionClass->implementsInterface($interface)) {
+            if ($className !== $interface && $reflectionClass->implementsInterface($interface)) {
                 return true;
             }
         }

@@ -2,7 +2,7 @@
 
 namespace Kcs\ClassFinder\Finder;
 
-use Kcs\ClassFinder\Finder\Iterator\Psr4Iterator;
+use Kcs\ClassFinder\Iterator\Psr4Iterator;
 
 /**
  * Finds classes respecting psr-4 standard.

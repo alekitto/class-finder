@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Finder\Iterator;
+namespace Kcs\ClassFinder\Iterator;
 
 use Composer\Autoload\ClassLoader;
 use Kcs\ClassFinder\PathNormalizer;
@@ -35,8 +35,15 @@ final class FilteredComposerIterator extends ClassIterator
     public function __construct(ClassLoader $classLoader, ?array $namespaces, ?array $dirs, int $flags = 0)
     {
         $this->classLoader = $classLoader;
-        $this->namespaces = $namespaces;
         $this->dirs = $dirs;
+
+        if (null !== $namespaces) {
+            $namespaces = array_map(function ($ns) {
+                return explode('\\', $ns, 2)[0];
+            }, $namespaces);
+
+            $this->namespaces = array_unique($namespaces);
+        }
 
         parent::__construct($flags);
     }
@@ -137,7 +144,7 @@ final class FilteredComposerIterator extends ClassIterator
 
         $path = PathNormalizer::resolvePath($path);
         foreach ($this->dirs as $dir) {
-            if (strpos($dir, $path) === 0) {
+            if (strpos($path, $dir) === 0) {
                 return true;
             }
         }

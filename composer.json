@@ -23,7 +23,11 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Kcs\\ClassFinder\\Tests\\": "tests/"
+            "Kcs\\ClassFinder\\Tests\\": "tests/",
+            "Kcs\\ClassFinder\\Fixtures\\Psr4\\": "data/Composer/Psr4/"
+        },
+        "psr-0": {
+            "Kcs\\ClassFinder\\Fixtures\\Psr0\\": "data/Composer/Psr0/"
         }
     },
     "config": {
