@@ -3,5 +3,7 @@
 namespace Kcs\ClassFinder\Fixtures\Psr4;
 
 if (false) {
-    function NotAClass() { }
+    function NotAClass()
+    {
+    }
 }

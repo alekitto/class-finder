@@ -4,5 +4,4 @@ namespace Kcs\ClassFinder\Fixtures\Psr0\SubNs;
 
 class FooBaz
 {
-
 }

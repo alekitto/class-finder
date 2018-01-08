@@ -4,5 +4,4 @@ namespace Kcs\ClassFinder\Fixtures\Psr4;
 
 class Foobar extends AbstractClass
 {
-
 }

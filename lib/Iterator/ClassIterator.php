@@ -34,7 +34,7 @@ abstract class ClassIterator implements \Iterator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function current()
     {
@@ -42,7 +42,7 @@ abstract class ClassIterator implements \Iterator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function next(): void
     {
@@ -56,7 +56,7 @@ abstract class ClassIterator implements \Iterator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function key()
     {
@@ -64,7 +64,7 @@ abstract class ClassIterator implements \Iterator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function valid(): bool
     {
@@ -72,7 +72,7 @@ abstract class ClassIterator implements \Iterator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rewind(): void
     {

@@ -17,14 +17,14 @@ final class NamespaceFilterIterator extends \FilterIterator
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function accept()
     {
         $reflectionClass = new \ReflectionClass($this->getInnerIterator()->key());
 
         foreach ($this->namespaces as $namespace) {
-            if (strpos($reflectionClass->getNamespaceName(), $namespace) === 0) {
+            if (0 === strpos($reflectionClass->getNamespaceName(), $namespace)) {
                 return true;
             }
         }

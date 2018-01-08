@@ -21,13 +21,13 @@ final class DirectoryFilterIterator extends \FilterIterator
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function accept()
     {
         $reflectionClass = new \ReflectionClass($this->getInnerIterator()->key());
         foreach ($this->dirs as $dir) {
-            if (strpos($reflectionClass->getFileName(), $dir) === 0) {
+            if (0 === strpos($reflectionClass->getFileName(), $dir)) {
                 return true;
             }
         }

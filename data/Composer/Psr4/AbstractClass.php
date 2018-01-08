@@ -4,5 +4,4 @@ namespace Kcs\ClassFinder\Fixtures\Psr4;
 
 abstract class AbstractClass
 {
-
 }

@@ -4,5 +4,4 @@ namespace Kcs\ClassFinder\Fixtures\Psr0;
 
 class BarBar
 {
-
 }

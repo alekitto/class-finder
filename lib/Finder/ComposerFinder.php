@@ -42,7 +42,8 @@ final class ComposerFinder implements FinderInterface
      * Try to get a registered instance of composer ClassLoader.
      *
      * @return ClassLoader
-     * @throws \RuntimeException If composer CLassLoader cannot be found.
+     *
+     * @throws \RuntimeException if composer CLassLoader cannot be found
      */
     private static function getValidLoader(): ClassLoader
     {

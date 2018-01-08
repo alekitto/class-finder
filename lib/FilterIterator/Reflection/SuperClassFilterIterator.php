@@ -17,7 +17,7 @@ final class SuperClassFilterIterator extends \FilterIterator
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function accept()
     {

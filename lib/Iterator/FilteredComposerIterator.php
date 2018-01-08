@@ -49,7 +49,7 @@ final class FilteredComposerIterator extends ClassIterator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getGenerator(): \Generator
     {
@@ -128,7 +128,7 @@ final class FilteredComposerIterator extends ClassIterator
         }
 
         foreach ($this->namespaces as $namespace) {
-            if (strpos($class, $namespace) === 0) {
+            if (0 === strpos($class, $namespace)) {
                 return true;
             }
         }
@@ -144,7 +144,7 @@ final class FilteredComposerIterator extends ClassIterator
 
         $path = PathNormalizer::resolvePath($path);
         foreach ($this->dirs as $dir) {
-            if (strpos($path, $dir) === 0) {
+            if (0 === strpos($path, $dir)) {
                 return true;
             }
         }

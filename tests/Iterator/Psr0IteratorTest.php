@@ -16,9 +16,9 @@ class Psr0IteratorTest extends TestCase
         );
 
         $this->assertEquals([
-            Psr0\BarBar::class => realpath(__DIR__.'/../../data/Composer/Psr0/Kcs/ClassFinder/Fixtures/Psr0') . '/BarBar.php',
-            Psr0\Foobar::class => realpath(__DIR__.'/../../data/Composer/Psr0/Kcs/ClassFinder/Fixtures/Psr0') . '/Foobar.php',
-            Psr0\SubNs\FooBaz::class => realpath(__DIR__.'/../../data/Composer/Psr0/Kcs/ClassFinder/Fixtures/Psr0/SubNs') . '/FooBaz.php',
+            Psr0\BarBar::class => realpath(__DIR__.'/../../data/Composer/Psr0/Kcs/ClassFinder/Fixtures/Psr0').'/BarBar.php',
+            Psr0\Foobar::class => realpath(__DIR__.'/../../data/Composer/Psr0/Kcs/ClassFinder/Fixtures/Psr0').'/Foobar.php',
+            Psr0\SubNs\FooBaz::class => realpath(__DIR__.'/../../data/Composer/Psr0/Kcs/ClassFinder/Fixtures/Psr0/SubNs').'/FooBaz.php',
         ], iterator_to_array($iterator));
     }
 }

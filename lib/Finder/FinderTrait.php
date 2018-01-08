@@ -33,7 +33,7 @@ trait FinderTrait
     private $callback = null;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function implementationOf($interface): FinderInterface
     {
@@ -43,7 +43,7 @@ trait FinderTrait
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function subclassOf(?string $superClass): FinderInterface
     {
@@ -53,7 +53,7 @@ trait FinderTrait
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function in($dirs): FinderInterface
     {
@@ -76,7 +76,7 @@ trait FinderTrait
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function inNamespace($namespaces): FinderInterface
     {
@@ -86,7 +86,7 @@ trait FinderTrait
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function filter(?callable $callback): FinderInterface
     {

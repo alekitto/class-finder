@@ -17,7 +17,7 @@ final class InterfaceImplementationFilterIterator extends \FilterIterator
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function accept()
     {

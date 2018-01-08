@@ -40,7 +40,7 @@ final class Psr0Iterator extends ClassIterator
             }
 
             $class = ltrim(str_replace('/', '\\', substr($path, $this->pathLen, -strlen($m[0]))), '\\');
-            if (strpos($class, $this->namespace) !== 0) {
+            if (0 !== strpos($class, $this->namespace)) {
                 continue;
             }
 

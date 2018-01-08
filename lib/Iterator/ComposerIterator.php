@@ -23,7 +23,7 @@ final class ComposerIterator extends ClassIterator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getGenerator(): \Generator
     {
