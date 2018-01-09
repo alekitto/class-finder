@@ -28,6 +28,17 @@ interface FinderInterface extends \IteratorAggregate
     public function subclassOf(?string $superClass): self;
 
     /**
+     * Filters by a given annotation on the class.
+     * The class matches only if a class annotation is present on the class.
+     * The annotation target must be the class itself.
+     *
+     * @param string $annotationClass
+     *
+     * @return FinderInterface
+     */
+    public function annotatedBy(?string $annotationClass): self;
+
+    /**
      * Adds a search directory.
      *
      * @param string|string[] $dirs

@@ -18,6 +18,11 @@ trait FinderTrait
     private $extends = null;
 
     /**
+     * @var string
+     */
+    private $annotation = null;
+
+    /**
      * @var string[]
      */
     private $dirs = null;
@@ -48,6 +53,16 @@ trait FinderTrait
     public function subclassOf(?string $superClass): FinderInterface
     {
         $this->extends = $superClass;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function annotatedBy(?string $annotationClass): FinderInterface
+    {
+        $this->annotation = $annotationClass;
 
         return $this;
     }
@@ -111,6 +126,10 @@ trait FinderTrait
 
         if ($this->extends) {
             $iterator = new Filters\SuperClassFilterIterator($iterator, $this->extends);
+        }
+
+        if ($this->annotation) {
+            $iterator = new Filters\AnnotationFilterIterator($iterator, $this->annotation);
         }
 
         if ($this->callback) {

@@ -2,6 +2,11 @@
 
 namespace Kcs\ClassFinder\Fixtures\Psr4;
 
+use Kcs\ClassFinder\Fixtures\Psr4\SubNs\FooBaz;
+
+/**
+ * @FooBaz()
+ */
 abstract class AbstractClass
 {
 }

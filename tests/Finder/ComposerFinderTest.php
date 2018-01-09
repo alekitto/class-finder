@@ -63,4 +63,15 @@ class ComposerFinderTest extends TestCase
             Psr4\Foobar::class => realpath(__DIR__.'/../../data/Composer/Psr4').'/Foobar.php',
         ], iterator_to_array($finder));
     }
+
+    public function testFinderShouldFilterByAnnotation()
+    {
+        $finder = new ComposerFinder();
+        $finder->in([__DIR__.'/../../data']);
+        $finder->annotatedBy(Psr4\SubNs\FooBaz::class);
+
+        $this->assertEquals([
+            Psr4\AbstractClass::class => realpath(__DIR__.'/../../data/Composer/Psr4').'/AbstractClass.php',
+        ], iterator_to_array($finder));
+    }
 }

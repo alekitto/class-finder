@@ -2,6 +2,9 @@
 
 namespace Kcs\ClassFinder\Fixtures\Psr4\SubNs;
 
+/**
+ * @Annotation()
+ */
 class FooBaz
 {
 }
