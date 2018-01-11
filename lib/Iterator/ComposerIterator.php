@@ -39,7 +39,7 @@ final class ComposerIterator extends ClassIterator
     private function searchInClassMap(): \Generator
     {
         foreach ($this->classLoader->getClassMap() as $class => $file) {
-            yield $class => PathNormalizer::resolvePath($file);
+            yield $class => new \ReflectionClass($class);
         }
     }
 

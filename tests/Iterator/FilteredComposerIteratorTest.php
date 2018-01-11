@@ -36,16 +36,16 @@ class FilteredComposerIteratorTest extends TestCase
         $iterator = new FilteredComposerIterator($loader, null, null);
 
         $this->assertEquals([
-            __CLASS__ => __FILE__,
-            Psr4\BarBar::class => realpath(__DIR__.'/../..'.'/data/Composer/Psr4').'/BarBar.php',
-            Psr4\Foobar::class => realpath(__DIR__.'/../..'.'/data/Composer/Psr4').'/Foobar.php',
-            Psr4\AbstractClass::class => realpath(__DIR__.'/../../data/Composer/Psr4').'/AbstractClass.php',
-            Psr4\FooInterface::class => realpath(__DIR__.'/../../data/Composer/Psr4').'/FooInterface.php',
-            Psr4\FooTrait::class => realpath(__DIR__.'/../../data/Composer/Psr4').'/FooTrait.php',
-            Psr4\SubNs\FooBaz::class => realpath(__DIR__.'/../../data/Composer/Psr4/SubNs').'/FooBaz.php',
-            Psr0\BarBar::class => realpath(__DIR__.'/../..'.'/data/Composer/Psr0/Kcs/ClassFinder/Fixtures/Psr0').'/BarBar.php',
-            Psr0\Foobar::class => realpath(__DIR__.'/../..'.'/data/Composer/Psr0/Kcs/ClassFinder/Fixtures/Psr0').'/Foobar.php',
-            Psr0\SubNs\FooBaz::class => realpath(__DIR__.'/../..'.'/data/Composer/Psr0/Kcs/ClassFinder/Fixtures/Psr0/SubNs').'/FooBaz.php',
+            __CLASS__ => new \ReflectionClass(__CLASS__),
+            Psr4\BarBar::class => new \ReflectionClass(Psr4\BarBar::class),
+            Psr4\Foobar::class => new \ReflectionClass(Psr4\Foobar::class),
+            Psr4\AbstractClass::class => new \ReflectionClass(Psr4\AbstractClass::class),
+            Psr4\FooInterface::class => new \ReflectionClass(Psr4\FooInterface::class),
+            Psr4\FooTrait::class => new \ReflectionClass(Psr4\FooTrait::class),
+            Psr4\SubNs\FooBaz::class => new \ReflectionClass(Psr4\SubNs\FooBaz::class),
+            Psr0\BarBar::class => new \ReflectionClass(Psr0\BarBar::class),
+            Psr0\Foobar::class => new \ReflectionClass(Psr0\Foobar::class),
+            Psr0\SubNs\FooBaz::class => new \ReflectionClass(Psr0\SubNs\FooBaz::class),
         ], iterator_to_array($iterator));
     }
 }

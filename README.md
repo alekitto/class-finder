@@ -26,7 +26,7 @@ from composer and resolving PSR-* namespaces accordingly.
 
 ```php
 $finder = new ComposerFinder();
-foreach ($finder as $className => $path) {
+foreach ($finder as $className => $reflector) {
     // Do magic things...
 }
 ```

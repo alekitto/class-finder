@@ -73,7 +73,7 @@ final class FilteredComposerIterator extends ClassIterator
                 continue;
             }
 
-            yield $class => $file;
+            yield $class => new \ReflectionClass($class);
         }
     }
 

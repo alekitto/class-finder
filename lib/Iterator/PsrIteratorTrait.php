@@ -4,6 +4,13 @@ namespace Kcs\ClassFinder\Iterator;
 
 trait PsrIteratorTrait
 {
+    protected function exists(string $className): bool
+    {
+        return class_exists($className, false) ||
+            interface_exists($className, false) ||
+            trait_exists($className, false);
+    }
+
     private function search(): \Generator
     {
         foreach (glob($this->path.'/*') as $path) {
