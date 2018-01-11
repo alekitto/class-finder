@@ -15,6 +15,7 @@
     },
     "require-dev": {
         "doctrine/annotations": "1.0",
+        "phpdocumentor/reflection": "^3.0",
         "phpunit/phpunit": "^6.5"
     },
     "autoload": {

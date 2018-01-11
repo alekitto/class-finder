@@ -25,7 +25,7 @@ final class DirectoryFilterIterator extends \FilterIterator
      */
     public function accept()
     {
-        $reflectionClass = new \ReflectionClass($this->getInnerIterator()->key());
+        $reflectionClass = $this->getInnerIterator()->current();
         foreach ($this->dirs as $dir) {
             if (0 === strpos($reflectionClass->getFileName(), $dir)) {
                 return true;

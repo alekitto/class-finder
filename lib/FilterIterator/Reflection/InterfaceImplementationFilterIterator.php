@@ -22,8 +22,8 @@ final class InterfaceImplementationFilterIterator extends \FilterIterator
     public function accept()
     {
         $className = $this->getInnerIterator()->key();
+        $reflectionClass = $this->getInnerIterator()->current();
 
-        $reflectionClass = new \ReflectionClass($className);
         foreach ($this->interfaces as $interface) {
             if ($className !== $interface && $reflectionClass->implementsInterface($interface)) {
                 return true;

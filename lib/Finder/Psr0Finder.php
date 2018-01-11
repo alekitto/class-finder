@@ -3,13 +3,14 @@
 namespace Kcs\ClassFinder\Finder;
 
 use Kcs\ClassFinder\Iterator\Psr0Iterator;
+use Kcs\ClassFinder\PathNormalizer;
 
 /**
  * Finds classes respecting psr-4 standard.
  */
 final class Psr0Finder implements FinderInterface
 {
-    use FinderTrait;
+    use ReflectionFilterTrait;
 
     /**
      * @var string
@@ -23,8 +24,17 @@ final class Psr0Finder implements FinderInterface
 
     public function __construct(string $namespace, string $path)
     {
+        if ('\\' !== substr($namespace, -1)) {
+            $namespace .= '\\';
+        }
+
+        $path = PathNormalizer::resolvePath($path);
+        if (DIRECTORY_SEPARATOR !== substr($path, -1)) {
+            $path .= DIRECTORY_SEPARATOR;
+        }
+
         $this->namespace = $namespace;
-        $this->path = $path;
+        $this->path = PathNormalizer::resolvePath($path);
     }
 
     public function getIterator(): \Iterator

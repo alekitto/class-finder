@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Kcs\ClassFinder\FilterIterator\Reflection;
+namespace Kcs\ClassFinder\FilterIterator\PhpDocumentor;
+
+use phpDocumentor\Reflection\ClassReflector;
 
 final class SuperClassFilterIterator extends \FilterIterator
 {
@@ -21,8 +23,8 @@ final class SuperClassFilterIterator extends \FilterIterator
      */
     public function accept()
     {
-        $reflectionClass = $this->getInnerIterator()->current();
+        $reflector = $this->getInnerIterator()->current();
 
-        return $reflectionClass->isSubclassOf($this->superClass);
+        return $reflector instanceof ClassReflector && ltrim($reflector->getParentClass(), '\\') === $this->superClass;
     }
 }

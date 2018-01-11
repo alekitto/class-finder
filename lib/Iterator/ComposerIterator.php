@@ -3,7 +3,6 @@
 namespace Kcs\ClassFinder\Iterator;
 
 use Composer\Autoload\ClassLoader;
-use Kcs\ClassFinder\PathNormalizer;
 
 /**
  * Iterates over classes defined in a composer-generated ClassLoader.

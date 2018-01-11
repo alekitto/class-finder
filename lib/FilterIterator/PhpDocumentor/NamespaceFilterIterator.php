@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Kcs\ClassFinder\FilterIterator\Reflection;
+namespace Kcs\ClassFinder\FilterIterator\PhpDocumentor;
+
+use phpDocumentor\Reflection\BaseReflector;
 
 final class NamespaceFilterIterator extends \FilterIterator
 {
@@ -21,10 +23,12 @@ final class NamespaceFilterIterator extends \FilterIterator
      */
     public function accept()
     {
-        $reflectionClass = $this->getInnerIterator()->current();
+        /** @var BaseReflector $reflector */
+        $reflector = $this->getInnerIterator()->current();
+        $classNamespace = ltrim($reflector->getNamespace(), '\\');
 
         foreach ($this->namespaces as $namespace) {
-            if (0 === strpos($reflectionClass->getNamespaceName(), $namespace)) {
+            if (0 === strpos($classNamespace, $namespace)) {
                 return true;
             }
         }

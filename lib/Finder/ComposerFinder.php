@@ -11,7 +11,7 @@ use Kcs\ClassFinder\Iterator\FilteredComposerIterator;
  */
 final class ComposerFinder implements FinderInterface
 {
-    use FinderTrait;
+    use ReflectionFilterTrait;
 
     /**
      * @var ClassLoader

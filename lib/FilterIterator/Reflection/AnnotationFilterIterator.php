@@ -29,8 +29,6 @@ final class AnnotationFilterIterator extends \FilterIterator
      */
     public function accept()
     {
-        $reflectionClass = new \ReflectionClass($this->getInnerIterator()->key());
-
-        return null !== $this->reader->getClassAnnotation($reflectionClass, $this->annotation);
+        return null !== $this->reader->getClassAnnotation($this->getInnerIterator()->current(), $this->annotation);
     }
 }
