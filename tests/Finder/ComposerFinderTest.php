@@ -50,6 +50,7 @@ class ComposerFinderTest extends TestCase
 
         $this->assertEquals([
             Psr4\BarBar::class => new \ReflectionClass(Psr4\BarBar::class),
+            Psr0\BarBar::class => new \ReflectionClass(Psr0\BarBar::class),
         ], iterator_to_array($finder));
     }
 
@@ -61,6 +62,7 @@ class ComposerFinderTest extends TestCase
 
         $this->assertEquals([
             Psr4\Foobar::class => new \ReflectionClass(Psr4\Foobar::class),
+            Psr0\Foobar::class => new \ReflectionClass(Psr0\Foobar::class),
         ], iterator_to_array($finder));
     }
 
@@ -69,6 +71,20 @@ class ComposerFinderTest extends TestCase
         $finder = new ComposerFinder();
         $finder->in([__DIR__.'/../../data']);
         $finder->annotatedBy(Psr4\SubNs\FooBaz::class);
+
+        $this->assertEquals([
+            Psr4\AbstractClass::class => new \ReflectionClass(Psr4\AbstractClass::class),
+            Psr0\SubNs\FooBaz::class => new \ReflectionClass(Psr0\SubNs\FooBaz::class),
+        ], iterator_to_array($finder));
+    }
+
+    public function testFinderShouldFilterByCallback()
+    {
+        $finder = new ComposerFinder();
+        $finder->in([__DIR__.'/../../data']);
+        $finder->filter(function (\ReflectionClass $class) {
+            return Psr4\AbstractClass::class === $class->getName();
+        });
 
         $this->assertEquals([
             Psr4\AbstractClass::class => new \ReflectionClass(Psr4\AbstractClass::class),

@@ -5,6 +5,7 @@ namespace Kcs\ClassFinder\Tests\Finder;
 use Kcs\ClassFinder\Finder\PhpDocumentorFinder;
 use Kcs\ClassFinder\Fixtures\Psr0;
 use Kcs\ClassFinder\Fixtures\Psr4;
+use phpDocumentor\Reflection\BaseReflector;
 use phpDocumentor\Reflection\ClassReflector;
 use phpDocumentor\Reflection\InterfaceReflector;
 use phpDocumentor\Reflection\TraitReflector;
@@ -86,6 +87,20 @@ class PhpDocumentorFinderTest extends TestCase
 
         $classes = iterator_to_array($finder);
 
+        $this->assertArrayHasKey(Psr4\AbstractClass::class, $classes);
+        $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\AbstractClass::class]);
+    }
+
+    public function testFinderShouldFilterByCallback()
+    {
+        $finder = new PhpDocumentorFinder(__DIR__.'/../../data');
+        $finder->filter(function (BaseReflector $class) {
+            return $class->getName() === '\\'.Psr4\AbstractClass::class;
+        });
+
+        $classes = iterator_to_array($finder);
+
+        $this->assertCount(1, $classes);
         $this->assertArrayHasKey(Psr4\AbstractClass::class, $classes);
         $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\AbstractClass::class]);
     }

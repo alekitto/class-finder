@@ -2,6 +2,8 @@
 
 namespace Kcs\ClassFinder\Fixtures\Psr0;
 
-class Foobar
+use Kcs\ClassFinder\Fixtures\Psr4\AbstractClass;
+
+class Foobar extends AbstractClass
 {
 }

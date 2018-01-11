@@ -31,8 +31,8 @@ trait ReflectionFilterTrait
         }
 
         if ($this->callback) {
-            $iterator = new \CallbackFilterIterator($iterator, function ($unused, $key) {
-                return (bool) ($this->callback)($key);
+            $iterator = new \CallbackFilterIterator($iterator, function ($current, $key) {
+                return (bool) ($this->callback)($current, $key);
             });
         }
 

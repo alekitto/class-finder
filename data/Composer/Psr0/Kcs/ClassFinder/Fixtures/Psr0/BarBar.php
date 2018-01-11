@@ -2,6 +2,8 @@
 
 namespace Kcs\ClassFinder\Fixtures\Psr0;
 
-class BarBar
+use Kcs\ClassFinder\Fixtures\Psr4\FooInterface;
+
+class BarBar implements FooInterface
 {
 }
