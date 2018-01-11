@@ -34,7 +34,7 @@ final class Psr0Iterator extends ClassIterator
 
     protected function getGenerator(): \Generator
     {
-        $pattern = defined('HHVM_VERSION') ? '/\\.(php|hh)$/' : '/\\.php$/';
+        $pattern = defined('HHVM_VERSION') ? '/\\.(php|hh)$/i' : '/\\.php$/i';
 
         foreach ($this->search() as $path => $info) {
             if (! preg_match($pattern, $path, $m) || ! $info->isReadable()) {

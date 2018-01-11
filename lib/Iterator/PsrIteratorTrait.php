@@ -22,9 +22,6 @@ trait PsrIteratorTrait
                     ),
                     \RecursiveIteratorIterator::LEAVES_ONLY
                 ));
-                uasort($files, function (\SplFileInfo $a, \SplFileInfo $b) {
-                    return (string) $a <=> (string) $b;
-                });
 
                 foreach ($files as $path => $info) {
                     if ($info->isFile()) {

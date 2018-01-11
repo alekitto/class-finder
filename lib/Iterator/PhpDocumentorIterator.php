@@ -9,7 +9,7 @@ use phpDocumentor\Reflection\FileReflector;
 
 final class PhpDocumentorIterator extends ClassIterator
 {
-    private const EXTENSION_PATTERN = '/\\.php$/';
+    private const EXTENSION_PATTERN = '/\\.php$/i';
 
     /**
      * @var string

@@ -7,3 +7,7 @@ if (false) {
     {
     }
 }
+
+class HiddenClass
+{
+}
