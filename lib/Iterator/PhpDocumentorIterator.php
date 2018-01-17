@@ -2,6 +2,7 @@
 
 namespace Kcs\ClassFinder\Iterator;
 
+use Kcs\ClassFinder\FilterIterator\MultiplePcreFilterIterator;
 use Kcs\ClassFinder\PathNormalizer;
 use phpDocumentor\Reflection\BaseReflector;
 use phpDocumentor\Reflection\ClassReflector;
@@ -20,6 +21,16 @@ final class PhpDocumentorIterator extends ClassIterator
      * @var string[]
      */
     private $dirs = null;
+
+    /**
+     * @var string[]
+     */
+    private $paths = null;
+
+    /**
+     * @var string[]
+     */
+    private $notPaths = null;
 
     public function __construct(string $path, int $flags = 0)
     {
@@ -51,6 +62,20 @@ final class PhpDocumentorIterator extends ClassIterator
 
         $resolvedDirs = array_map(PathNormalizer::class.'::resolvePath', $resolvedDirs);
         $this->dirs = array_unique(array_merge($this->dirs ?? [], $resolvedDirs));
+
+        return $this;
+    }
+
+    public function path(array $patterns): self
+    {
+        $this->paths = array_map('Kcs\ClassFinder\FilterIterator\Reflection\PathFilterIterator::toRegex', $patterns);
+
+        return $this;
+    }
+
+    public function notPath($patterns): self
+    {
+        $this->notPaths = array_map('Kcs\ClassFinder\FilterIterator\Reflection\PathFilterIterator::toRegex', $patterns);
 
         return $this;
     }
@@ -132,10 +157,39 @@ final class PhpDocumentorIterator extends ClassIterator
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function accept($path): bool
+    private function accept(string $path): bool
+    {
+        return $this->acceptDirs($path) &&
+            $this->acceptPaths($path);
+    }
+
+    private function acceptPaths(string $path): bool
+    {
+        // should at least not match one rule to exclude
+        if (null !== $this->notPaths) {
+            foreach ($this->notPaths as $regex) {
+                if (preg_match($regex, $path)) {
+                    return false;
+                }
+            }
+        }
+
+        // should at least match one rule
+        if (null !== $this->paths) {
+            foreach ($this->paths as $regex) {
+                if (preg_match($regex, $path)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // If there is no match rules, the file is accepted
+        return true;
+    }
+
+    private function acceptDirs(string $path): bool
     {
         if (null === $this->dirs) {
             return true;

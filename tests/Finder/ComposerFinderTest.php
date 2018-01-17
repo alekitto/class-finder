@@ -90,4 +90,62 @@ class ComposerFinderTest extends TestCase
             Psr4\AbstractClass::class => new \ReflectionClass(Psr4\AbstractClass::class),
         ], iterator_to_array($finder));
     }
+
+    public function testFinderShouldFilterByPath()
+    {
+        $finder = new ComposerFinder();
+        $finder->in([__DIR__.'/../../data']);
+        $finder->path('SubNs');
+
+        $this->assertEquals([
+            Psr4\SubNs\FooBaz::class => new \ReflectionClass(Psr4\SubNs\FooBaz::class),
+            Psr0\SubNs\FooBaz::class => new \ReflectionClass(Psr0\SubNs\FooBaz::class),
+        ], iterator_to_array($finder));
+    }
+
+    public function testFinderShouldFilterByPathRegex()
+    {
+        $finder = new ComposerFinder();
+        $finder->in([__DIR__.'/../../data']);
+        $finder->path('/subns/i');
+
+        $this->assertEquals([
+            Psr4\SubNs\FooBaz::class => new \ReflectionClass(Psr4\SubNs\FooBaz::class),
+            Psr0\SubNs\FooBaz::class => new \ReflectionClass(Psr0\SubNs\FooBaz::class),
+        ], iterator_to_array($finder));
+    }
+
+    public function testFinderShouldFilterByNotPath()
+    {
+        $finder = new ComposerFinder();
+        $finder->in([__DIR__.'/../../data']);
+        $finder->notPath('SubNs');
+
+        $this->assertEquals([
+            Psr4\BarBar::class => new \ReflectionClass(Psr4\BarBar::class),
+            Psr4\Foobar::class => new \ReflectionClass(Psr4\Foobar::class),
+            Psr4\AbstractClass::class => new \ReflectionClass(Psr4\AbstractClass::class),
+            Psr4\FooInterface::class => new \ReflectionClass(Psr4\FooInterface::class),
+            Psr4\FooTrait::class => new \ReflectionClass(Psr4\FooTrait::class),
+            Psr0\BarBar::class => new \ReflectionClass(Psr0\BarBar::class),
+            Psr0\Foobar::class => new \ReflectionClass(Psr0\Foobar::class),
+        ], iterator_to_array($finder));
+    }
+
+    public function testFinderShouldFilterByNotPathRegex()
+    {
+        $finder = new ComposerFinder();
+        $finder->in([__DIR__.'/../../data']);
+        $finder->notPath('/subns/i');
+
+        $this->assertEquals([
+            Psr4\BarBar::class => new \ReflectionClass(Psr4\BarBar::class),
+            Psr4\Foobar::class => new \ReflectionClass(Psr4\Foobar::class),
+            Psr4\AbstractClass::class => new \ReflectionClass(Psr4\AbstractClass::class),
+            Psr4\FooInterface::class => new \ReflectionClass(Psr4\FooInterface::class),
+            Psr4\FooTrait::class => new \ReflectionClass(Psr4\FooTrait::class),
+            Psr0\BarBar::class => new \ReflectionClass(Psr0\BarBar::class),
+            Psr0\Foobar::class => new \ReflectionClass(Psr0\Foobar::class),
+        ], iterator_to_array($finder));
+    }
 }

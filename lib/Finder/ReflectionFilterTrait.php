@@ -36,6 +36,10 @@ trait ReflectionFilterTrait
             });
         }
 
+        if ($this->paths || $this->notPaths) {
+            $iterator = new Filters\PathFilterIterator($iterator, $this->paths ?? [], $this->notPaths ?? []);
+        }
+
         return $iterator;
     }
 }

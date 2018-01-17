@@ -32,6 +32,16 @@ trait FinderTrait
     private $namespaces = null;
 
     /**
+     * @var string[]
+     */
+    private $paths = null;
+
+    /**
+     * @var string[]
+     */
+    private $notPaths = null;
+
+    /**
      * @var callable
      */
     private $callback = null;
@@ -105,6 +115,26 @@ trait FinderTrait
     public function filter(?callable $callback): FinderInterface
     {
         $this->callback = $callback;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function path($pattern): FinderInterface
+    {
+        $this->paths[] = $pattern;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function notPath($pattern): FinderInterface
+    {
+        $this->notPaths[] = $pattern;
 
         return $this;
     }

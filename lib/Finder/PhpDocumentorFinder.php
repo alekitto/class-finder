@@ -24,8 +24,17 @@ final class PhpDocumentorFinder implements FinderInterface
     public function getIterator(): \Iterator
     {
         $iterator = new PhpDocumentorIterator($this->dir);
+
         if (null !== $this->dirs) {
             $iterator->in($this->dirs);
+        }
+
+        if (null !== $this->paths) {
+            $iterator->path($this->paths);
+        }
+
+        if (null !== $this->notPaths) {
+            $iterator->notPath($this->notPaths);
         }
 
         return $this->applyFilters($iterator);
