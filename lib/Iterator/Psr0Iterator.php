@@ -35,6 +35,9 @@ final class Psr0Iterator extends ClassIterator
     protected function getGenerator(): \Generator
     {
         $pattern = defined('HHVM_VERSION') ? '/\\.(php|hh)$/i' : '/\\.php$/i';
+        $include = \Closure::bind(function (string $path) {
+            include_once $path;
+        }, null, null);
 
         foreach ($this->search() as $path => $info) {
             if (! preg_match($pattern, $path, $m) || ! $info->isReadable()) {
@@ -53,7 +56,13 @@ final class Psr0Iterator extends ClassIterator
             // Due to composer bug #6987 and the refuse of think about a proper
             // solution, we are forced to include the file here and check if class
             // exists with autoload flag disabled (see method exists).
-            include_once $path;
+
+            try {
+                $include($path);
+            } catch (\Throwable $e) {
+                continue;
+            }
+
             if (! $this->exists($class)) {
                 continue;
             }
