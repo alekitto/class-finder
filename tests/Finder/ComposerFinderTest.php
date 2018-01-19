@@ -6,6 +6,7 @@ use Kcs\ClassFinder\Finder\ComposerFinder;
 use Kcs\ClassFinder\Fixtures\Psr0;
 use Kcs\ClassFinder\Fixtures\Psr4;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Debug\DebugClassLoader;
 
 class ComposerFinderTest extends TestCase
 {
@@ -13,6 +14,18 @@ class ComposerFinderTest extends TestCase
     {
         $finder = new ComposerFinder();
         $this->assertInstanceOf(\Traversable::class, $finder);
+    }
+
+    public function testShouldNotThrowWhenSymfonyDebugClassLoaderIsEnabled()
+    {
+        DebugClassLoader::enable();
+
+        try {
+            $finder = new ComposerFinder();
+            $this->assertInstanceOf(ComposerFinder::class, $finder);
+        } finally {
+            DebugClassLoader::disable();
+        }
     }
 
     public function testFinderShouldFilterByNamespace()
