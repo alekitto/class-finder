@@ -6,7 +6,6 @@ use Kcs\ClassFinder\PathNormalizer;
 
 final class RecursiveIterator extends ClassIterator
 {
-    use PsrIteratorTrait;
     use RecursiveIteratorTrait;
 
     public function __construct(string $path, int $flags = 0)
