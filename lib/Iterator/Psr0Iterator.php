@@ -27,7 +27,7 @@ final class Psr0Iterator extends ClassIterator
     {
         $this->namespace = $namespace;
         $this->path = PathNormalizer::resolvePath($path);
-        $this->pathLen = strlen($this->path);
+        $this->pathLen = \strlen($this->path);
         $this->classMap = \array_map(PathNormalizer::class.'::resolvePath', $classMap);
 
         parent::__construct($flags);
@@ -35,13 +35,13 @@ final class Psr0Iterator extends ClassIterator
 
     protected function getGenerator(): \Generator
     {
-        $pattern = defined('HHVM_VERSION') ? '/\\.(php|hh)$/i' : '/\\.php$/i';
+        $pattern = \defined('HHVM_VERSION') ? '/\\.(php|hh)$/i' : '/\\.php$/i';
         $include = \Closure::bind(static function (string $path) {
             include_once $path;
         }, null, null);
 
         foreach ($this->search() as $path => $info) {
-            if (! preg_match($pattern, $path, $m) || ! $info->isReadable()) {
+            if (! \preg_match($pattern, $path, $m) || ! $info->isReadable()) {
                 continue;
             }
 
@@ -49,12 +49,12 @@ final class Psr0Iterator extends ClassIterator
                 continue;
             }
 
-            $class = ltrim(str_replace('/', '\\', substr($path, $this->pathLen, -strlen($m[0]))), '\\');
-            if (0 !== strpos($class, $this->namespace)) {
+            $class = \ltrim(\str_replace('/', '\\', \substr($path, $this->pathLen, -\strlen($m[0]))), '\\');
+            if (0 !== \strpos($class, $this->namespace)) {
                 continue;
             }
 
-            if (! preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+$/', $class)) {
+            if (! \preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+$/', $class)) {
                 continue;
             }
 

@@ -16,7 +16,7 @@ final class DirectoryFilterIterator extends \FilterIterator
         parent::__construct($iterator);
 
         $this->dirs = (static function (string ...$dirs) {
-            return array_map(PathNormalizer::class.'::resolvePath', $dirs);
+            return \array_map(PathNormalizer::class.'::resolvePath', $dirs);
         })(...$dirs);
     }
 
@@ -31,7 +31,7 @@ final class DirectoryFilterIterator extends \FilterIterator
         }
 
         foreach ($this->dirs as $dir) {
-            if (0 === strpos($reflectionClass->getFileName(), $dir)) {
+            if (0 === \strpos($reflectionClass->getFileName(), $dir)) {
                 return true;
             }
         }

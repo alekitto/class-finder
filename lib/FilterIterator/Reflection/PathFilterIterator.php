@@ -20,7 +20,7 @@ final class PathFilterIterator extends MultiplePcreFilterIterator
 
         $filename = $reflector->getFileName();
         if ('\\' === DIRECTORY_SEPARATOR) {
-            $filename = str_replace('\\', '/', $filename);
+            $filename = \str_replace('\\', '/', $filename);
         }
 
         return $this->isAccepted($filename);
@@ -42,6 +42,6 @@ final class PathFilterIterator extends MultiplePcreFilterIterator
      */
     public static function toRegex(string $str): string
     {
-        return self::isRegex($str) ? $str : '/'.preg_quote($str, '/').'/';
+        return self::isRegex($str) ? $str : '/'.\preg_quote($str, '/').'/';
     }
 }

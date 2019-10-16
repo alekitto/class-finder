@@ -48,12 +48,12 @@ final class ComposerFinder implements FinderInterface
      */
     private static function getValidLoader(): ClassLoader
     {
-        foreach (spl_autoload_functions() as $autoload_function) {
-            if (is_array($autoload_function) && $autoload_function[0] instanceof DebugClassLoader) {
+        foreach (\spl_autoload_functions() as $autoload_function) {
+            if (\is_array($autoload_function) && $autoload_function[0] instanceof DebugClassLoader) {
                 $autoload_function = $autoload_function[0]->getClassLoader();
             }
 
-            if (is_array($autoload_function) && $autoload_function[0] instanceof ClassLoader) {
+            if (\is_array($autoload_function) && $autoload_function[0] instanceof ClassLoader) {
                 return $autoload_function[0];
             }
         }

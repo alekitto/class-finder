@@ -4,8 +4,8 @@ namespace Kcs\ClassFinder\FilterIterator;
 
 abstract class MultiplePcreFilterIterator extends \FilterIterator
 {
-    protected $matchRegexps = array();
-    protected $noMatchRegexps = array();
+    protected $matchRegexps = [];
+    protected $noMatchRegexps = [];
 
     /**
      * @param \Iterator $iterator        The Iterator to filter
@@ -34,15 +34,15 @@ abstract class MultiplePcreFilterIterator extends \FilterIterator
      */
     public static function isRegex($str): bool
     {
-        if (preg_match('/^(.{3,}?)[imsxuADU]*$/', $str, $m)) {
-            $start = substr($m[1], 0, 1);
-            $end = substr($m[1], -1);
+        if (\preg_match('/^(.{3,}?)[imsxuADU]*$/', $str, $m)) {
+            $start = \substr($m[1], 0, 1);
+            $end = \substr($m[1], -1);
 
             if ($start === $end) {
-                return !preg_match('/[*?[:alnum:] \\\\]/', $start);
+                return ! \preg_match('/[*?[:alnum:] \\\\]/', $start);
             }
 
-            foreach (array(array('{', '}'), array('(', ')'), array('[', ']'), array('<', '>')) as $delimiters) {
+            foreach ([['{', '}'], ['(', ')'], ['[', ']'], ['<', '>']] as $delimiters) {
                 if ($start === $delimiters[0] && $end === $delimiters[1]) {
                     return true;
                 }
@@ -67,7 +67,7 @@ abstract class MultiplePcreFilterIterator extends \FilterIterator
     {
         // should at least not match one rule to exclude
         foreach ($this->noMatchRegexps as $regex) {
-            if (preg_match($regex, $string)) {
+            if (\preg_match($regex, $string)) {
                 return false;
             }
         }
@@ -75,7 +75,7 @@ abstract class MultiplePcreFilterIterator extends \FilterIterator
         // should at least match one rule
         if ($this->matchRegexps) {
             foreach ($this->matchRegexps as $regex) {
-                if (preg_match($regex, $string)) {
+                if (\preg_match($regex, $string)) {
                     return true;
                 }
             }

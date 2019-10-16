@@ -18,22 +18,22 @@ final class PathNormalizer
     public static function resolvePath(string $path): string
     {
         if (DIRECTORY_SEPARATOR !== '/') {
-            $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+            $path = \str_replace('/', DIRECTORY_SEPARATOR, $path);
         }
 
         $newPath = [];
-        foreach (explode(DIRECTORY_SEPARATOR, $path) as $pathPart) {
+        foreach (\explode(DIRECTORY_SEPARATOR, $path) as $pathPart) {
             if ('.' === $pathPart) {
                 continue;
             }
 
-            if ('..' === $pathPart && count($newPath) > 0) {
-                array_pop($newPath);
+            if ('..' === $pathPart && \count($newPath) > 0) {
+                \array_pop($newPath);
             } else {
                 $newPath[] = $pathPart;
             }
         }
 
-        return implode(DIRECTORY_SEPARATOR, $newPath);
+        return \implode(DIRECTORY_SEPARATOR, $newPath);
     }
 }

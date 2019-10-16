@@ -21,7 +21,7 @@ final class RecursiveFinder implements FinderInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getIterator()
     {

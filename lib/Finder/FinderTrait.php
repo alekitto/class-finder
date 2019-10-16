@@ -84,17 +84,17 @@ trait FinderTrait
         $resolvedDirs = [];
 
         foreach ((array) $dirs as $dir) {
-            if (is_dir($dir)) {
+            if (\is_dir($dir)) {
                 $resolvedDirs[] = $dir;
-            } elseif ($glob = glob($dir, (defined('GLOB_BRACE') ? GLOB_BRACE : 0) | GLOB_ONLYDIR)) {
-                $resolvedDirs = array_merge($resolvedDirs, $glob);
+            } elseif ($glob = \glob($dir, (\defined('GLOB_BRACE') ? GLOB_BRACE : 0) | GLOB_ONLYDIR)) {
+                $resolvedDirs = \array_merge($resolvedDirs, $glob);
             } else {
                 throw new \InvalidArgumentException('The "'.$dir.'" directory does not exist.');
             }
         }
 
-        $resolvedDirs = array_map(PathNormalizer::class.'::resolvePath', $resolvedDirs);
-        $this->dirs = array_unique(array_merge($this->dirs ?? [], $resolvedDirs));
+        $resolvedDirs = \array_map(PathNormalizer::class.'::resolvePath', $resolvedDirs);
+        $this->dirs = \array_unique(\array_merge($this->dirs ?? [], $resolvedDirs));
 
         return $this;
     }
@@ -104,7 +104,7 @@ trait FinderTrait
      */
     public function inNamespace($namespaces): FinderInterface
     {
-        $this->namespaces = array_unique(array_merge($this->namespaces ?? [], (array) $namespaces));
+        $this->namespaces = \array_unique(\array_merge($this->namespaces ?? [], (array) $namespaces));
 
         return $this;
     }
@@ -120,7 +120,7 @@ trait FinderTrait
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function path($pattern): FinderInterface
     {
@@ -130,7 +130,7 @@ trait FinderTrait
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function notPath($pattern): FinderInterface
     {

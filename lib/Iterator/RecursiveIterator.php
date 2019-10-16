@@ -19,10 +19,10 @@ final class RecursiveIterator extends ClassIterator
     protected function getGenerator(): \Generator
     {
         $included_files = [];
-        $pattern = defined('HHVM_VERSION') ? '/\\.(php|hh)$/i' : '/\\.php$/i';
+        $pattern = \defined('HHVM_VERSION') ? '/\\.(php|hh)$/i' : '/\\.php$/i';
 
         foreach ($this->search() as $path => $info) {
-            if (! preg_match($pattern, $path, $m) || ! $info->isReadable()) {
+            if (! \preg_match($pattern, $path, $m) || ! $info->isReadable()) {
                 continue;
             }
 
@@ -33,7 +33,7 @@ final class RecursiveIterator extends ClassIterator
         foreach ($this->getDeclaredClasses() as $className) {
             $reflClass = new \ReflectionClass($className);
 
-            if (in_array($reflClass->getFileName(), $included_files)) {
+            if (\in_array($reflClass->getFileName(), $included_files)) {
                 yield $className => $reflClass;
             }
         }
@@ -41,8 +41,8 @@ final class RecursiveIterator extends ClassIterator
 
     private function getDeclaredClasses(): \Generator
     {
-        yield from get_declared_classes();
-        yield from get_declared_interfaces();
-        yield from get_declared_traits();
+        yield from \get_declared_classes();
+        yield from \get_declared_interfaces();
+        yield from \get_declared_traits();
     }
 }

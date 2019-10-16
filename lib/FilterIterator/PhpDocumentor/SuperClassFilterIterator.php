@@ -25,6 +25,6 @@ final class SuperClassFilterIterator extends \FilterIterator
     {
         $reflector = $this->getInnerIterator()->current();
 
-        return $reflector instanceof ClassReflector && ltrim($reflector->getParentClass(), '\\') === $this->superClass;
+        return $reflector instanceof ClassReflector && \ltrim($reflector->getParentClass(), '\\') === $this->superClass;
     }
 }

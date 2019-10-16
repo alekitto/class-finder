@@ -24,7 +24,7 @@ final class NamespaceFilterIterator extends \FilterIterator
         $reflectionClass = $this->getInnerIterator()->current();
 
         foreach ($this->namespaces as $namespace) {
-            if ($namespace === $reflectionClass->getNamespaceName() || 0 === strpos($reflectionClass->getNamespaceName(), $namespace.'\\')) {
+            if ($namespace === $reflectionClass->getNamespaceName() || 0 === \strpos($reflectionClass->getNamespaceName(), $namespace.'\\')) {
                 return true;
             }
         }

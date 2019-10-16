@@ -12,13 +12,13 @@ class Psr0IteratorTest extends TestCase
     {
         $iterator = new Psr0Iterator(
             'Kcs\\ClassFinder\\Fixtures\\Psr0\\',
-            realpath(__DIR__.'/../../data/Composer/Psr0')
+            \realpath(__DIR__.'/../../data/Composer/Psr0')
         );
 
-        $this->assertEquals([
+        self::assertEquals([
             Psr0\BarBar::class => new \ReflectionClass(Psr0\BarBar::class),
             Psr0\Foobar::class => new \ReflectionClass(Psr0\Foobar::class),
             Psr0\SubNs\FooBaz::class => new \ReflectionClass(Psr0\SubNs\FooBaz::class),
-        ], iterator_to_array($iterator));
+        ], \iterator_to_array($iterator));
     }
 }

@@ -38,11 +38,11 @@ final class FilteredComposerIterator extends ClassIterator
         $this->dirs = $dirs;
 
         if (null !== $namespaces) {
-            $namespaces = array_map(static function ($ns) {
-                return explode('\\', $ns, 2)[0];
+            $namespaces = \array_map(static function ($ns) {
+                return \explode('\\', $ns, 2)[0];
             }, $namespaces);
 
-            $this->namespaces = array_unique($namespaces);
+            $this->namespaces = \array_unique($namespaces);
         }
 
         parent::__construct($flags);
@@ -125,7 +125,7 @@ final class FilteredComposerIterator extends ClassIterator
         }
 
         foreach ($this->namespaces as $namespace) {
-            if (0 === strpos($class, $namespace)) {
+            if (0 === \strpos($class, $namespace)) {
                 return true;
             }
         }
@@ -141,7 +141,7 @@ final class FilteredComposerIterator extends ClassIterator
 
         $path = PathNormalizer::resolvePath($path);
         foreach ($this->dirs as $dir) {
-            if (0 === strpos($path, $dir)) {
+            if (0 === \strpos($path, $dir)) {
                 return true;
             }
         }

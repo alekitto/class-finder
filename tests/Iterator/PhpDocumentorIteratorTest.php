@@ -14,22 +14,22 @@ class PhpDocumentorIteratorTest extends TestCase
     public function testIteratorShouldWork()
     {
         $iterator = new PhpDocumentorIterator(
-            realpath(__DIR__.'/../../data/Composer/Psr4')
+            \realpath(__DIR__.'/../../data/Composer/Psr4')
         );
 
-        $classes = iterator_to_array($iterator);
+        $classes = \iterator_to_array($iterator);
 
-        $this->assertArrayHasKey(Psr4\BarBar::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\BarBar::class]);
-        $this->assertArrayHasKey(Psr4\Foobar::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\Foobar::class]);
-        $this->assertArrayHasKey(Psr4\AbstractClass::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\AbstractClass::class]);
-        $this->assertArrayHasKey(Psr4\SubNs\FooBaz::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\SubNs\FooBaz::class]);
-        $this->assertArrayHasKey(Psr4\FooInterface::class, $classes);
-        $this->assertInstanceOf(InterfaceReflector::class, $classes[Psr4\FooInterface::class]);
-        $this->assertArrayHasKey(Psr4\FooTrait::class, $classes);
-        $this->assertInstanceOf(TraitReflector::class, $classes[Psr4\FooTrait::class]);
+        self::assertArrayHasKey(Psr4\BarBar::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\BarBar::class]);
+        self::assertArrayHasKey(Psr4\Foobar::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\Foobar::class]);
+        self::assertArrayHasKey(Psr4\AbstractClass::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\AbstractClass::class]);
+        self::assertArrayHasKey(Psr4\SubNs\FooBaz::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\SubNs\FooBaz::class]);
+        self::assertArrayHasKey(Psr4\FooInterface::class, $classes);
+        self::assertInstanceOf(InterfaceReflector::class, $classes[Psr4\FooInterface::class]);
+        self::assertArrayHasKey(Psr4\FooTrait::class, $classes);
+        self::assertInstanceOf(TraitReflector::class, $classes[Psr4\FooTrait::class]);
     }
 }

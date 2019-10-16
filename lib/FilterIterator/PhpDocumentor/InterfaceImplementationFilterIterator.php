@@ -30,8 +30,8 @@ final class InterfaceImplementationFilterIterator extends \FilterIterator
             return false;
         }
 
-        $interfaces = array_map(function (string $interface): string {
-            return ltrim($interface, '\\');
+        $interfaces = \array_map(function (string $interface): string {
+            return \ltrim($interface, '\\');
         }, $reflector->getInterfaces());
 
         foreach ($this->interfaces as $interface) {

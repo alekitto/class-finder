@@ -2,7 +2,6 @@
 
 namespace Kcs\ClassFinder\Iterator;
 
-use Kcs\ClassFinder\FilterIterator\MultiplePcreFilterIterator;
 use Kcs\ClassFinder\PathNormalizer;
 use phpDocumentor\Reflection\BaseReflector;
 use phpDocumentor\Reflection\ClassReflector;
@@ -51,31 +50,31 @@ final class PhpDocumentorIterator extends ClassIterator
         $resolvedDirs = [];
 
         foreach ((array) $dirs as $dir) {
-            if (is_dir($dir)) {
+            if (\is_dir($dir)) {
                 $resolvedDirs[] = $dir;
-            } elseif ($glob = glob($dir, (defined('GLOB_BRACE') ? GLOB_BRACE : 0) | GLOB_ONLYDIR)) {
-                $resolvedDirs = array_merge($resolvedDirs, $glob);
+            } elseif ($glob = \glob($dir, (\defined('GLOB_BRACE') ? GLOB_BRACE : 0) | GLOB_ONLYDIR)) {
+                $resolvedDirs = \array_merge($resolvedDirs, $glob);
             } else {
                 throw new \InvalidArgumentException('The "'.$dir.'" directory does not exist.');
             }
         }
 
-        $resolvedDirs = array_map(PathNormalizer::class.'::resolvePath', $resolvedDirs);
-        $this->dirs = array_unique(array_merge($this->dirs ?? [], $resolvedDirs));
+        $resolvedDirs = \array_map(PathNormalizer::class.'::resolvePath', $resolvedDirs);
+        $this->dirs = \array_unique(\array_merge($this->dirs ?? [], $resolvedDirs));
 
         return $this;
     }
 
     public function path(array $patterns): self
     {
-        $this->paths = array_map('Kcs\ClassFinder\FilterIterator\Reflection\PathFilterIterator::toRegex', $patterns);
+        $this->paths = \array_map('Kcs\ClassFinder\FilterIterator\Reflection\PathFilterIterator::toRegex', $patterns);
 
         return $this;
     }
 
     public function notPath($patterns): self
     {
-        $this->notPaths = array_map('Kcs\ClassFinder\FilterIterator\Reflection\PathFilterIterator::toRegex', $patterns);
+        $this->notPaths = \array_map('Kcs\ClassFinder\FilterIterator\Reflection\PathFilterIterator::toRegex', $patterns);
 
         return $this;
     }
@@ -102,14 +101,14 @@ final class PhpDocumentorIterator extends ClassIterator
                 continue;
             }
 
-            if (! preg_match(self::EXTENSION_PATTERN, $path, $m) || ! $info->isReadable()) {
+            if (! \preg_match(self::EXTENSION_PATTERN, $path, $m) || ! $info->isReadable()) {
                 continue;
             }
 
-            ob_start();
+            \ob_start();
             $reflector = new FileReflector($path);
             $reflector->process();
-            ob_end_clean();
+            \ob_end_clean();
 
             yield from $this->processClasses($reflector->getClasses());
             yield from $this->processClasses($reflector->getInterfaces());
@@ -127,22 +126,22 @@ final class PhpDocumentorIterator extends ClassIterator
     private function processClasses(array $classes): \Generator
     {
         foreach ($classes as $reflector) {
-            yield ltrim($reflector->getName(), '\\') => $reflector;
+            yield \ltrim($reflector->getName(), '\\') => $reflector;
         }
     }
 
     private function scan(): \Generator
     {
-        foreach (glob($this->path.'/*') as $path) {
-            if (is_dir($path)) {
-                $files = iterator_to_array(new \RecursiveIteratorIterator(
+        foreach (\glob($this->path.'/*') as $path) {
+            if (\is_dir($path)) {
+                $files = \iterator_to_array(new \RecursiveIteratorIterator(
                     new \RecursiveCallbackFilterIterator(
                         new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS),
                         static function (\SplFileInfo $file) { return '.' !== $file->getBasename()[0]; }
                     ),
                     \RecursiveIteratorIterator::LEAVES_ONLY
                 ));
-                uasort($files, static function (\SplFileInfo $a, \SplFileInfo $b) {
+                \uasort($files, static function (\SplFileInfo $a, \SplFileInfo $b) {
                     return (string) $a <=> (string) $b;
                 });
 
@@ -151,7 +150,7 @@ final class PhpDocumentorIterator extends ClassIterator
                         yield $filepath => $info;
                     }
                 }
-            } elseif (is_file($path)) {
+            } elseif (\is_file($path)) {
                 yield $path => new \SplFileInfo($path);
             }
         }
@@ -168,7 +167,7 @@ final class PhpDocumentorIterator extends ClassIterator
         // should at least not match one rule to exclude
         if (null !== $this->notPaths) {
             foreach ($this->notPaths as $regex) {
-                if (preg_match($regex, $path)) {
+                if (\preg_match($regex, $path)) {
                     return false;
                 }
             }
@@ -177,7 +176,7 @@ final class PhpDocumentorIterator extends ClassIterator
         // should at least match one rule
         if (null !== $this->paths) {
             foreach ($this->paths as $regex) {
-                if (preg_match($regex, $path)) {
+                if (\preg_match($regex, $path)) {
                     return true;
                 }
             }
@@ -196,7 +195,7 @@ final class PhpDocumentorIterator extends ClassIterator
         }
 
         foreach ($this->dirs as $dir) {
-            if (0 === strpos($path, $dir)) {
+            if (0 === \strpos($path, $dir)) {
                 return true;
             }
         }

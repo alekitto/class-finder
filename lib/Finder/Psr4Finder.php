@@ -24,12 +24,12 @@ final class Psr4Finder implements FinderInterface
 
     public function __construct(string $namespace, string $path)
     {
-        if ('\\' !== substr($namespace, -1)) {
+        if ('\\' !== \substr($namespace, -1)) {
             $namespace .= '\\';
         }
 
         $path = PathNormalizer::resolvePath($path);
-        if (DIRECTORY_SEPARATOR !== substr($path, -1)) {
+        if (DIRECTORY_SEPARATOR !== \substr($path, -1)) {
             $path .= DIRECTORY_SEPARATOR;
         }
 

@@ -29,7 +29,7 @@ abstract class ClassIterator implements \Iterator
     private $flags = 0;
 
     /**
-     * @var null|callable
+     * @var callable|null
      */
     private $_apply;
 
@@ -60,7 +60,7 @@ abstract class ClassIterator implements \Iterator
         }
 
         if (null === $this->_current) {
-            $this->_current = call_user_func($this->_apply, $this->_currentElement);
+            $this->_current = \call_user_func($this->_apply, $this->_currentElement);
         }
 
         return $this->_current;

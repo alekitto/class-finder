@@ -25,10 +25,10 @@ final class NamespaceFilterIterator extends \FilterIterator
     {
         /** @var BaseReflector $reflector */
         $reflector = $this->getInnerIterator()->current();
-        $classNamespace = ltrim($reflector->getNamespace(), '\\');
+        $classNamespace = \ltrim($reflector->getNamespace(), '\\');
 
         foreach ($this->namespaces as $namespace) {
-            if (0 === strpos($classNamespace, $namespace)) {
+            if (0 === \strpos($classNamespace, $namespace)) {
                 return true;
             }
         }

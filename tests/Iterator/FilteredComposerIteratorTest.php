@@ -35,7 +35,7 @@ class FilteredComposerIteratorTest extends TestCase
 
         $iterator = new FilteredComposerIterator($loader, null, null);
 
-        $this->assertEquals([
+        self::assertEquals([
             __CLASS__ => new \ReflectionClass(__CLASS__),
             Psr4\BarBar::class => new \ReflectionClass(Psr4\BarBar::class),
             Psr4\Foobar::class => new \ReflectionClass(Psr4\Foobar::class),
@@ -46,6 +46,6 @@ class FilteredComposerIteratorTest extends TestCase
             Psr0\BarBar::class => new \ReflectionClass(Psr0\BarBar::class),
             Psr0\Foobar::class => new \ReflectionClass(Psr0\Foobar::class),
             Psr0\SubNs\FooBaz::class => new \ReflectionClass(Psr0\SubNs\FooBaz::class),
-        ], iterator_to_array($iterator));
+        ], \iterator_to_array($iterator));
     }
 }

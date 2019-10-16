@@ -16,7 +16,7 @@ class PhpDocumentorFinderTest extends TestCase
     public function testFinderShouldBeIterable()
     {
         $finder = new PhpDocumentorFinder(__DIR__);
-        $this->assertInstanceOf(\Traversable::class, $finder);
+        self::assertInstanceOf(\Traversable::class, $finder);
     }
 
     public function testFinderShouldFilterByNamespace()
@@ -24,20 +24,20 @@ class PhpDocumentorFinderTest extends TestCase
         $finder = new PhpDocumentorFinder(__DIR__.'/../../data');
         $finder->inNamespace(['Kcs\ClassFinder\Fixtures\Psr4']);
 
-        $classes = iterator_to_array($finder);
+        $classes = \iterator_to_array($finder);
 
-        $this->assertArrayHasKey(Psr4\BarBar::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\BarBar::class]);
-        $this->assertArrayHasKey(Psr4\Foobar::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\Foobar::class]);
-        $this->assertArrayHasKey(Psr4\AbstractClass::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\AbstractClass::class]);
-        $this->assertArrayHasKey(Psr4\SubNs\FooBaz::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\SubNs\FooBaz::class]);
-        $this->assertArrayHasKey(Psr4\FooInterface::class, $classes);
-        $this->assertInstanceOf(InterfaceReflector::class, $classes[Psr4\FooInterface::class]);
-        $this->assertArrayHasKey(Psr4\FooTrait::class, $classes);
-        $this->assertInstanceOf(TraitReflector::class, $classes[Psr4\FooTrait::class]);
+        self::assertArrayHasKey(Psr4\BarBar::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\BarBar::class]);
+        self::assertArrayHasKey(Psr4\Foobar::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\Foobar::class]);
+        self::assertArrayHasKey(Psr4\AbstractClass::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\AbstractClass::class]);
+        self::assertArrayHasKey(Psr4\SubNs\FooBaz::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\SubNs\FooBaz::class]);
+        self::assertArrayHasKey(Psr4\FooInterface::class, $classes);
+        self::assertInstanceOf(InterfaceReflector::class, $classes[Psr4\FooInterface::class]);
+        self::assertArrayHasKey(Psr4\FooTrait::class, $classes);
+        self::assertInstanceOf(TraitReflector::class, $classes[Psr4\FooTrait::class]);
     }
 
     public function testFinderShouldFilterByDirectory()
@@ -45,14 +45,14 @@ class PhpDocumentorFinderTest extends TestCase
         $finder = new PhpDocumentorFinder(__DIR__.'/../../data');
         $finder->in([__DIR__.'/../../data/Composer/Psr0']);
 
-        $classes = iterator_to_array($finder);
+        $classes = \iterator_to_array($finder);
 
-        $this->assertArrayHasKey(Psr0\BarBar::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr0\BarBar::class]);
-        $this->assertArrayHasKey(Psr0\Foobar::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr0\Foobar::class]);
-        $this->assertArrayHasKey(Psr0\SubNs\FooBaz::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr0\SubNs\FooBaz::class]);
+        self::assertArrayHasKey(Psr0\BarBar::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr0\BarBar::class]);
+        self::assertArrayHasKey(Psr0\Foobar::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr0\Foobar::class]);
+        self::assertArrayHasKey(Psr0\SubNs\FooBaz::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr0\SubNs\FooBaz::class]);
     }
 
     public function testFinderShouldFilterByInterfaceImplementation()
@@ -61,10 +61,10 @@ class PhpDocumentorFinderTest extends TestCase
         $finder->in([__DIR__.'/../../data']);
         $finder->implementationOf(Psr4\FooInterface::class);
 
-        $classes = iterator_to_array($finder);
+        $classes = \iterator_to_array($finder);
 
-        $this->assertArrayHasKey(Psr4\BarBar::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\BarBar::class]);
+        self::assertArrayHasKey(Psr4\BarBar::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\BarBar::class]);
     }
 
     public function testFinderShouldFilterBySuperClass()
@@ -73,10 +73,10 @@ class PhpDocumentorFinderTest extends TestCase
         $finder->in([__DIR__.'/../../data']);
         $finder->subclassOf(Psr4\AbstractClass::class);
 
-        $classes = iterator_to_array($finder);
+        $classes = \iterator_to_array($finder);
 
-        $this->assertArrayHasKey(Psr4\Foobar::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\Foobar::class]);
+        self::assertArrayHasKey(Psr4\Foobar::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\Foobar::class]);
     }
 
     public function testFinderShouldFilterByAnnotation()
@@ -85,10 +85,10 @@ class PhpDocumentorFinderTest extends TestCase
         $finder->in([__DIR__.'/../../data']);
         $finder->annotatedBy(Psr4\SubNs\FooBaz::class);
 
-        $classes = iterator_to_array($finder);
+        $classes = \iterator_to_array($finder);
 
-        $this->assertArrayHasKey(Psr4\AbstractClass::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\AbstractClass::class]);
+        self::assertArrayHasKey(Psr4\AbstractClass::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\AbstractClass::class]);
     }
 
     public function testFinderShouldFilterByCallback()
@@ -98,10 +98,10 @@ class PhpDocumentorFinderTest extends TestCase
             return $class->getName() === '\\'.Psr4\AbstractClass::class;
         });
 
-        $classes = iterator_to_array($finder);
+        $classes = \iterator_to_array($finder);
 
-        $this->assertCount(1, $classes);
-        $this->assertArrayHasKey(Psr4\AbstractClass::class, $classes);
-        $this->assertInstanceOf(ClassReflector::class, $classes[Psr4\AbstractClass::class]);
+        self::assertCount(1, $classes);
+        self::assertArrayHasKey(Psr4\AbstractClass::class, $classes);
+        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\AbstractClass::class]);
     }
 }
