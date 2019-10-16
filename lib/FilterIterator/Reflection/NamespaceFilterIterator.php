@@ -19,12 +19,12 @@ final class NamespaceFilterIterator extends \FilterIterator
     /**
      * {@inheritdoc}
      */
-    public function accept()
+    public function accept(): bool
     {
         $reflectionClass = $this->getInnerIterator()->current();
 
         foreach ($this->namespaces as $namespace) {
-            if (0 === strpos($reflectionClass->getNamespaceName(), $namespace)) {
+            if ($namespace === $reflectionClass->getNamespaceName() || 0 === strpos($reflectionClass->getNamespaceName(), $namespace.'\\')) {
                 return true;
             }
         }

@@ -120,7 +120,7 @@ abstract class ClassIterator implements \Iterator
     public function apply(callable $func = null): self
     {
         if (null === $func) {
-            $func = function ($val) {
+            $func = static function ($val) {
                 return $val;
             };
         }

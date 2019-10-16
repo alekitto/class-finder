@@ -138,17 +138,17 @@ final class PhpDocumentorIterator extends ClassIterator
                 $files = iterator_to_array(new \RecursiveIteratorIterator(
                     new \RecursiveCallbackFilterIterator(
                         new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS),
-                        function (\SplFileInfo $file) { return '.' !== $file->getBasename()[0]; }
+                        static function (\SplFileInfo $file) { return '.' !== $file->getBasename()[0]; }
                     ),
                     \RecursiveIteratorIterator::LEAVES_ONLY
                 ));
-                uasort($files, function (\SplFileInfo $a, \SplFileInfo $b) {
+                uasort($files, static function (\SplFileInfo $a, \SplFileInfo $b) {
                     return (string) $a <=> (string) $b;
                 });
 
-                foreach ($files as $path => $info) {
+                foreach ($files as $filepath => $info) {
                     if ($info->isFile()) {
-                        yield $path => $info;
+                        yield $filepath => $info;
                     }
                 }
             } elseif (is_file($path)) {

@@ -5,6 +5,7 @@ namespace Kcs\ClassFinder\Tests\Finder;
 use Kcs\ClassFinder\Finder\ComposerFinder;
 use Kcs\ClassFinder\Fixtures\Psr0;
 use Kcs\ClassFinder\Fixtures\Psr4;
+use Kcs\ClassFinder\Fixtures\Psr4WithClassMap;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Debug\DebugClassLoader;
 
@@ -142,6 +143,7 @@ class ComposerFinderTest extends TestCase
             Psr4\FooTrait::class => new \ReflectionClass(Psr4\FooTrait::class),
             Psr0\BarBar::class => new \ReflectionClass(Psr0\BarBar::class),
             Psr0\Foobar::class => new \ReflectionClass(Psr0\Foobar::class),
+            Psr4WithClassMap\BarBar::class => new \ReflectionClass(Psr4WithClassMap\BarBar::class),
         ], iterator_to_array($finder));
     }
 
@@ -159,6 +161,7 @@ class ComposerFinderTest extends TestCase
             Psr4\FooTrait::class => new \ReflectionClass(Psr4\FooTrait::class),
             Psr0\BarBar::class => new \ReflectionClass(Psr0\BarBar::class),
             Psr0\Foobar::class => new \ReflectionClass(Psr0\Foobar::class),
+            Psr4WithClassMap\BarBar::class => new \ReflectionClass(Psr4WithClassMap\BarBar::class),
         ], iterator_to_array($finder));
     }
 }

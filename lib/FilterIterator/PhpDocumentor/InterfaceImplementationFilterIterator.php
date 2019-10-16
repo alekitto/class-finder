@@ -22,7 +22,7 @@ final class InterfaceImplementationFilterIterator extends \FilterIterator
     /**
      * {@inheritdoc}
      */
-    public function accept()
+    public function accept(): bool
     {
         /** @var BaseReflector $reflector */
         $reflector = $this->getInnerIterator()->current();
@@ -35,7 +35,7 @@ final class InterfaceImplementationFilterIterator extends \FilterIterator
         }, $reflector->getInterfaces());
 
         foreach ($this->interfaces as $interface) {
-            if (in_array($interface, $interfaces)) {
+            if (\in_array($interface, $interfaces, true)) {
                 return true;
             }
         }

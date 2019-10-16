@@ -19,7 +19,7 @@ final class SuperClassFilterIterator extends \FilterIterator
     /**
      * {@inheritdoc}
      */
-    public function accept()
+    public function accept(): bool
     {
         $reflectionClass = $this->getInnerIterator()->current();
 

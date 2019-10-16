@@ -16,7 +16,7 @@
     "require-dev": {
         "doctrine/annotations": "1.0",
         "phpdocumentor/reflection": "^3.0",
-        "phpunit/phpunit": "^6.5",
+        "phpunit/phpunit": "^6.5|^7.5|^8.0",
         "symfony/debug": "^3.0|^4.0"
     },
     "autoload": {
@@ -27,11 +27,15 @@
     "autoload-dev": {
         "psr-4": {
             "Kcs\\ClassFinder\\Tests\\": "tests/",
-            "Kcs\\ClassFinder\\Fixtures\\Psr4\\": "data/Composer/Psr4/"
+            "Kcs\\ClassFinder\\Fixtures\\Psr4\\": "data/Composer/Psr4/",
+            "Kcs\\ClassFinder\\Fixtures\\Psr4WithClassMap\\": "data/Psr4WithClassMap/"
         },
         "psr-0": {
             "Kcs\\ClassFinder\\Fixtures\\Psr0\\": "data/Composer/Psr0/"
-        }
+        },
+        "classmap": [
+            "data/Psr4WithClassMap/Map"
+        ]
     },
     "config": {
         "sort-packages": true

@@ -38,7 +38,7 @@ final class FilteredComposerIterator extends ClassIterator
         $this->dirs = $dirs;
 
         if (null !== $namespaces) {
-            $namespaces = array_map(function ($ns) {
+            $namespaces = array_map(static function ($ns) {
                 return explode('\\', $ns, 2)[0];
             }, $namespaces);
 
@@ -93,11 +93,11 @@ final class FilteredComposerIterator extends ClassIterator
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixesPsr4()) as $ns => $dir) {
-            yield from (new Psr4Iterator($ns, $dir));
+            yield from (new Psr4Iterator($ns, $dir, 0, $this->classLoader->getClassMap()));
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixes()) as $ns => $dir) {
-            yield from (new Psr0Iterator($ns, $dir));
+            yield from (new Psr0Iterator($ns, $dir, 0, $this->classLoader->getClassMap()));
         }
     }
 

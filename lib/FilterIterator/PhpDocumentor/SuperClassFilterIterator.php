@@ -21,7 +21,7 @@ final class SuperClassFilterIterator extends \FilterIterator
     /**
      * {@inheritdoc}
      */
-    public function accept()
+    public function accept(): bool
     {
         $reflector = $this->getInnerIterator()->current();
 

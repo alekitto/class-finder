@@ -21,7 +21,7 @@ final class NamespaceFilterIterator extends \FilterIterator
     /**
      * {@inheritdoc}
      */
-    public function accept()
+    public function accept(): bool
     {
         /** @var BaseReflector $reflector */
         $reflector = $this->getInnerIterator()->current();

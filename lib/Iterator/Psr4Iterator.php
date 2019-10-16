@@ -14,20 +14,21 @@ final class Psr4Iterator extends ClassIterator
     private $namespace;
 
     /**
-     * @var string
-     */
-    private $path;
-
-    /**
      * @var int
      */
     private $prefixLen;
 
-    public function __construct(string $namespace, string $path, int $flags = 0)
+    /**
+     * @var string[]
+     */
+    private $classMap;
+
+    public function __construct(string $namespace, string $path, int $flags = 0, array $classMap = [])
     {
         $this->namespace = $namespace;
         $this->path = PathNormalizer::resolvePath($path);
         $this->prefixLen = strlen($this->path);
+        $this->classMap = \array_map(PathNormalizer::class.'::resolvePath', $classMap);
 
         parent::__construct($flags);
     }
@@ -35,12 +36,16 @@ final class Psr4Iterator extends ClassIterator
     protected function getGenerator(): \Generator
     {
         $pattern = defined('HHVM_VERSION') ? '/\\.(php|hh)$/i' : '/\\.php$/i';
-        $include = \Closure::bind(function (string $path) {
+        $include = \Closure::bind(static function (string $path) {
             include_once $path;
         }, null, null);
 
         foreach ($this->search() as $path => $info) {
             if (! preg_match($pattern, $path, $m) || ! $info->isReadable()) {
+                continue;
+            }
+
+            if (\in_array($path, $this->classMap, true)) {
                 continue;
             }
 

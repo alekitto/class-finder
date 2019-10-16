@@ -15,7 +15,7 @@ final class DirectoryFilterIterator extends \FilterIterator
     {
         parent::__construct($iterator);
 
-        $this->dirs = (function (string ...$dirs) {
+        $this->dirs = (static function (string ...$dirs) {
             return array_map(PathNormalizer::class.'::resolvePath', $dirs);
         })(...$dirs);
     }
@@ -23,9 +23,13 @@ final class DirectoryFilterIterator extends \FilterIterator
     /**
      * {@inheritdoc}
      */
-    public function accept()
+    public function accept(): bool
     {
         $reflectionClass = $this->getInnerIterator()->current();
+        if ($reflectionClass->isInternal()) {
+            return false;
+        }
+
         foreach ($this->dirs as $dir) {
             if (0 === strpos($reflectionClass->getFileName(), $dir)) {
                 return true;

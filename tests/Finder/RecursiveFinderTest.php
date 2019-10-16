@@ -18,7 +18,7 @@ class RecursiveFinderTest extends TestCase
 
     public function testFinderShouldFilterByNamespace()
     {
-        $finder = new RecursiveFinder(__DIR__.'/../../data');
+        $finder = new RecursiveFinder(__DIR__.'/../../data/Composer');
         $finder->inNamespace(['Kcs\ClassFinder\Fixtures\Psr4']);
 
         $this->assertEquals([
@@ -34,7 +34,7 @@ class RecursiveFinderTest extends TestCase
 
     public function testFinderShouldFilterByDirectory()
     {
-        $finder = new RecursiveFinder(__DIR__.'/../../data');
+        $finder = new RecursiveFinder(__DIR__.'/../../data/Composer');
         $finder->in([__DIR__.'/../../data/Composer/Psr0']);
 
         $this->assertEquals([
@@ -46,7 +46,7 @@ class RecursiveFinderTest extends TestCase
 
     public function testFinderShouldFilterByInterfaceImplementation()
     {
-        $finder = new RecursiveFinder(__DIR__.'/../../data');
+        $finder = new RecursiveFinder(__DIR__.'/../../data/Composer');
         $finder->implementationOf(Psr4\FooInterface::class);
 
         $this->assertEquals([
@@ -57,7 +57,7 @@ class RecursiveFinderTest extends TestCase
 
     public function testFinderShouldFilterBySuperClass()
     {
-        $finder = new RecursiveFinder(__DIR__.'/../../data');
+        $finder = new RecursiveFinder(__DIR__.'/../../data/Composer');
         $finder->subclassOf(Psr4\AbstractClass::class);
 
         $this->assertEquals([
@@ -68,7 +68,7 @@ class RecursiveFinderTest extends TestCase
 
     public function testFinderShouldFilterByAnnotation()
     {
-        $finder = new RecursiveFinder(__DIR__.'/../../data');
+        $finder = new RecursiveFinder(__DIR__.'/../../data/Composer');
         $finder->annotatedBy(Psr4\SubNs\FooBaz::class);
 
         $this->assertEquals([
@@ -79,7 +79,7 @@ class RecursiveFinderTest extends TestCase
 
     public function testFinderShouldFilterByCallback()
     {
-        $finder = new RecursiveFinder(__DIR__.'/../../data');
+        $finder = new RecursiveFinder(__DIR__.'/../../data/Composer');
         $finder->filter(function (\ReflectionClass $class) {
             return Psr4\AbstractClass::class === $class->getName();
         });
