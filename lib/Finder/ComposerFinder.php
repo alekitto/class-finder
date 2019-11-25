@@ -6,6 +6,7 @@ use Composer\Autoload\ClassLoader;
 use Kcs\ClassFinder\Iterator\ComposerIterator;
 use Kcs\ClassFinder\Iterator\FilteredComposerIterator;
 use Symfony\Component\Debug\DebugClassLoader;
+use Symfony\Component\ErrorHandler\DebugClassLoader as ErrorHandlerClassLoader;
 
 /**
  * Finds classes/namespaces using the registered autoloader by composer.
@@ -49,9 +50,16 @@ final class ComposerFinder implements FinderInterface
     private static function getValidLoader(): ClassLoader
     {
         foreach (\spl_autoload_functions() as $autoload_function) {
-            if (\is_array($autoload_function) && $autoload_function[0] instanceof DebugClassLoader) {
-                $autoload_function = $autoload_function[0]->getClassLoader();
+            if (\is_array($autoload_function)) {
+                if (\class_exists(DebugClassLoader::class) && $autoload_function[0] instanceof DebugClassLoader) {
+                    $autoload_function = $autoload_function[0]->getClassLoader();
+                }
+
+                if (\class_exists(ErrorHandlerClassLoader::class) && $autoload_function[0] instanceof ErrorHandlerClassLoader) {
+                    $autoload_function = $autoload_function[0]->getClassLoader();
+                }
             }
+
 
             if (\is_array($autoload_function) && $autoload_function[0] instanceof ClassLoader) {
                 return $autoload_function[0];
