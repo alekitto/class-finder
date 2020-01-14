@@ -53,9 +53,7 @@ final class ComposerFinder implements FinderInterface
             if (\is_array($autoload_function)) {
                 if (\class_exists(DebugClassLoader::class) && $autoload_function[0] instanceof DebugClassLoader) {
                     $autoload_function = $autoload_function[0]->getClassLoader();
-                }
-
-                if (\class_exists(ErrorHandlerClassLoader::class) && $autoload_function[0] instanceof ErrorHandlerClassLoader) {
+                } elseif (\class_exists(ErrorHandlerClassLoader::class) && $autoload_function[0] instanceof ErrorHandlerClassLoader) {
                     $autoload_function = $autoload_function[0]->getClassLoader();
                 }
             }
