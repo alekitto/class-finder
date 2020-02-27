@@ -60,8 +60,6 @@ abstract class MultiplePcreFilterIterator extends \FilterIterator
      * apply a different behavior.
      *
      * @param string $string The string to be matched against filters
-     *
-     * @return bool
      */
     protected function isAccepted($string): bool
     {

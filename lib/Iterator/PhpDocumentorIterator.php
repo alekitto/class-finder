@@ -83,8 +83,6 @@ final class PhpDocumentorIterator extends ClassIterator
      * Checks whether the given class is instantiable.
      *
      * @param BaseReflector $reflector
-     *
-     * @return bool
      */
     protected function isInstantiable($reflector): bool
     {

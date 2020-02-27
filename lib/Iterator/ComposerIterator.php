@@ -32,8 +32,6 @@ final class ComposerIterator extends ClassIterator
 
     /**
      * Searches for class definitions in class map.
-     *
-     * @return \Generator
      */
     private function searchInClassMap(): \Generator
     {
@@ -47,8 +45,6 @@ final class ComposerIterator extends ClassIterator
      *
      * NOTE: If the class loader has been generated with ClassMapAuthoritative flag,
      * this method will not yield any element.
-     *
-     * @return \Generator
      */
     private function searchInPsrMap(): \Generator
     {

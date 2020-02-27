@@ -10,10 +10,6 @@ final class PathNormalizer
      * This is different from the realpath resolution as it
      * does not check the real existence of the dir/file
      * and does not resolve any eventual symlink.
-     *
-     * @param string $path
-     *
-     * @return string
      */
     public static function resolvePath(string $path): string
     {

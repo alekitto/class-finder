@@ -135,8 +135,6 @@ abstract class ClassIterator implements \Iterator
      * Returns a generator to iterate classes over.
      * Yielded elements must have the class name as key
      * and the reflector as its value.
-     *
-     * @return \Generator
      */
     abstract protected function getGenerator(): \Generator;
 
@@ -144,8 +142,6 @@ abstract class ClassIterator implements \Iterator
      * Checks whether the given class is instantiable.
      *
      * @param \ReflectionClass $reflector
-     *
-     * @return bool
      */
     protected function isInstantiable($reflector): bool
     {
@@ -156,8 +152,6 @@ abstract class ClassIterator implements \Iterator
      * Do some basic validity checks on the given class.
      * Returns FALSE if the class is not valid or already
      * returned by this iterator, TRUE otherwise.
-     *
-     * @return bool
      */
     private function filter(): bool
     {

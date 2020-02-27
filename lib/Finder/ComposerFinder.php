@@ -43,8 +43,6 @@ final class ComposerFinder implements FinderInterface
     /**
      * Try to get a registered instance of composer ClassLoader.
      *
-     * @return ClassLoader
-     *
      * @throws \RuntimeException if composer CLassLoader cannot be found
      */
     private static function getValidLoader(): ClassLoader
@@ -57,7 +55,6 @@ final class ComposerFinder implements FinderInterface
                     $autoload_function = $autoload_function[0]->getClassLoader();
                 }
             }
-
 
             if (\is_array($autoload_function) && $autoload_function[0] instanceof ClassLoader) {
                 return $autoload_function[0];
