@@ -35,7 +35,7 @@ final class FilteredComposerIterator extends ClassIterator
     public function __construct(ClassLoader $classLoader, ?array $namespaces, ?array $dirs, int $flags = 0)
     {
         $this->classLoader = $classLoader;
-        $this->dirs = $dirs;
+        $this->dirs = null !== $dirs ? \array_map(PathNormalizer::class.'::resolvePath', $dirs) : $dirs;
 
         if (null !== $namespaces) {
             $namespaces = \array_map(static function ($ns) {
@@ -69,7 +69,7 @@ final class FilteredComposerIterator extends ClassIterator
                 continue;
             }
 
-            if (! $this->validDir($file)) {
+            if (! $this->validDir(PathNormalizer::resolvePath($file))) {
                 continue;
             }
 
@@ -109,6 +109,7 @@ final class FilteredComposerIterator extends ClassIterator
             }
 
             foreach ($dirs as $dir) {
+                $dir = PathNormalizer::resolvePath($dir);
                 if (! $this->validDir($dir)) {
                     continue;
                 }
@@ -139,9 +140,9 @@ final class FilteredComposerIterator extends ClassIterator
             return true;
         }
 
-        $path = PathNormalizer::resolvePath($path);
         foreach ($this->dirs as $dir) {
-            if (0 === \strpos($path, $dir)) {
+            // Check for intersection of required path and evaluated dir
+            if (false !== \strpos($path, $dir) || false !== \strpos($dir, $path)) {
                 return true;
             }
         }

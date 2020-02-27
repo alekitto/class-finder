@@ -32,7 +32,7 @@ final class RecursiveIterator extends ClassIterator
         foreach ($this->getDeclaredClasses() as $className) {
             $reflClass = new \ReflectionClass($className);
 
-            if (\in_array($reflClass->getFileName(), $included_files)) {
+            if (\in_array($reflClass->getFileName(), $included_files, true)) {
                 yield $className => $reflClass;
             }
         }

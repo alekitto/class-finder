@@ -72,6 +72,16 @@ class ComposerFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
+    public function testFinderShouldFilterBySubDirectory()
+    {
+        $finder = new ComposerFinder();
+        $finder->in([__DIR__.'/../../data/Composer/Psr4/SubNs']);
+
+        self::assertEquals([
+            Psr4\SubNs\FooBaz::class => new \ReflectionClass(Psr4\SubNs\FooBaz::class),
+        ], \iterator_to_array($finder));
+    }
+
     public function testFinderShouldFilterByInterfaceImplementation()
     {
         $finder = new ComposerFinder();
