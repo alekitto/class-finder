@@ -1,14 +1,26 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Finder;
 
+use CallbackFilterIterator;
+use Iterator;
 use Kcs\ClassFinder\FilterIterator\PhpDocumentor as Filters;
+use phpDocumentor\Reflection\Element;
+
+use function assert;
 
 trait PhpDocumentorFilterTrait
 {
     use FinderTrait;
 
-    private function applyFilters(\Iterator $iterator): \Iterator
+    /**
+     * @param Iterator<Element> $iterator
+     *
+     * @return Iterator<Element>
+     */
+    private function applyFilters(Iterator $iterator): Iterator
     {
         if ($this->namespaces) {
             $iterator = new Filters\NamespaceFilterIterator($iterator, $this->namespaces);
@@ -26,8 +38,10 @@ trait PhpDocumentorFilterTrait
             $iterator = new Filters\AnnotationFilterIterator($iterator, $this->annotation);
         }
 
-        if ($this->callback) {
-            $iterator = new \CallbackFilterIterator($iterator, function ($current, $key) {
+        if ($this->callback !== null) {
+            $iterator = new CallbackFilterIterator($iterator, function ($current, $key) {
+                assert($this->callback !== null);
+
                 return (bool) ($this->callback)($current, $key);
             });
         }

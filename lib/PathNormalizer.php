@@ -1,6 +1,16 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder;
+
+use function array_pop;
+use function count;
+use function explode;
+use function implode;
+use function str_replace;
+
+use const DIRECTORY_SEPARATOR;
 
 final class PathNormalizer
 {
@@ -14,22 +24,22 @@ final class PathNormalizer
     public static function resolvePath(string $path): string
     {
         if (DIRECTORY_SEPARATOR !== '/') {
-            $path = \str_replace('/', DIRECTORY_SEPARATOR, $path);
+            $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
         }
 
         $newPath = [];
-        foreach (\explode(DIRECTORY_SEPARATOR, $path) as $pathPart) {
-            if ('.' === $pathPart) {
+        foreach (explode(DIRECTORY_SEPARATOR, $path) as $pathPart) {
+            if ($pathPart === '.') {
                 continue;
             }
 
-            if ('..' === $pathPart && \count($newPath) > 0) {
-                \array_pop($newPath);
+            if ($pathPart === '..' && count($newPath) > 0) {
+                array_pop($newPath);
             } else {
                 $newPath[] = $pathPart;
             }
         }
 
-        return \implode(DIRECTORY_SEPARATOR, $newPath);
+        return implode(DIRECTORY_SEPARATOR, $newPath);
     }
 }

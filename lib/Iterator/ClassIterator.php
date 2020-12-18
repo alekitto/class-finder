@@ -1,6 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Iterator;
+
+use Generator;
+use Iterator;
+use ReflectionClass;
+
+use function assert;
+use function call_user_func;
 
 /**
  * Abstract class iterator.
@@ -9,38 +18,24 @@ namespace Kcs\ClassFinder\Iterator;
  * as it does some checks for you, like class existence,
  * duplicate skipping and non-instantiable filtering.
  */
-abstract class ClassIterator implements \Iterator
+abstract class ClassIterator implements Iterator
 {
-    const SKIP_NON_INSTANTIABLE = 1;
+    public const SKIP_NON_INSTANTIABLE = 1;
 
-    /**
-     * @var \Generator
-     */
-    private $generator = null;
+    private ?Generator $generator = null;
 
-    /**
-     * @var string[]
-     */
-    private $foundClasses = [];
+    /** @var array<string, bool> */
+    private array $foundClasses = [];
 
-    /**
-     * @var int
-     */
-    private $flags = 0;
+    private int $flags;
 
-    /**
-     * @var callable|null
-     */
+    /** @var callable */
     private $_apply;
 
-    /**
-     * @var mixed
-     */
+    /** @var mixed */
     private $_currentElement;
 
-    /**
-     * @var mixed
-     */
+    /** @var mixed */
     private $_current;
 
     public function __construct(int $flags = 0)
@@ -52,6 +47,8 @@ abstract class ClassIterator implements \Iterator
 
     /**
      * {@inheritdoc}
+     *
+     * @return mixed
      */
     public function current()
     {
@@ -59,16 +56,13 @@ abstract class ClassIterator implements \Iterator
             return null;
         }
 
-        if (null === $this->_current) {
-            $this->_current = \call_user_func($this->_apply, $this->_currentElement);
+        if ($this->_current === null) {
+            $this->_current = call_user_func($this->_apply, $this->_currentElement);
         }
 
         return $this->_current;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function next(): void
     {
         $generator = $this->generator();
@@ -85,23 +79,19 @@ abstract class ClassIterator implements \Iterator
 
     /**
      * {@inheritdoc}
+     *
+     * @return int|string
      */
     public function key()
     {
         return $this->generator()->key();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function valid(): bool
     {
         return $this->generator()->valid();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rewind(): void
     {
         $this->foundClasses = [];
@@ -113,13 +103,11 @@ abstract class ClassIterator implements \Iterator
     /**
      * Registers a callable to apply to each element of the iterator.
      *
-     * @param callable $func
-     *
      * @return $this
      */
-    public function apply(callable $func = null): self
+    public function apply(?callable $func = null): self
     {
-        if (null === $func) {
+        if ($func === null) {
             $func = static function ($val) {
                 return $val;
             };
@@ -136,16 +124,16 @@ abstract class ClassIterator implements \Iterator
      * Yielded elements must have the class name as key
      * and the reflector as its value.
      */
-    abstract protected function getGenerator(): \Generator;
+    abstract protected function getGenerator(): Generator;
 
     /**
      * Checks whether the given class is instantiable.
      *
-     * @param \ReflectionClass $reflector
+     * @param mixed $reflector
      */
     protected function isInstantiable($reflector): bool
     {
-        return $reflector->isInstantiable();
+        return $reflector instanceof ReflectionClass && $reflector->isInstantiable();
     }
 
     /**
@@ -155,7 +143,7 @@ abstract class ClassIterator implements \Iterator
      */
     private function filter(): bool
     {
-        if (null === $this->_currentElement) {
+        if ($this->_currentElement === null) {
             // End of the generator.
             return false;
         }
@@ -166,22 +154,21 @@ abstract class ClassIterator implements \Iterator
         }
 
         $this->foundClasses[$className] = true;
-        if ($this->flags & self::SKIP_NON_INSTANTIABLE && ! $this->isInstantiable($this->_currentElement)) {
-            return false;
-        }
 
-        return true;
+        return ! ($this->flags & self::SKIP_NON_INSTANTIABLE) || $this->isInstantiable($this->_currentElement);
     }
 
-    private function generator(): \Generator
+    private function generator(): Generator
     {
-        if (null === $this->generator) {
+        if ($this->generator === null) {
             $this->generator = $this->getGenerator();
             $this->_currentElement = $this->generator->current();
             if (! $this->filter()) {
                 $this->next();
             }
         }
+
+        assert($this->generator !== null);
 
         return $this->generator;
     }

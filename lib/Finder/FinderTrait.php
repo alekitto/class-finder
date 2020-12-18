@@ -1,75 +1,70 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Finder;
 
+use InvalidArgumentException;
 use Kcs\ClassFinder\PathNormalizer;
+
+use function array_map;
+use function array_merge;
+use function array_push;
+use function array_unique;
+use function defined;
+use function is_dir;
+use function Safe\glob;
+
+use const GLOB_BRACE;
+use const GLOB_ONLYDIR;
 
 trait FinderTrait
 {
     /**
      * @var string[]
+     * @phpstan-var class-string[]
      */
-    private $implements = [];
+    private array $implements = [];
 
-    /**
-     * @var string
-     */
-    private $extends = null;
+    /** @phpstan-var class-string|null */
+    private ?string $extends = null;
 
-    /**
-     * @var string
-     */
-    private $annotation = null;
+    /** @phpstan-var class-string|null */
+    private ?string $annotation = null;
 
-    /**
-     * @var string[]
-     */
-    private $dirs = null;
+    /** @var string[] */
+    private ?array $dirs = null;
 
-    /**
-     * @var string[]
-     */
-    private $namespaces = null;
+    /** @var string[] */
+    private ?array $namespaces = null;
 
-    /**
-     * @var string[]
-     */
-    private $paths = null;
+    /** @var string[] */
+    private ?array $paths = null;
 
-    /**
-     * @var string[]
-     */
-    private $notPaths = null;
+    /** @var string[] */
+    private ?array $notPaths = null;
 
-    /**
-     * @var callable
-     */
+    /** @var callable|null */
     private $callback = null;
 
     /**
      * {@inheritdoc}
      */
-    public function implementationOf($interface): FinderInterface
+    public function implementationOf($interface): self
     {
         $this->implements = (array) $interface;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function subclassOf(?string $superClass): FinderInterface
+    public function subclassOf(?string $superClass): self
     {
         $this->extends = $superClass;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function annotatedBy(?string $annotationClass): FinderInterface
+    public function annotatedBy(?string $annotationClass): self
     {
         $this->annotation = $annotationClass;
 
@@ -79,22 +74,25 @@ trait FinderTrait
     /**
      * {@inheritdoc}
      */
-    public function in($dirs): FinderInterface
+    public function in($dirs): self
     {
         $resolvedDirs = [];
 
         foreach ((array) $dirs as $dir) {
-            if (\is_dir($dir)) {
+            if (is_dir($dir)) {
                 $resolvedDirs[] = $dir;
-            } elseif ($glob = \glob($dir, (\defined('GLOB_BRACE') ? GLOB_BRACE : 0) | GLOB_ONLYDIR)) {
-                $resolvedDirs = \array_merge($resolvedDirs, $glob);
             } else {
-                throw new \InvalidArgumentException('The "'.$dir.'" directory does not exist.');
+                $glob = glob($dir, (defined('GLOB_BRACE') ? GLOB_BRACE : 0) | GLOB_ONLYDIR);
+                if (empty($glob)) {
+                    throw new InvalidArgumentException('The "' . $dir . '" directory does not exist.');
+                }
+
+                array_push($resolvedDirs, ...$glob);
             }
         }
 
-        $resolvedDirs = \array_map(PathNormalizer::class.'::resolvePath', $resolvedDirs);
-        $this->dirs = \array_unique(\array_merge($this->dirs ?? [], $resolvedDirs));
+        $resolvedDirs = array_map(PathNormalizer::class . '::resolvePath', $resolvedDirs);
+        $this->dirs = array_unique(array_merge($this->dirs ?? [], $resolvedDirs));
 
         return $this;
     }
@@ -102,17 +100,14 @@ trait FinderTrait
     /**
      * {@inheritdoc}
      */
-    public function inNamespace($namespaces): FinderInterface
+    public function inNamespace($namespaces): self
     {
-        $this->namespaces = \array_unique(\array_merge($this->namespaces ?? [], (array) $namespaces));
+        $this->namespaces = array_unique(array_merge($this->namespaces ?? [], (array) $namespaces));
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function filter(?callable $callback): FinderInterface
+    public function filter(?callable $callback): self
     {
         $this->callback = $callback;
 
@@ -122,7 +117,7 @@ trait FinderTrait
     /**
      * {@inheritdoc}
      */
-    public function path($pattern): FinderInterface
+    public function path($pattern): self
     {
         $this->paths[] = $pattern;
 
@@ -132,7 +127,7 @@ trait FinderTrait
     /**
      * {@inheritdoc}
      */
-    public function notPath($pattern): FinderInterface
+    public function notPath($pattern): self
     {
         $this->notPaths[] = $pattern;
 

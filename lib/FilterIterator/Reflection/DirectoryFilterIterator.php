@@ -1,28 +1,35 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\FilterIterator\Reflection;
 
+use FilterIterator;
+use Iterator;
 use Kcs\ClassFinder\PathNormalizer;
+use Reflector;
 
-final class DirectoryFilterIterator extends \FilterIterator
+use function array_map;
+use function strpos;
+
+final class DirectoryFilterIterator extends FilterIterator
 {
-    /**
-     * @var string[]
-     */
-    private $dirs;
+    /** @var string[] */
+    private array $dirs;
 
-    public function __construct(\Iterator $iterator, array $dirs)
+    /**
+     * @param Iterator<Reflector> $iterator
+     * @param string[] $dirs
+     */
+    public function __construct(Iterator $iterator, array $dirs)
     {
         parent::__construct($iterator);
 
         $this->dirs = (static function (string ...$dirs) {
-            return \array_map(PathNormalizer::class.'::resolvePath', $dirs);
+            return array_map(PathNormalizer::class . '::resolvePath', $dirs);
         })(...$dirs);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function accept(): bool
     {
         $reflectionClass = $this->getInnerIterator()->current();
@@ -31,7 +38,7 @@ final class DirectoryFilterIterator extends \FilterIterator
         }
 
         foreach ($this->dirs as $dir) {
-            if (0 === \strpos($reflectionClass->getFileName(), $dir)) {
+            if (strpos($reflectionClass->getFileName(), $dir) === 0) {
                 return true;
             }
         }

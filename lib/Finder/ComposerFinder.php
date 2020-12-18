@@ -1,12 +1,21 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Finder;
 
 use Composer\Autoload\ClassLoader;
+use Iterator;
 use Kcs\ClassFinder\Iterator\ComposerIterator;
 use Kcs\ClassFinder\Iterator\FilteredComposerIterator;
+use Reflector;
+use RuntimeException;
 use Symfony\Component\Debug\DebugClassLoader;
 use Symfony\Component\ErrorHandler\DebugClassLoader as ErrorHandlerClassLoader;
+
+use function class_exists;
+use function is_array;
+use function spl_autoload_functions;
 
 /**
  * Finds classes/namespaces using the registered autoloader by composer.
@@ -15,21 +24,17 @@ final class ComposerFinder implements FinderInterface
 {
     use ReflectionFilterTrait;
 
-    /**
-     * @var ClassLoader
-     */
-    private $loader;
+    private ClassLoader $loader;
 
-    public function __construct(ClassLoader $loader = null)
+    public function __construct(?ClassLoader $loader = null)
     {
-        if (null === $loader) {
-            $loader = self::getValidLoader();
-        }
-
-        $this->loader = $loader;
+        $this->loader = $loader ?? self::getValidLoader();
     }
 
-    public function getIterator(): \Iterator
+    /**
+     * @return Iterator<Reflector>
+     */
+    public function getIterator(): Iterator
     {
         if ($this->namespaces || $this->dirs) {
             $iterator = new FilteredComposerIterator($this->loader, $this->namespaces, $this->dirs);
@@ -43,24 +48,24 @@ final class ComposerFinder implements FinderInterface
     /**
      * Try to get a registered instance of composer ClassLoader.
      *
-     * @throws \RuntimeException if composer CLassLoader cannot be found
+     * @throws RuntimeException if composer CLassLoader cannot be found.
      */
     private static function getValidLoader(): ClassLoader
     {
-        foreach (\spl_autoload_functions() as $autoload_function) {
-            if (\is_array($autoload_function)) {
-                if (\class_exists(DebugClassLoader::class) && $autoload_function[0] instanceof DebugClassLoader) {
-                    $autoload_function = $autoload_function[0]->getClassLoader();
-                } elseif (\class_exists(ErrorHandlerClassLoader::class) && $autoload_function[0] instanceof ErrorHandlerClassLoader) {
-                    $autoload_function = $autoload_function[0]->getClassLoader();
+        foreach (spl_autoload_functions() as $autoloadFn) {
+            if (is_array($autoloadFn)) {
+                if (class_exists(DebugClassLoader::class) && $autoloadFn[0] instanceof DebugClassLoader) {
+                    $autoloadFn = $autoloadFn[0]->getClassLoader();
+                } elseif (class_exists(ErrorHandlerClassLoader::class) && $autoloadFn[0] instanceof ErrorHandlerClassLoader) {
+                    $autoloadFn = $autoloadFn[0]->getClassLoader();
                 }
             }
 
-            if (\is_array($autoload_function) && $autoload_function[0] instanceof ClassLoader) {
-                return $autoload_function[0];
+            if (is_array($autoloadFn) && $autoloadFn[0] instanceof ClassLoader) {
+                return $autoloadFn[0];
             }
         }
 
-        throw new \RuntimeException('Cannot find a valid composer class loader in registered autoloader functions. Cannot continue.');
+        throw new RuntimeException('Cannot find a valid composer class loader in registered autoloader functions. Cannot continue.');
     }
 }

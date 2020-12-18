@@ -1,56 +1,66 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Iterator;
 
+use Closure;
+use Generator;
 use Kcs\ClassFinder\PathNormalizer;
+use ReflectionClass;
+use Throwable;
+
+use function array_map;
+use function defined;
+use function in_array;
+use function ltrim;
+use function Safe\preg_match;
+use function Safe\substr;
+use function str_replace;
+use function strlen;
 
 final class Psr4Iterator extends ClassIterator
 {
     use PsrIteratorTrait;
 
-    /**
-     * @var string
-     */
-    private $namespace;
+    private string $namespace;
+    private int $prefixLen;
+
+    /** @var array<string, mixed> */
+    private array $classMap;
 
     /**
-     * @var int
+     * @param array<string, mixed> $classMap
      */
-    private $prefixLen;
-
-    /**
-     * @var string[]
-     */
-    private $classMap;
-
     public function __construct(string $namespace, string $path, int $flags = 0, array $classMap = [])
     {
         $this->namespace = $namespace;
         $this->path = PathNormalizer::resolvePath($path);
-        $this->prefixLen = \strlen($this->path);
-        $this->classMap = \array_map(PathNormalizer::class.'::resolvePath', $classMap);
+        $this->prefixLen = strlen($this->path);
+        $this->classMap = array_map(PathNormalizer::class . '::resolvePath', $classMap);
 
         parent::__construct($flags);
     }
 
-    protected function getGenerator(): \Generator
+    protected function getGenerator(): Generator
     {
-        $pattern = \defined('HHVM_VERSION') ? '/\\.(php|hh)$/i' : '/\\.php$/i';
-        $include = \Closure::bind(static function (string $path) {
+        $pattern = defined('HHVM_VERSION') ? '/\\.(php|hh)$/i' : '/\\.php$/i';
+        $include = Closure::bind(static function (string $path) {
             include_once $path;
         }, null, null);
 
         foreach ($this->search() as $path => $info) {
-            if (! \preg_match($pattern, $path, $m) || ! $info->isReadable()) {
+            if (! preg_match($pattern, $path, $m) || ! $info->isReadable()) {
                 continue;
             }
 
-            if (\in_array($path, $this->classMap, true)) {
+            if (in_array($path, $this->classMap, true)) {
                 continue;
             }
 
-            $class = $this->namespace.\ltrim(\str_replace('/', '\\', \substr($path, $this->prefixLen, -\strlen($m[0]))), '\\');
-            if (! \preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+$/', $class)) {
+            /** @phpstan-var class-string $class */
+            $class = $this->namespace . ltrim(str_replace('/', '\\', substr($path, $this->prefixLen, -strlen($m[0]))), '\\');
+            if (! preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+$/', $class)) {
                 continue;
             }
 
@@ -60,7 +70,7 @@ final class Psr4Iterator extends ClassIterator
 
             try {
                 $include($path);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) { /** @phpstan-ignore-line */
                 continue;
             }
 
@@ -68,7 +78,7 @@ final class Psr4Iterator extends ClassIterator
                 continue;
             }
 
-            yield $class => new \ReflectionClass($class);
+            yield $class => new ReflectionClass($class);
         }
     }
 }

@@ -1,18 +1,29 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\FilterIterator;
 
-abstract class MultiplePcreFilterIterator extends \FilterIterator
+use FilterIterator;
+use Iterator;
+
+use function Safe\preg_match;
+use function Safe\substr;
+
+abstract class MultiplePcreFilterIterator extends FilterIterator
 {
-    protected $matchRegexps = [];
-    protected $noMatchRegexps = [];
+    /** @var string[] */
+    protected array $matchRegexps = [];
+
+    /** @var string[] */
+    protected array $noMatchRegexps = [];
 
     /**
-     * @param \Iterator $iterator        The Iterator to filter
-     * @param array     $matchPatterns   An array of patterns that need to match
-     * @param array     $noMatchPatterns An array of patterns that need to not match
+     * @param Iterator<mixed> $iterator The Iterator to filter
+     * @param string[]     $matchPatterns   An array of patterns that need to match
+     * @param string[]     $noMatchPatterns An array of patterns that need to not match
      */
-    public function __construct(\Iterator $iterator, array $matchPatterns, array $noMatchPatterns)
+    public function __construct(Iterator $iterator, array $matchPatterns, array $noMatchPatterns)
     {
         foreach ($matchPatterns as $pattern) {
             $this->matchRegexps[] = $this->toRegex($pattern);
@@ -28,18 +39,16 @@ abstract class MultiplePcreFilterIterator extends \FilterIterator
     /**
      * Checks whether the string is a regex.
      *
-     * @param string $str
-     *
      * @return bool Whether the given string is a regex
      */
-    public static function isRegex($str): bool
+    public static function isRegex(string $str): bool
     {
-        if (\preg_match('/^(.{3,}?)[imsxuADU]*$/', $str, $m)) {
-            $start = \substr($m[1], 0, 1);
-            $end = \substr($m[1], -1);
+        if (preg_match('/^(.{3,}?)[imsxuADU]*$/', $str, $m)) {
+            $start = substr($m[1], 0, 1);
+            $end = substr($m[1], -1);
 
             if ($start === $end) {
-                return ! \preg_match('/[*?[:alnum:] \\\\]/', $start);
+                return ! preg_match('/[*?[:alnum:] \\\\]/', $start);
             }
 
             foreach ([['{', '}'], ['(', ')'], ['[', ']'], ['<', '>']] as $delimiters) {
@@ -61,11 +70,11 @@ abstract class MultiplePcreFilterIterator extends \FilterIterator
      *
      * @param string $string The string to be matched against filters
      */
-    protected function isAccepted($string): bool
+    protected function isAccepted(string $string): bool
     {
         // should at least not match one rule to exclude
         foreach ($this->noMatchRegexps as $regex) {
-            if (\preg_match($regex, $string)) {
+            if (preg_match($regex, $string)) {
                 return false;
             }
         }
@@ -73,7 +82,7 @@ abstract class MultiplePcreFilterIterator extends \FilterIterator
         // should at least match one rule
         if ($this->matchRegexps) {
             foreach ($this->matchRegexps as $regex) {
-                if (\preg_match($regex, $string)) {
+                if (preg_match($regex, $string)) {
                     return true;
                 }
             }

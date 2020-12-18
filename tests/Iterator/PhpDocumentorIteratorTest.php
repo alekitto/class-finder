@@ -4,9 +4,9 @@ namespace Kcs\ClassFinder\Tests\Iterator;
 
 use Kcs\ClassFinder\Fixtures\Psr4;
 use Kcs\ClassFinder\Iterator\PhpDocumentorIterator;
-use phpDocumentor\Reflection\ClassReflector;
-use phpDocumentor\Reflection\InterfaceReflector;
-use phpDocumentor\Reflection\TraitReflector;
+use phpDocumentor\Reflection\Php\Class_;
+use phpDocumentor\Reflection\Php\Interface_;
+use phpDocumentor\Reflection\Php\Trait_;
 use PHPUnit\Framework\TestCase;
 
 class PhpDocumentorIteratorTest extends TestCase
@@ -20,16 +20,16 @@ class PhpDocumentorIteratorTest extends TestCase
         $classes = \iterator_to_array($iterator);
 
         self::assertArrayHasKey(Psr4\BarBar::class, $classes);
-        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\BarBar::class]);
+        self::assertInstanceOf(Class_::class, $classes[Psr4\BarBar::class]);
         self::assertArrayHasKey(Psr4\Foobar::class, $classes);
-        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\Foobar::class]);
+        self::assertInstanceOf(Class_::class, $classes[Psr4\Foobar::class]);
         self::assertArrayHasKey(Psr4\AbstractClass::class, $classes);
-        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\AbstractClass::class]);
+        self::assertInstanceOf(Class_::class, $classes[Psr4\AbstractClass::class]);
         self::assertArrayHasKey(Psr4\SubNs\FooBaz::class, $classes);
-        self::assertInstanceOf(ClassReflector::class, $classes[Psr4\SubNs\FooBaz::class]);
+        self::assertInstanceOf(Class_::class, $classes[Psr4\SubNs\FooBaz::class]);
         self::assertArrayHasKey(Psr4\FooInterface::class, $classes);
-        self::assertInstanceOf(InterfaceReflector::class, $classes[Psr4\FooInterface::class]);
+        self::assertInstanceOf(Interface_::class, $classes[Psr4\FooInterface::class]);
         self::assertArrayHasKey(Psr4\FooTrait::class, $classes);
-        self::assertInstanceOf(TraitReflector::class, $classes[Psr4\FooTrait::class]);
+        self::assertInstanceOf(Trait_::class, $classes[Psr4\FooTrait::class]);
     }
 }

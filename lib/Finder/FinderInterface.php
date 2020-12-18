@@ -1,8 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Finder;
 
-interface FinderInterface extends \IteratorAggregate
+use IteratorAggregate;
+
+interface FinderInterface extends IteratorAggregate
 {
     /**
      * Filter by interface implementation.
@@ -13,6 +17,8 @@ interface FinderInterface extends \IteratorAggregate
      * @param string|string[] $interface
      *
      * @return $this
+     *
+     * @phpstan-param class-string|class-string[] $interface
      */
     public function implementationOf($interface): self;
 
@@ -21,9 +27,9 @@ interface FinderInterface extends \IteratorAggregate
      * The class matches only if is an extension of $superClass.
      * Use null to disable this filter.
      *
-     * @param string $superClass
-     *
      * @return $this
+     *
+     * @phpstan-param class-string|null $superClass
      */
     public function subclassOf(?string $superClass): self;
 
@@ -32,9 +38,9 @@ interface FinderInterface extends \IteratorAggregate
      * The class matches only if a class annotation is present on the class.
      * The annotation target must be the class itself.
      *
-     * @param string $annotationClass
-     *
      * @return $this
+     *
+     * @phpstan-param class-string|null $annotationClass
      */
     public function annotatedBy(?string $annotationClass): self;
 
@@ -59,8 +65,6 @@ interface FinderInterface extends \IteratorAggregate
     /**
      * Sets a custom callback for class filtering.
      * The callback will receive the class name as the only argument.
-     *
-     * @param callable $callback
      *
      * @return $this
      */

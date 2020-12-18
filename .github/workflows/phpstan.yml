@@ -1,0 +1,31 @@
+name: PHPStan
+
+on:
+    pull_request:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        name: Static analysis
+        steps:
+            -   uses: actions/checkout@v2
+
+            -   name: Install PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    coverage: none
+                    php-version: "7.4"
+                    tools: cs2pr
+
+            -   name: Cache dependencies installed with composer
+                uses: actions/cache@v1
+                with:
+                    path: "~/.composer/cache"
+                    key: php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}
+                    restore-keys: php-${{ matrix.php-version }}-composer-locked-
+
+            -   name: Install dependencies with composer
+                run: composer update --no-progress --no-suggest --no-interaction --prefer-dist
+
+            -   name: Run a static analysis with phpstan/phpstan
+                run: php vendor/bin/phpstan analyse src/ -c vendor/solido/php-coding-standards/phpstan.neon --level=8 --no-progress -vvv --memory-limit=2048M --error-format=checkstyle | cs2pr

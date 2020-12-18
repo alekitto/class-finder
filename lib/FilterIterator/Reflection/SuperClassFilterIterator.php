@@ -1,24 +1,29 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\FilterIterator\Reflection;
 
-final class SuperClassFilterIterator extends \FilterIterator
-{
-    /**
-     * @var string
-     */
-    private $superClass;
+use FilterIterator;
+use Iterator;
+use Reflector;
 
-    public function __construct(\Iterator $iterator, string $superClass)
+final class SuperClassFilterIterator extends FilterIterator
+{
+    private string $superClass;
+
+    /**
+     * @param Iterator<Reflector> $iterator
+     *
+     * @phpstan-param class-string $superClass
+     */
+    public function __construct(Iterator $iterator, string $superClass)
     {
         parent::__construct($iterator);
 
         $this->superClass = $superClass;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function accept(): bool
     {
         $reflectionClass = $this->getInnerIterator()->current();

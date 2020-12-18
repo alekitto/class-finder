@@ -1,9 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Finder;
 
+use Iterator;
 use Kcs\ClassFinder\Iterator\Psr4Iterator;
 use Kcs\ClassFinder\PathNormalizer;
+use Reflector;
+
+use function Safe\substr;
+
+use const DIRECTORY_SEPARATOR;
 
 /**
  * Finds classes respecting psr-4 standard.
@@ -12,24 +20,17 @@ final class Psr4Finder implements FinderInterface
 {
     use ReflectionFilterTrait;
 
-    /**
-     * @var string
-     */
-    private $namespace;
-
-    /**
-     * @var string
-     */
-    private $path;
+    private string $namespace;
+    private string $path;
 
     public function __construct(string $namespace, string $path)
     {
-        if ('\\' !== \substr($namespace, -1)) {
+        if (substr($namespace, -1) !== '\\') {
             $namespace .= '\\';
         }
 
         $path = PathNormalizer::resolvePath($path);
-        if (DIRECTORY_SEPARATOR !== \substr($path, -1)) {
+        if (substr($path, -1) !== DIRECTORY_SEPARATOR) {
             $path .= DIRECTORY_SEPARATOR;
         }
 
@@ -37,7 +38,10 @@ final class Psr4Finder implements FinderInterface
         $this->path = $path;
     }
 
-    public function getIterator(): \Iterator
+    /**
+     * @return Iterator<Reflector>
+     */
+    public function getIterator(): Iterator
     {
         return $this->applyFilters(new Psr4Iterator($this->namespace, $this->path));
     }

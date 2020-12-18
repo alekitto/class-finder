@@ -1,43 +1,51 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\FilterIterator\PhpDocumentor;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use phpDocumentor\Reflection\BaseReflector;
+use FilterIterator;
+use Iterator;
+use phpDocumentor\Reflection\Element;
+use phpDocumentor\Reflection\Php\Class_;
+use phpDocumentor\Reflection\Php\Interface_;
+use phpDocumentor\Reflection\Php\Trait_;
 
-final class AnnotationFilterIterator extends \FilterIterator
+use function assert;
+
+final class AnnotationFilterIterator extends FilterIterator
 {
-    /**
-     * @var string
-     */
-    private $annotation;
+    private string $annotation;
 
     /**
-     * @var AnnotationReader
+     * @param Iterator<Element> $iterator
+     *
+     * @phpstan-param class-string $annotation
      */
-    private $reader;
-
-    public function __construct(\Iterator $iterator, string $annotation)
+    public function __construct(Iterator $iterator, string $annotation)
     {
         parent::__construct($iterator);
         $this->annotation = $annotation;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function accept(): bool
     {
-        /** @var BaseReflector $reflector */
         $reflector = $this->getInnerIterator()->current();
+        assert($reflector instanceof Class_ || $reflector instanceof Interface_ || $reflector instanceof Trait_);
+
         $docblock = $reflector->getDocBlock();
 
-        if (null !== $docblock) {
+        if ($docblock !== null) {
             if ($docblock->hasTag($this->annotation)) {
                 return true;
             }
 
-            foreach ($docblock->getContext()->getNamespaceAliases() as $alias => $name) {
+            $context = $docblock->getContext();
+            if ($context === null) {
+                return true;
+            }
+
+            foreach ($context->getNamespaceAliases() as $alias => $name) {
                 if ($name === $this->annotation && $docblock->hasTag($alias)) {
                     return true;
                 }

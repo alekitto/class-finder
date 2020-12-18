@@ -1,22 +1,26 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\FilterIterator\Reflection;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use FilterIterator;
+use Iterator;
+use Reflector;
 
-final class AnnotationFilterIterator extends \FilterIterator
+final class AnnotationFilterIterator extends FilterIterator
 {
-    /**
-     * @var string
-     */
-    private $annotation;
+    /** @phpstan-var class-string */
+    private string $annotation;
+    private AnnotationReader $reader;
 
     /**
-     * @var AnnotationReader
+     * @param Iterator<Reflector> $iterator
+     *
+     * @phpstan-param class-string $annotation
      */
-    private $reader;
-
-    public function __construct(\Iterator $iterator, string $annotation)
+    public function __construct(Iterator $iterator, string $annotation)
     {
         parent::__construct($iterator);
 
@@ -24,11 +28,8 @@ final class AnnotationFilterIterator extends \FilterIterator
         $this->annotation = $annotation;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function accept()
+    public function accept(): bool
     {
-        return null !== $this->reader->getClassAnnotation($this->getInnerIterator()->current(), $this->annotation);
+        return $this->reader->getClassAnnotation($this->getInnerIterator()->current(), $this->annotation) !== null;
     }
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Finder;
 
@@ -9,10 +11,7 @@ final class RecursiveFinder implements FinderInterface
 {
     use ReflectionFilterTrait;
 
-    /**
-     * @var string
-     */
-    private $path;
+    private string $path;
 
     public function __construct(string $path)
     {

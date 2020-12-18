@@ -1,8 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\FilterIterator\Reflection;
 
 use Kcs\ClassFinder\FilterIterator\MultiplePcreFilterIterator;
+
+use function preg_quote;
+use function str_replace;
+
+use const DIRECTORY_SEPARATOR;
 
 final class PathFilterIterator extends MultiplePcreFilterIterator
 {
@@ -19,8 +26,8 @@ final class PathFilterIterator extends MultiplePcreFilterIterator
         }
 
         $filename = $reflector->getFileName();
-        if ('\\' === DIRECTORY_SEPARATOR) {
-            $filename = \str_replace('\\', '/', $filename);
+        if (DIRECTORY_SEPARATOR === '\\') {
+            $filename = str_replace('\\', '/', $filename);
         }
 
         return $this->isAccepted($filename);
@@ -42,6 +49,6 @@ final class PathFilterIterator extends MultiplePcreFilterIterator
      */
     public static function toRegex(string $str): string
     {
-        return self::isRegex($str) ? $str : '/'.\preg_quote($str, '/').'/';
+        return self::isRegex($str) ? $str : '/' . preg_quote($str, '/') . '/';
     }
 }
