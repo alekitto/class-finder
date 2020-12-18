@@ -20,3 +20,14 @@ jobs:
                   extensions: :opcache
             - run: composer install
             - run: vendor/bin/phpunit
+              if: ${{ matrix.php_version != '7.4' }}
+            - run: vendor/bin/phpunit --coverage-clover coverage.xml
+              if: ${{ matrix.php_version == '7.4' }}
+              env:
+                  XDEBUG_MODE: coverage
+            - name: Upload coverage to Codecov
+              if: ${{ matrix.php_version == '7.4' }}
+              uses: codecov/codecov-action@v1
+              with:
+                  file: ./coverage.xml
+                  verbose: true
