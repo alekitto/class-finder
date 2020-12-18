@@ -2,7 +2,7 @@
 
 Utility classes to help discover other classes/namespaces
 
-[![Build Status](https://travis-ci.org/alekitto/class-finder.svg?branch=master)](https://travis-ci.org/alekitto/class-finder)
+![Tests](https://github.com/alekitto/class-finder/workflows/Tests/badge.svg)
 [![codecov](https://codecov.io/gh/alekitto/class-finder/branch/master/graph/badge.svg)](https://codecov.io/gh/alekitto/class-finder)
 
 ---
