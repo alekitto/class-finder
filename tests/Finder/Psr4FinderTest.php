@@ -8,13 +8,13 @@ use PHPUnit\Framework\TestCase;
 
 class Psr4FinderTest extends TestCase
 {
-    public function testFinderShouldBeIterable()
+    public function testFinderShouldBeIterable(): void
     {
         $finder = new Psr4Finder(__NAMESPACE__, __DIR__);
         self::assertInstanceOf(\Traversable::class, $finder);
     }
 
-    public function testFinderShouldFilterByNamespace()
+    public function testFinderShouldFilterByNamespace(): void
     {
         $finder = new Psr4Finder('Kcs\ClassFinder\Fixtures\Psr4', __DIR__.'/../../data/Composer/Psr4');
 
@@ -28,7 +28,7 @@ class Psr4FinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByDirectory()
+    public function testFinderShouldFilterByDirectory(): void
     {
         $finder = new Psr4Finder('Kcs\ClassFinder\Fixtures\Psr4', __DIR__.'/../../data/Composer/Psr4');
         $finder->in([__DIR__.'/../../data/Composer/Psr4/SubNs']);
@@ -38,7 +38,7 @@ class Psr4FinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByInterfaceImplementation()
+    public function testFinderShouldFilterByInterfaceImplementation(): void
     {
         $finder = new Psr4Finder('Kcs\ClassFinder\Fixtures\Psr4', __DIR__.'/../../data/Composer/Psr4');
         $finder->implementationOf(Psr4\FooInterface::class);
@@ -48,7 +48,7 @@ class Psr4FinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterBySuperClass()
+    public function testFinderShouldFilterBySuperClass(): void
     {
         $finder = new Psr4Finder('Kcs\ClassFinder\Fixtures\Psr4', __DIR__.'/../../data/Composer/Psr4');
         $finder->subclassOf(Psr4\AbstractClass::class);
@@ -58,10 +58,23 @@ class Psr4FinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByAnnotation()
+    public function testFinderShouldFilterByAnnotation(): void
     {
         $finder = new Psr4Finder('Kcs\ClassFinder\Fixtures\Psr4', __DIR__.'/../../data/Composer/Psr4');
         $finder->annotatedBy(Psr4\SubNs\FooBaz::class);
+
+        self::assertEquals([
+            Psr4\AbstractClass::class => new \ReflectionClass(Psr4\AbstractClass::class),
+        ], \iterator_to_array($finder));
+    }
+
+    /**
+     * @requires PHP >= 8.0
+     */
+    public function testFinderShouldFilterByAttribute(): void
+    {
+        $finder = new Psr4Finder('Kcs\ClassFinder\Fixtures\Psr4', __DIR__.'/../../data/Composer/Psr4');
+        $finder->withAttribute(Psr4\SubNs\FooBaz::class);
 
         self::assertEquals([
             Psr4\AbstractClass::class => new \ReflectionClass(Psr4\AbstractClass::class),

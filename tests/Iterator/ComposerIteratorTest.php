@@ -11,10 +11,10 @@ use PHPUnit\Framework\TestCase;
 
 class ComposerIteratorTest extends TestCase
 {
-    public function testComposerIteratorShouldSearchInClassMap()
+    public function testComposerIteratorShouldSearchInClassMap(): void
     {
         $loader = new ClassLoader();
-        (\Closure::bind(function () use ($loader) {
+        (\Closure::bind(static function () use ($loader) {
             $loader->classMap = [
                 ClassIterator::class => __DIR__.'/.'.'/ClassBax.php',
                 ComposerIterator::class => __DIR__.'/.'.'/FooBar.php',
@@ -28,10 +28,10 @@ class ComposerIteratorTest extends TestCase
         ], \iterator_to_array($iterator));
     }
 
-    public function testComposerIteratorShouldNotSearchesInPsrPrefixedDirsIfClassmapAuthoritativeFlagIsEnabled()
+    public function testComposerIteratorShouldNotSearchesInPsrPrefixedDirsIfClassmapAuthoritativeFlagIsEnabled(): void
     {
         $loader = new ClassLoader();
-        (\Closure::bind(function () use ($loader) {
+        (\Closure::bind(static function () use ($loader) {
             $loader->classMap = [
                 ClassIterator::class => __DIR__.'/.'.'/ClassBax.php',
                 ComposerIterator::class => __DIR__.'/.'.'/FooBar.php',
@@ -52,10 +52,10 @@ class ComposerIteratorTest extends TestCase
         ], \iterator_to_array($iterator));
     }
 
-    public function testComposerIteratorShouldSearchInPsr4PrefixedDir()
+    public function testComposerIteratorShouldSearchInPsr4PrefixedDir(): void
     {
         $loader = new ClassLoader();
-        (\Closure::bind(function () use ($loader) {
+        (\Closure::bind(static function () use ($loader) {
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
                     __DIR__.'/../..'.'/data/Composer/Psr4',
@@ -75,10 +75,10 @@ class ComposerIteratorTest extends TestCase
         ], \iterator_to_array($iterator));
     }
 
-    public function testComposerIteratorShouldSearchInPsr0PrefixedDir()
+    public function testComposerIteratorShouldSearchInPsr0PrefixedDir(): void
     {
         $loader = new ClassLoader();
-        (\Closure::bind(function () use ($loader) {
+        (\Closure::bind(static function () use ($loader) {
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
                     __DIR__.'/../..'.'/data/Composer/Psr4',
@@ -109,10 +109,10 @@ class ComposerIteratorTest extends TestCase
         ], \iterator_to_array($iterator));
     }
 
-    public function testComposerIteratorShouldSkipNonInstantiableClass()
+    public function testComposerIteratorShouldSkipNonInstantiableClass(): void
     {
         $loader = new ClassLoader();
-        (\Closure::bind(function () use ($loader) {
+        (\Closure::bind(static function () use ($loader) {
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
                     __DIR__.'/../..'.'/data/Composer/Psr4',
@@ -129,10 +129,10 @@ class ComposerIteratorTest extends TestCase
         ], \iterator_to_array($iterator));
     }
 
-    public function testComposerIteratorShouldNotYieldTheSameClassTwice()
+    public function testComposerIteratorShouldNotYieldTheSameClassTwice(): void
     {
         $loader = new ClassLoader();
-        (\Closure::bind(function () use ($loader) {
+        (\Closure::bind(static function () use ($loader) {
             $loader->classMap = [
                 Psr4\FooInterface::class => __DIR__.'/../..'.'/data/Composer/Psr4/FooInterface.php',
                 Psr4\FooTrait::class => __DIR__.'/../..'.'/data/Composer/Psr4/FooTrait.php',

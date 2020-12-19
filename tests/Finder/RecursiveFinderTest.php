@@ -9,13 +9,13 @@ use PHPUnit\Framework\TestCase;
 
 class RecursiveFinderTest extends TestCase
 {
-    public function testFinderShouldBeIterable()
+    public function testFinderShouldBeIterable(): void
     {
         $finder = new RecursiveFinder(__DIR__);
         self::assertInstanceOf(\Traversable::class, $finder);
     }
 
-    public function testFinderShouldFilterByNamespace()
+    public function testFinderShouldFilterByNamespace(): void
     {
         $finder = new RecursiveFinder(__DIR__.'/../../data/Composer');
         $finder->inNamespace(['Kcs\ClassFinder\Fixtures\Psr4']);
@@ -31,7 +31,7 @@ class RecursiveFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByDirectory()
+    public function testFinderShouldFilterByDirectory(): void
     {
         $finder = new RecursiveFinder(__DIR__.'/../../data/Composer');
         $finder->in([__DIR__.'/../../data/Composer/Psr0']);
@@ -43,7 +43,7 @@ class RecursiveFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByInterfaceImplementation()
+    public function testFinderShouldFilterByInterfaceImplementation(): void
     {
         $finder = new RecursiveFinder(__DIR__.'/../../data/Composer');
         $finder->implementationOf(Psr4\FooInterface::class);
@@ -54,7 +54,7 @@ class RecursiveFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterBySuperClass()
+    public function testFinderShouldFilterBySuperClass(): void
     {
         $finder = new RecursiveFinder(__DIR__.'/../../data/Composer');
         $finder->subclassOf(Psr4\AbstractClass::class);
@@ -65,7 +65,7 @@ class RecursiveFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByAnnotation()
+    public function testFinderShouldFilterByAnnotation(): void
     {
         $finder = new RecursiveFinder(__DIR__.'/../../data/Composer');
         $finder->annotatedBy(Psr4\SubNs\FooBaz::class);
@@ -76,7 +76,21 @@ class RecursiveFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByCallback()
+    /**
+     * @requires PHP >= 8.0
+     */
+    public function testFinderShouldFilterByAttribute(): void
+    {
+        $finder = new RecursiveFinder(__DIR__.'/../../data/Composer');
+        $finder->withAttribute(Psr4\SubNs\FooBaz::class);
+
+        self::assertEquals([
+            Psr4\AbstractClass::class => new \ReflectionClass(Psr4\AbstractClass::class),
+            Psr0\SubNs\FooBaz::class => new \ReflectionClass(Psr0\SubNs\FooBaz::class),
+        ], \iterator_to_array($finder));
+    }
+
+    public function testFinderShouldFilterByCallback(): void
     {
         $finder = new RecursiveFinder(__DIR__.'/../../data/Composer');
         $finder->filter(function (\ReflectionClass $class) {

@@ -42,6 +42,10 @@ trait ReflectionFilterTrait
             $iterator = new Filters\AnnotationFilterIterator($iterator, $this->annotation);
         }
 
+        if ($this->attribute) {
+            $iterator = new Filters\AttributeFilterIterator($iterator, $this->attribute);
+        }
+
         if ($this->callback !== null) {
             $iterator = new CallbackFilterIterator($iterator, function ($current, $key) {
                 assert($this->callback !== null);

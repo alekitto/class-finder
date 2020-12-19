@@ -32,6 +32,9 @@ trait FinderTrait
     /** @phpstan-var class-string|null */
     private ?string $annotation = null;
 
+    /** @phpstan-var class-string|null */
+    private ?string $attribute = null;
+
     /** @var string[] */
     private ?array $dirs = null;
 
@@ -67,6 +70,13 @@ trait FinderTrait
     public function annotatedBy(?string $annotationClass): self
     {
         $this->annotation = $annotationClass;
+
+        return $this;
+    }
+
+    public function withAttribute(?string $attributeClass): self
+    {
+        $this->attribute = $attributeClass;
 
         return $this;
     }

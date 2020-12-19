@@ -91,6 +91,23 @@ class PhpDocumentorFinderTest extends TestCase
         self::assertInstanceOf(Class_::class, $classes[Psr4\AbstractClass::class]);
     }
 
+    /**
+     * @requires PHP >= 8.0
+     */
+    public function testFinderShouldFilterByAttribute(): void
+    {
+        $finder = new PhpDocumentorFinder(__DIR__.'/../../data');
+        $finder->in([__DIR__.'/../../data']);
+        $finder->withAttribute(Psr4\SubNs\FooBaz::class);
+
+        // Not implemented yet
+        $this->expectException(\RuntimeException::class);
+        /* $classes = */ \iterator_to_array($finder);
+
+//        self::assertArrayHasKey(Psr4\AbstractClass::class, $classes);
+//        self::assertInstanceOf(Class_::class, $classes[Psr4\AbstractClass::class]);
+    }
+
     public function testFinderShouldFilterByCallback(): void
     {
         $finder = new PhpDocumentorFinder(__DIR__.'/../../data');

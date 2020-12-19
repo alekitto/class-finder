@@ -7,6 +7,7 @@ use Kcs\ClassFinder\Fixtures\Psr4\SubNs;
 /**
  * @SubNs\FooBaz()
  */
+#[SubNs\FooBaz]
 class FooBaz
 {
 }

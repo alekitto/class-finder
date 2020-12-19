@@ -7,6 +7,7 @@ use Kcs\ClassFinder\Fixtures\Psr4\SubNs\FooBaz;
 /**
  * @FooBaz()
  */
+#[FooBaz]
 abstract class AbstractClass
 {
 }

@@ -45,6 +45,17 @@ interface FinderInterface extends IteratorAggregate
     public function annotatedBy(?string $annotationClass): self;
 
     /**
+     * Filters by a given attribute on the class.
+     * The class matches only if a PHP attribute is present on the class.
+     * The attribute target must be the class itself.
+     *
+     * @return $this
+     *
+     * @phpstan-param class-string|null $attributeClass
+     */
+    public function withAttribute(?string $attributeClass): self;
+
+    /**
      * Adds a search directory.
      *
      * @param string|string[] $dirs

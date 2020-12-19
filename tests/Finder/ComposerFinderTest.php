@@ -12,7 +12,7 @@ use Symfony\Component\ErrorHandler\DebugClassLoader as ErrorHandlerClassLoader;
 
 class ComposerFinderTest extends TestCase
 {
-    public function testFinderShouldBeIterable()
+    public function testFinderShouldBeIterable(): void
     {
         $finder = new ComposerFinder();
         self::assertInstanceOf(\Traversable::class, $finder);
@@ -21,7 +21,7 @@ class ComposerFinderTest extends TestCase
     /**
      * @group legacy
      */
-    public function testShouldNotThrowWhenSymfonyDebugClassLoaderIsEnabled()
+    public function testShouldNotThrowWhenSymfonyDebugClassLoaderIsEnabled(): void
     {
         DebugClassLoader::enable();
 
@@ -33,7 +33,7 @@ class ComposerFinderTest extends TestCase
         }
     }
 
-    public function testShouldNotThrowWhenSymfonyErrorHandlerClassLoaderIsEnabled()
+    public function testShouldNotThrowWhenSymfonyErrorHandlerClassLoaderIsEnabled(): void
     {
         ErrorHandlerClassLoader::enable();
 
@@ -45,7 +45,7 @@ class ComposerFinderTest extends TestCase
         }
     }
 
-    public function testFinderShouldFilterByNamespace()
+    public function testFinderShouldFilterByNamespace(): void
     {
         $finder = new ComposerFinder();
         $finder->inNamespace(['Kcs\ClassFinder\Fixtures\Psr4']);
@@ -60,7 +60,7 @@ class ComposerFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByDirectory()
+    public function testFinderShouldFilterByDirectory(): void
     {
         $finder = new ComposerFinder();
         $finder->in([__DIR__.'/../../data/Composer/Psr0']);
@@ -72,7 +72,7 @@ class ComposerFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterBySubDirectory()
+    public function testFinderShouldFilterBySubDirectory(): void
     {
         $finder = new ComposerFinder();
         $finder->in([__DIR__.'/../../data/Composer/Psr4/SubNs']);
@@ -82,7 +82,7 @@ class ComposerFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByInterfaceImplementation()
+    public function testFinderShouldFilterByInterfaceImplementation(): void
     {
         $finder = new ComposerFinder();
         $finder->in([__DIR__.'/../../data']);
@@ -94,7 +94,7 @@ class ComposerFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterBySuperClass()
+    public function testFinderShouldFilterBySuperClass(): void
     {
         $finder = new ComposerFinder();
         $finder->in([__DIR__.'/../../data']);
@@ -106,7 +106,7 @@ class ComposerFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByAnnotation()
+    public function testFinderShouldFilterByAnnotation(): void
     {
         $finder = new ComposerFinder();
         $finder->in([__DIR__.'/../../data']);
@@ -118,7 +118,22 @@ class ComposerFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByCallback()
+    /**
+     * @requires PHP >= 8.0
+     */
+    public function testFinderShouldFilterByAttribute(): void
+    {
+        $finder = new ComposerFinder();
+        $finder->in([__DIR__.'/../../data']);
+        $finder->withAttribute(Psr4\SubNs\FooBaz::class);
+
+        self::assertEquals([
+            Psr4\AbstractClass::class => new \ReflectionClass(Psr4\AbstractClass::class),
+            Psr0\SubNs\FooBaz::class => new \ReflectionClass(Psr0\SubNs\FooBaz::class),
+        ], \iterator_to_array($finder));
+    }
+
+    public function testFinderShouldFilterByCallback(): void
     {
         $finder = new ComposerFinder();
         $finder->in([__DIR__.'/../../data']);
@@ -131,7 +146,7 @@ class ComposerFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByPath()
+    public function testFinderShouldFilterByPath(): void
     {
         $finder = new ComposerFinder();
         $finder->in([__DIR__.'/../../data']);
@@ -143,7 +158,7 @@ class ComposerFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByPathRegex()
+    public function testFinderShouldFilterByPathRegex(): void
     {
         $finder = new ComposerFinder();
         $finder->in([__DIR__.'/../../data']);
@@ -155,7 +170,7 @@ class ComposerFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByNotPath()
+    public function testFinderShouldFilterByNotPath(): void
     {
         $finder = new ComposerFinder();
         $finder->in([__DIR__.'/../../data']);
@@ -173,7 +188,7 @@ class ComposerFinderTest extends TestCase
         ], \iterator_to_array($finder));
     }
 
-    public function testFinderShouldFilterByNotPathRegex()
+    public function testFinderShouldFilterByNotPathRegex(): void
     {
         $finder = new ComposerFinder();
         $finder->in([__DIR__.'/../../data']);
