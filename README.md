@@ -24,6 +24,8 @@ from composer and resolving PSR-* namespaces accordingly.
 ### Basic usage
 
 ```php
+use Kcs\ClassFinder\Finder\ComposerFinder;
+
 $finder = new ComposerFinder();
 foreach ($finder as $className => $reflector) {
     // Do magic things...
@@ -38,6 +40,10 @@ You can filter classes using the methods exposed by `FinderInterface`:
   all the given interfaces. You can pass a single interface as string.
 - `subclassOf(string $superClass)`: Finds all the classes that are subclasses
   of the given class.
+- `annontatedBy(string $annotationClass)`: Finds all the classes that have
+  the given annotation in the class docblock.
+- `withAttribtue(string $attributeClass)`: Finds all the classes that have
+  the given attribute applied on the class (PHP >= 8.0) only.
 - `in(array $dirs)`: Searches only in given directories.
 - `inNamespace(array $namespaces)`: Searches only in given namespaces.
 - `filter(callable $callback)`: Custom filtering callback.
@@ -54,3 +60,4 @@ Please feel free to open a PR or file an issue.
 ---
 
 Thank you for reading
+A.
