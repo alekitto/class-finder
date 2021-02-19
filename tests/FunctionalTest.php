@@ -1,15 +1,21 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Tests;
 
 use Kcs\ClassFinder\Finder\ComposerFinder;
 use PHPUnit\Framework\TestCase;
 
+use function iterator_to_array;
+
 class FunctionalTest extends TestCase
 {
-    public function testAll(): void
+    public function testShouldNotBreakIteratingAllClassesInProject(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $finder = new ComposerFinder();
-        \iterator_to_array($finder);
+        iterator_to_array($finder);
     }
 }

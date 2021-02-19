@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Tests\Iterator;
 
@@ -9,15 +11,18 @@ use phpDocumentor\Reflection\Php\Interface_;
 use phpDocumentor\Reflection\Php\Trait_;
 use PHPUnit\Framework\TestCase;
 
+use function iterator_to_array;
+use function realpath;
+
 class PhpDocumentorIteratorTest extends TestCase
 {
     public function testIteratorShouldWork()
     {
         $iterator = new PhpDocumentorIterator(
-            \realpath(__DIR__.'/../../data/Composer/Psr4')
+            realpath(__DIR__ . '/../../data/Composer/Psr4')
         );
 
-        $classes = \iterator_to_array($iterator);
+        $classes = iterator_to_array($iterator);
 
         self::assertArrayHasKey(Psr4\BarBar::class, $classes);
         self::assertInstanceOf(Class_::class, $classes[Psr4\BarBar::class]);
