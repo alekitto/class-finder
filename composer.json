@@ -33,6 +33,9 @@
         }
     },
     "autoload-dev": {
+        "files": [
+            "data/Composer/Psr4/test_file.php"
+        ],
         "psr-4": {
             "Kcs\\ClassFinder\\Tests\\": "tests/",
             "Kcs\\ClassFinder\\Fixtures\\Psr4\\": "data/Composer/Psr4/",

@@ -9,8 +9,11 @@ jobs:
                 php_version:
                     - '7.4'
                     - '8.0'
+                composer_flags:
+                    - ''
+                    - '-o'
 
-        name: PHP ${{ matrix.php_version }}
+        name: 'PHP ${{ matrix.php_version }} (composer_flags: "${{ matrix.composer_flags }}")'
         steps:
             - uses: actions/checkout@v2
             - name: Setup PHP with pecl extension
@@ -18,7 +21,7 @@ jobs:
               with:
                   php-version: ${{ matrix.php_version }}
                   extensions: :opcache
-            - run: composer install
+            - run: composer install ${{ matrix.composer_flags }}
             - run: vendor/bin/phpunit
               if: ${{ matrix.php_version != '8.0' }}
             - run: vendor/bin/phpunit --coverage-clover coverage.xml

@@ -7,6 +7,7 @@ namespace Kcs\ClassFinder\Iterator;
 use Closure;
 use Generator;
 use Kcs\ClassFinder\PathNormalizer;
+use Kcs\ClassFinder\Util\ErrorHandler;
 use ReflectionClass;
 use Throwable;
 
@@ -73,10 +74,13 @@ final class Psr0Iterator extends ClassIterator
             // solution, we are forced to include the file here and check if class
             // exists with autoload flag disabled (see method exists).
 
+            ErrorHandler::register();
             try {
                 $include($path);
             } catch (Throwable $e) { /** @phpstan-ignore-line */
                 continue;
+            } finally {
+                ErrorHandler::unregister();
             }
 
             if (! $this->exists($class)) {
