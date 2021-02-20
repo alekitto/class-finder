@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Util;
 
-use Error;
-
+use function call_user_func_array;
 use function error_reporting;
+use function func_get_args;
 use function restore_error_handler;
 use function set_error_handler;
 
@@ -25,11 +25,14 @@ final class ErrorHandler
 {
     private static bool $registered = false;
 
+    /** @var callable */
+    private static $previous;
+
     public static function handleError(int $errorNumber, string $errorString): bool
     {
         // Do not raise an exception when the error suppression operator (@) was used.
         if (! ($errorNumber & error_reporting())) {
-            return false;
+            return call_user_func_array(self::$previous, func_get_args());
         }
 
         switch ($errorNumber) {
@@ -46,7 +49,7 @@ final class ErrorHandler
                 throw new Error($errorString, $errorNumber);
         }
 
-        return false;
+        return call_user_func_array(self::$previous, func_get_args());
     }
 
     public static function register(): void
@@ -55,14 +58,7 @@ final class ErrorHandler
             return;
         }
 
-        $oldErrorHandler = set_error_handler([self::class, 'handleError']);
-
-        if ($oldErrorHandler !== null) {
-            restore_error_handler();
-
-            return;
-        }
-
+        self::$previous = set_error_handler([self::class, 'handleError']) ?? static fn () => false;
         self::$registered = true;
     }
 
@@ -73,5 +69,6 @@ final class ErrorHandler
         }
 
         restore_error_handler();
+        self::$registered = false;
     }
 }
