@@ -59,5 +59,5 @@ Please feel free to open a PR or file an issue.
 
 ---
 
-Thank you for reading
+Thank you for reading  
 A.
