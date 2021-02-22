@@ -192,10 +192,10 @@ final class PhpDocumentorIterator extends ClassIterator
                         continue;
                     }
 
-                    yield $filepath => $info;
+                    yield PathNormalizer::resolvePath($filepath) => $info;
                 }
             } elseif (is_file($path)) {
-                yield $path => new SplFileInfo($path);
+                yield PathNormalizer::resolvePath($path) => new SplFileInfo($path);
             }
         }
     }
