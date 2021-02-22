@@ -68,6 +68,12 @@ final class ErrorHandler
             return;
         }
 
+        $previous = set_error_handler(static fn () => false);
+        restore_error_handler();
+        if ($previous !== [self::class, 'handleError']) {
+            throw new Error('Error handler has changed, cannot unregister the handler');
+        }
+
         restore_error_handler();
         self::$registered = false;
     }

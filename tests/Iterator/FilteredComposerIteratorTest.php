@@ -22,7 +22,7 @@ class FilteredComposerIteratorTest extends TestCase
     {
         $loader = new ClassLoader();
         (Closure::bind(static function () use ($loader) {
-            $loader->classMap = [__CLASS__ => __FILE__];
+            $loader->classMap = [__CLASS__ => __FILE__]; // phpcs:ignore
 
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
@@ -42,7 +42,7 @@ class FilteredComposerIteratorTest extends TestCase
         $this->loader = $loader;
     }
 
-    public function testComposerIteratorShouldWork()
+    public function testComposerIteratorShouldWork(): void
     {
         $iterator = new FilteredComposerIterator($this->loader, null, null);
 
@@ -60,7 +60,7 @@ class FilteredComposerIteratorTest extends TestCase
         ], iterator_to_array($iterator));
     }
 
-    public function testComposerIteratorShouldFilterNotIntersectingPath()
+    public function testComposerIteratorShouldFilterNotIntersectingPath(): void
     {
         // NOTE: This test could be interpreted as wrong, but is not:
         // the purpose of the FilteredComposerIterator class is to do some *quick and dirty* filtering
