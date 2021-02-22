@@ -6,6 +6,7 @@ namespace Kcs\ClassFinder\Iterator;
 
 use FilesystemIterator;
 use Generator;
+use Kcs\ClassFinder\PathNormalizer;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -18,8 +19,7 @@ use function Safe\glob;
 
 trait RecursiveIteratorTrait
 {
-    /** @var string */
-    private $path;
+    private string $path;
 
     private function search(): Generator
     {
@@ -40,10 +40,10 @@ trait RecursiveIteratorTrait
                         continue;
                     }
 
-                    yield $filepath => $info;
+                    yield PathNormalizer::resolvePath($filepath) => $info;
                 }
             } elseif (is_file($path)) {
-                yield $path => new SplFileInfo($path);
+                yield PathNormalizer::resolvePath($path) => new SplFileInfo($path);
             }
         }
     }
