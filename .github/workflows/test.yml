@@ -24,7 +24,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php_version }}
-                  extensions: :opcache
+                  extensions: :opcache, pcov
             - run: composer install ${{ matrix.composer_flags }}
             - run: vendor/bin/phpunit
               if: ${{ matrix.php_version != '8.0' }}
