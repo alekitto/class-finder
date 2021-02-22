@@ -3,9 +3,13 @@ on: [push, pull_request]
 
 jobs:
     build:
-        runs-on: ubuntu-latest
+        runs-on: ${{ matrix.os }}
         strategy:
             matrix:
+                os:
+                    - ubuntu-latest
+                    - windows-latest
+
                 php_version:
                     - '7.4'
                     - '8.0'
