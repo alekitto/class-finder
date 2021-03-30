@@ -104,7 +104,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function path($pattern): self;
+    public function path(string $pattern): self;
 
     /**
      * Adds rules that filenames must not match.
@@ -120,5 +120,5 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function notPath($pattern): self;
+    public function notPath(string $pattern): self;
 }

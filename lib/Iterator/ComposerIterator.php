@@ -38,12 +38,14 @@ final class ComposerIterator extends ClassIterator
         foreach ($this->classLoader->getClassMap() as $class => $file) {
             ErrorHandler::register();
             try {
-                yield $class => new ReflectionClass($class);
+                $reflectionClass = new ReflectionClass($class);
             } catch (Throwable $e) { /** @phpstan-ignore-line */
-                // @ignoreException
+                continue;
             } finally {
                 ErrorHandler::unregister();
             }
+
+            yield $class => $reflectionClass;
         }
     }
 

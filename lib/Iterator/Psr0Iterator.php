@@ -52,7 +52,7 @@ final class Psr0Iterator extends ClassIterator
     protected function getGenerator(): Generator
     {
         $pattern = defined('HHVM_VERSION') ? '/\\.(php|hh)$/i' : '/\\.php$/i';
-        $include = Closure::bind(static function (string $path) {
+        $include = Closure::bind(static function (string $path): void {
             include_once $path;
         }, null, null);
 

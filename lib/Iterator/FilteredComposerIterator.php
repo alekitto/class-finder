@@ -7,7 +7,9 @@ namespace Kcs\ClassFinder\Iterator;
 use Composer\Autoload\ClassLoader;
 use Generator;
 use Kcs\ClassFinder\PathNormalizer;
+use Kcs\ClassFinder\Util\ErrorHandler;
 use ReflectionClass;
+use Throwable;
 
 use function array_map;
 use function array_unique;
@@ -82,7 +84,16 @@ final class FilteredComposerIterator extends ClassIterator
                 continue;
             }
 
-            yield $class => new ReflectionClass($class);
+            ErrorHandler::register();
+            try {
+                $reflectionClass = new ReflectionClass($class);
+            } catch (Throwable $e) { /** @phpstan-ignore-line */
+                continue;
+            } finally {
+                ErrorHandler::unregister();
+            }
+
+            yield $class => $reflectionClass;
         }
     }
 
