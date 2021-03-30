@@ -66,6 +66,20 @@ class ComposerFinderTest extends TestCase
         ], iterator_to_array($finder));
     }
 
+    public function testFinderShouldFilterByExcludedNamespace(): void
+    {
+        $finder = new ComposerFinder();
+        $finder
+            ->inNamespace(['Kcs\ClassFinder\Fixtures'])
+            ->notInNamespace(['Kcs\ClassFinder\Fixtures\Psr4']);
+
+        self::assertEquals([
+            Psr0\BarBar::class => new ReflectionClass(Psr0\BarBar::class),
+            Psr0\Foobar::class => new ReflectionClass(Psr0\Foobar::class),
+            Psr0\SubNs\FooBaz::class => new ReflectionClass(Psr0\SubNs\FooBaz::class),
+        ], iterator_to_array($finder));
+    }
+
     public function testFinderShouldFilterByDirectory(): void
     {
         $finder = new ComposerFinder();

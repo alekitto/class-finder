@@ -32,13 +32,17 @@ final class FilteredComposerIterator extends ClassIterator
     private ?array $namespaces = null;
 
     /** @var string[]|null */
+    private ?array $notNamespaces = null;
+
+    /** @var string[]|null */
     private ?array $dirs = null;
 
     /**
      * @param string[]|null $namespaces
+     * @param string[]|null $notNamespaces
      * @param string[]|null $dirs
      */
-    public function __construct(ClassLoader $classLoader, ?array $namespaces, ?array $dirs, int $flags = 0)
+    public function __construct(ClassLoader $classLoader, ?array $namespaces, ?array $notNamespaces, ?array $dirs, int $flags = 0)
     {
         $this->classLoader = $classLoader;
         $this->dirs = $dirs !== null ? array_map(PathNormalizer::class . '::resolvePath', $dirs) : $dirs;
@@ -49,6 +53,10 @@ final class FilteredComposerIterator extends ClassIterator
             }, $namespaces);
 
             $this->namespaces = array_unique($namespaces);
+        }
+
+        if ($notNamespaces !== null) {
+            $this->notNamespaces = array_unique($notNamespaces);
         }
 
         parent::__construct($flags);
@@ -92,11 +100,11 @@ final class FilteredComposerIterator extends ClassIterator
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixesPsr4()) as $ns => $dir) {
-            yield from new Psr4Iterator($ns, $dir, 0, $this->classLoader->getClassMap());
+            yield from new Psr4Iterator($ns, $dir, 0, $this->classLoader->getClassMap(), $this->notNamespaces);
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixes()) as $ns => $dir) {
-            yield from new Psr0Iterator($ns, $dir, 0, $this->classLoader->getClassMap());
+            yield from new Psr0Iterator($ns, $dir, 0, $this->classLoader->getClassMap(), $this->notNamespaces);
         }
     }
 
@@ -123,6 +131,14 @@ final class FilteredComposerIterator extends ClassIterator
 
     private function validNamespace(string $class): bool
     {
+        if ($this->notNamespaces !== null) {
+            foreach ($this->notNamespaces as $namespace) {
+                if (strpos($class, $namespace) === 0) {
+                    return false;
+                }
+            }
+        }
+
         if ($this->namespaces === null) {
             return true;
         }

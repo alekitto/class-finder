@@ -14,7 +14,7 @@ use function Safe\substr;
 use function strpos;
 use function strrpos;
 
-final class NamespaceFilterIterator extends FilterIterator
+final class NotNamespaceFilterIterator extends FilterIterator
 {
     /** @var string[] */
     private array $namespaces;
@@ -41,10 +41,10 @@ final class NamespaceFilterIterator extends FilterIterator
 
         foreach ($this->namespaces as $namespace) {
             if ($classNamespace === $namespace || strpos($classNamespace, $namespace . '\\') === 0) {
-                return true;
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 }

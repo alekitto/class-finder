@@ -31,15 +31,20 @@ final class Psr0Iterator extends ClassIterator
     /** @var string[] */
     private array $classMap;
 
+    /** @var string[]|null */
+    private ?array $excludeNamespaces;
+
     /**
      * @param array<string, mixed> $classMap
+     * @param string[] $excludeNamespaces
      */
-    public function __construct(string $namespace, string $path, int $flags = 0, array $classMap = [])
+    public function __construct(string $namespace, string $path, int $flags = 0, array $classMap = [], ?array $excludeNamespaces = null)
     {
         $this->namespace = $namespace;
         $this->path = PathNormalizer::resolvePath($path);
         $this->pathLen = strlen($this->path);
         $this->classMap = array_map(PathNormalizer::class . '::resolvePath', $classMap);
+        $this->excludeNamespaces = $excludeNamespaces;
 
         parent::__construct($flags);
     }
@@ -64,6 +69,14 @@ final class Psr0Iterator extends ClassIterator
             $class = ltrim(str_replace('/', '\\', substr($path, $this->pathLen, -strlen($m[0]))), '\\');
             if (strpos($class, $this->namespace) !== 0) {
                 continue;
+            }
+
+            if ($this->excludeNamespaces !== null) {
+                foreach ($this->excludeNamespaces as $namespace) {
+                    if (strpos($class, $namespace) === 0) {
+                        continue 2;
+                    }
+                }
             }
 
             if (! preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+$/', $class)) {

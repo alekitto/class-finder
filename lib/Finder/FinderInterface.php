@@ -74,6 +74,15 @@ interface FinderInterface extends IteratorAggregate
     public function inNamespace($namespaces): self;
 
     /**
+     * Adds namespace(s) to exclude from search.
+     *
+     * @param string|string[] $namespaces
+     *
+     * @return $this
+     */
+    public function notInNamespace($namespaces): self;
+
+    /**
      * Sets a custom callback for class filtering.
      * The callback will receive the class name as the only argument.
      *

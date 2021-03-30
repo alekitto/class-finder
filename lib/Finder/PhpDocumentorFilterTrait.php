@@ -26,6 +26,10 @@ trait PhpDocumentorFilterTrait
             $iterator = new Filters\NamespaceFilterIterator($iterator, $this->namespaces);
         }
 
+        if ($this->notNamespaces) {
+            $iterator = new Filters\NotNamespaceFilterIterator($iterator, $this->notNamespaces);
+        }
+
         if ($this->implements) {
             $iterator = new Filters\InterfaceImplementationFilterIterator($iterator, $this->implements);
         }

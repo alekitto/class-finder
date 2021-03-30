@@ -14,7 +14,6 @@ use SplFileInfo;
 
 use function is_dir;
 use function is_file;
-use function iterator_to_array;
 use function Safe\glob;
 
 trait RecursiveIteratorTrait
@@ -25,7 +24,7 @@ trait RecursiveIteratorTrait
     {
         foreach (glob($this->path . '/*') as $path) {
             if (is_dir($path)) {
-                $files = iterator_to_array(new RecursiveIteratorIterator(
+                $files = new RecursiveIteratorIterator(
                     new RecursiveCallbackFilterIterator(
                         new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS | FilesystemIterator::FOLLOW_SYMLINKS),
                         static function (SplFileInfo $file) {
@@ -33,7 +32,7 @@ trait RecursiveIteratorTrait
                         }
                     ),
                     RecursiveIteratorIterator::LEAVES_ONLY
-                ));
+                );
 
                 foreach ($files as $filepath => $info) {
                     if (! $info->isFile()) {

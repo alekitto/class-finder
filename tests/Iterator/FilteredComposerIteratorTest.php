@@ -44,7 +44,7 @@ class FilteredComposerIteratorTest extends TestCase
 
     public function testComposerIteratorShouldWork(): void
     {
-        $iterator = new FilteredComposerIterator($this->loader, null, null);
+        $iterator = new FilteredComposerIterator($this->loader, null, null, null);
 
         self::assertEquals([
             self::class => new ReflectionClass(self::class),
@@ -68,7 +68,7 @@ class FilteredComposerIteratorTest extends TestCase
         // intersects perfectly with the requested dirs. The upper finder should filter out the
         // non-matching results.
 
-        $iterator = new FilteredComposerIterator($this->loader, null, [__DIR__ . '/../..' . '/data/Composer/Psr4/SubNs']);
+        $iterator = new FilteredComposerIterator($this->loader, null, null, [__DIR__ . '/../..' . '/data/Composer/Psr4/SubNs']);
 
         self::assertEquals([
             Psr4\BarBar::class => new ReflectionClass(Psr4\BarBar::class),

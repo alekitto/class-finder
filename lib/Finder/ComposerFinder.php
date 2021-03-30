@@ -36,8 +36,8 @@ final class ComposerFinder implements FinderInterface
      */
     public function getIterator(): Iterator
     {
-        if ($this->namespaces || $this->dirs) {
-            $iterator = new FilteredComposerIterator($this->loader, $this->namespaces, $this->dirs);
+        if ($this->namespaces || $this->dirs || $this->notNamespaces) {
+            $iterator = new FilteredComposerIterator($this->loader, $this->namespaces, $this->notNamespaces, $this->dirs);
         } else {
             $iterator = new ComposerIterator($this->loader);
         }

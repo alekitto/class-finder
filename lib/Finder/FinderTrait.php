@@ -42,6 +42,9 @@ trait FinderTrait
     private ?array $namespaces = null;
 
     /** @var string[] */
+    private ?array $notNamespaces = null;
+
+    /** @var string[] */
     private ?array $paths = null;
 
     /** @var string[] */
@@ -113,6 +116,16 @@ trait FinderTrait
     public function inNamespace($namespaces): self
     {
         $this->namespaces = array_unique(array_merge($this->namespaces ?? [], (array) $namespaces));
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function notInNamespace($namespaces): self
+    {
+        $this->notNamespaces = array_unique(array_merge($this->notNamespaces ?? [], (array) $namespaces));
 
         return $this;
     }

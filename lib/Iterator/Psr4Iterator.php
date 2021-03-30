@@ -19,6 +19,7 @@ use function Safe\preg_match;
 use function Safe\substr;
 use function str_replace;
 use function strlen;
+use function strpos;
 
 final class Psr4Iterator extends ClassIterator
 {
@@ -30,15 +31,20 @@ final class Psr4Iterator extends ClassIterator
     /** @var array<string, mixed> */
     private array $classMap;
 
+    /** @var string[]|null */
+    private ?array $excludeNamespaces;
+
     /**
      * @param array<string, mixed> $classMap
+     * @param string[] $excludeNamespaces
      */
-    public function __construct(string $namespace, string $path, int $flags = 0, array $classMap = [])
+    public function __construct(string $namespace, string $path, int $flags = 0, array $classMap = [], ?array $excludeNamespaces = null)
     {
         $this->namespace = $namespace;
         $this->path = PathNormalizer::resolvePath($path);
         $this->prefixLen = strlen($this->path);
         $this->classMap = array_map(PathNormalizer::class . '::resolvePath', $classMap);
+        $this->excludeNamespaces = $excludeNamespaces;
 
         parent::__construct($flags);
     }
@@ -61,6 +67,14 @@ final class Psr4Iterator extends ClassIterator
 
             /** @phpstan-var class-string $class */
             $class = $this->namespace . ltrim(str_replace('/', '\\', substr($path, $this->prefixLen, -strlen($m[0]))), '\\');
+            if ($this->excludeNamespaces !== null) {
+                foreach ($this->excludeNamespaces as $namespace) {
+                    if (strpos($class, $namespace) === 0) {
+                        continue 2;
+                    }
+                }
+            }
+
             if (! preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+$/', $class)) {
                 continue;
             }
