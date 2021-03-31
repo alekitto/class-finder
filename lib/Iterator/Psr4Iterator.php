@@ -7,8 +7,9 @@ namespace Kcs\ClassFinder\Iterator;
 use Closure;
 use Generator;
 use Kcs\ClassFinder\PathNormalizer;
+use Kcs\ClassFinder\Reflection\NativeReflectorFactory;
+use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Kcs\ClassFinder\Util\ErrorHandler;
-use ReflectionClass;
 use Throwable;
 
 use function array_map;
@@ -27,6 +28,7 @@ final class Psr4Iterator extends ClassIterator
 
     private string $namespace;
     private int $prefixLen;
+    private ReflectorFactoryInterface $reflectorFactory;
 
     /** @var array<string, mixed> */
     private array $classMap;
@@ -38,10 +40,17 @@ final class Psr4Iterator extends ClassIterator
      * @param array<string, mixed> $classMap
      * @param string[] $excludeNamespaces
      */
-    public function __construct(string $namespace, string $path, int $flags = 0, array $classMap = [], ?array $excludeNamespaces = null)
-    {
+    public function __construct(
+        string $namespace,
+        string $path,
+        ?ReflectorFactoryInterface $reflectorFactory = null,
+        int $flags = 0,
+        array $classMap = [],
+        ?array $excludeNamespaces = null
+    ) {
         $this->namespace = $namespace;
         $this->path = PathNormalizer::resolvePath($path);
+        $this->reflectorFactory = $reflectorFactory ?? new NativeReflectorFactory();
         $this->prefixLen = strlen($this->path);
         $this->classMap = array_map(PathNormalizer::class . '::resolvePath', $classMap);
         $this->excludeNamespaces = $excludeNamespaces;
@@ -96,7 +105,7 @@ final class Psr4Iterator extends ClassIterator
                 continue;
             }
 
-            yield $class => new ReflectionClass($class);
+            yield $class => $this->reflectorFactory->reflect($class);
         }
     }
 }

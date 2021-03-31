@@ -7,8 +7,9 @@ namespace Kcs\ClassFinder\Iterator;
 use Composer\Autoload\ClassLoader;
 use Generator;
 use Kcs\ClassFinder\PathNormalizer;
+use Kcs\ClassFinder\Reflection\NativeReflectorFactory;
+use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Kcs\ClassFinder\Util\ErrorHandler;
-use ReflectionClass;
 use Throwable;
 
 use function array_map;
@@ -29,6 +30,7 @@ use function strpos;
 final class FilteredComposerIterator extends ClassIterator
 {
     private ClassLoader $classLoader;
+    private ReflectorFactoryInterface $reflectorFactory;
 
     /** @var string[]|null */
     private ?array $namespaces = null;
@@ -37,16 +39,17 @@ final class FilteredComposerIterator extends ClassIterator
     private ?array $notNamespaces = null;
 
     /** @var string[]|null */
-    private ?array $dirs = null;
+    private ?array $dirs;
 
     /**
      * @param string[]|null $namespaces
      * @param string[]|null $notNamespaces
      * @param string[]|null $dirs
      */
-    public function __construct(ClassLoader $classLoader, ?array $namespaces, ?array $notNamespaces, ?array $dirs, int $flags = 0)
+    public function __construct(ClassLoader $classLoader, ?ReflectorFactoryInterface $reflectorFactory = null, ?array $namespaces, ?array $notNamespaces, ?array $dirs, int $flags = 0)
     {
         $this->classLoader = $classLoader;
+        $this->reflectorFactory = $reflectorFactory ?? new NativeReflectorFactory();
         $this->dirs = $dirs !== null ? array_map(PathNormalizer::class . '::resolvePath', $dirs) : $dirs;
 
         if ($namespaces !== null) {
@@ -86,7 +89,7 @@ final class FilteredComposerIterator extends ClassIterator
 
             ErrorHandler::register();
             try {
-                $reflectionClass = new ReflectionClass($class);
+                $reflectionClass = $this->reflectorFactory->reflect($class);
             } catch (Throwable $e) { /** @phpstan-ignore-line */
                 continue;
             } finally {
@@ -111,11 +114,11 @@ final class FilteredComposerIterator extends ClassIterator
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixesPsr4()) as $ns => $dir) {
-            yield from new Psr4Iterator($ns, $dir, 0, $this->classLoader->getClassMap(), $this->notNamespaces);
+            yield from new Psr4Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap(), $this->notNamespaces);
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixes()) as $ns => $dir) {
-            yield from new Psr0Iterator($ns, $dir, 0, $this->classLoader->getClassMap(), $this->notNamespaces);
+            yield from new Psr0Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap(), $this->notNamespaces);
         }
     }
 

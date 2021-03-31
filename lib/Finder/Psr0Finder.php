@@ -7,6 +7,7 @@ namespace Kcs\ClassFinder\Finder;
 use Iterator;
 use Kcs\ClassFinder\Iterator\Psr0Iterator;
 use Kcs\ClassFinder\PathNormalizer;
+use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Reflector;
 
 use function Safe\substr;
@@ -22,6 +23,7 @@ final class Psr0Finder implements FinderInterface
 
     private string $namespace;
     private string $path;
+    private ?ReflectorFactoryInterface $reflectorFactory = null;
 
     public function __construct(string $namespace, string $path)
     {
@@ -38,11 +40,18 @@ final class Psr0Finder implements FinderInterface
         $this->path = PathNormalizer::resolvePath($path);
     }
 
+    public function setReflectorFactory(?ReflectorFactoryInterface $reflectorFactory): self
+    {
+        $this->reflectorFactory = $reflectorFactory;
+
+        return $this;
+    }
+
     /**
      * @return Iterator<Reflector>
      */
     public function getIterator(): Iterator
     {
-        return $this->applyFilters(new Psr0Iterator($this->namespace, $this->path));
+        return $this->applyFilters(new Psr0Iterator($this->namespace, $this->path, $this->reflectorFactory));
     }
 }

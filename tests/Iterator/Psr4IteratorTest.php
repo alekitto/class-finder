@@ -6,6 +6,7 @@ namespace Kcs\ClassFinder\Tests\Iterator;
 
 use Kcs\ClassFinder\Fixtures\Psr4;
 use Kcs\ClassFinder\Iterator\Psr4Iterator;
+use Kcs\ClassFinder\Reflection\NativeReflectorFactory;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -14,11 +15,12 @@ use function realpath;
 
 class Psr4IteratorTest extends TestCase
 {
-    public function testIteratorShouldWork()
+    public function testIteratorShouldWork(): void
     {
         $iterator = new Psr4Iterator(
             'Kcs\\ClassFinder\\Fixtures\\Psr4\\',
-            realpath(__DIR__ . '/../../data/Composer/Psr4')
+            realpath(__DIR__ . '/../../data/Composer/Psr4'),
+            new NativeReflectorFactory()
         );
 
         self::assertEquals([

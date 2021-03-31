@@ -126,7 +126,7 @@ class ComposerIteratorTest extends TestCase
             ];
         }, null, ClassLoader::class))();
 
-        $iterator = new ComposerIterator($loader, ClassIterator::SKIP_NON_INSTANTIABLE);
+        $iterator = new ComposerIterator($loader, null, ClassIterator::SKIP_NON_INSTANTIABLE);
 
         self::assertEquals([
             Psr4\BarBar::class => new ReflectionClass(Psr4\BarBar::class),

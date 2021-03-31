@@ -8,6 +8,7 @@ use Composer\Autoload\ClassLoader;
 use Iterator;
 use Kcs\ClassFinder\Iterator\ComposerIterator;
 use Kcs\ClassFinder\Iterator\FilteredComposerIterator;
+use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Reflector;
 use RuntimeException;
 use Symfony\Component\Debug\DebugClassLoader;
@@ -25,10 +26,18 @@ final class ComposerFinder implements FinderInterface
     use ReflectionFilterTrait;
 
     private ClassLoader $loader;
+    private ?ReflectorFactoryInterface $reflectorFactory = null;
 
     public function __construct(?ClassLoader $loader = null)
     {
         $this->loader = $loader ?? self::getValidLoader();
+    }
+
+    public function setReflectorFactory(?ReflectorFactoryInterface $reflectorFactory): self
+    {
+        $this->reflectorFactory = $reflectorFactory;
+
+        return $this;
     }
 
     /**
@@ -37,9 +46,9 @@ final class ComposerFinder implements FinderInterface
     public function getIterator(): Iterator
     {
         if ($this->namespaces || $this->dirs || $this->notNamespaces) {
-            $iterator = new FilteredComposerIterator($this->loader, $this->namespaces, $this->notNamespaces, $this->dirs);
+            $iterator = new FilteredComposerIterator($this->loader, $this->reflectorFactory, $this->namespaces, $this->notNamespaces, $this->dirs);
         } else {
-            $iterator = new ComposerIterator($this->loader);
+            $iterator = new ComposerIterator($this->loader, $this->reflectorFactory);
         }
 
         return $this->applyFilters($iterator);
