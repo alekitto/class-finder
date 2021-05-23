@@ -15,7 +15,7 @@ use function Safe\substr;
 use const DIRECTORY_SEPARATOR;
 
 /**
- * Finds classes respecting psr-4 standard.
+ * Finds classes respecting psr-0 standard.
  */
 final class Psr0Finder implements FinderInterface
 {

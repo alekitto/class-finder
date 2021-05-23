@@ -21,6 +21,8 @@ The most common way to discover is to use the provided `ComposerFinder`.
 This will search for classes using the auto-generated class loader
 from composer and resolving PSR-* namespaces accordingly.
 
+Read more in the docs at [https://alekitto.github.io/class-finder/](https://alekitto.github.io/class-finder/)
+
 ### Basic usage
 
 ```php
