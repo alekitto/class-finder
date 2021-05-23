@@ -20,6 +20,35 @@ to filter, exclude or restrict the search of the classes.
 If iterated, the finder will yield a key/value tuple where the key is the fully-qualified class name
 as string, and the value is a reflector object (could be a runtime `Reflector` or any other type of reflector object).
 
+#### Examples
+
+##### Finds all the classes into "src" folder
+
+```php
+use Kcs\ClassFinder\Finder\ComposerFinder;
+
+$finder = new ComposerFinder();
+$finder->path(__DIR__ . '/src');
+
+foreach ($finder as $className => $reflector) {
+    // Do magic things.
+}
+```
+
+##### Finds all the classes implementing HttpClientInterface
+
+```php
+use Kcs\ClassFinder\Finder\ComposerFinder;
+use Psr\Http\Client\HttpClientInterface;
+
+$finder = new ComposerFinder();
+$finder->implementationOf(HttpClientInterface::class);
+
+foreach ($finder as $className => $reflector) {
+    // All the yielded reflectors are referred to classes implementing of http client.
+}
+```
+
 See [finder section](./finder.md) for more information
 
 ## License
