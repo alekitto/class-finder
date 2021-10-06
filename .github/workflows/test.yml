@@ -11,8 +11,9 @@ jobs:
                     - windows-latest
 
                 php_version:
-                    - '7.4'
                     - '8.0'
+                    - '8.1'
+
                 composer_flags:
                     - ''
                     - '-o'

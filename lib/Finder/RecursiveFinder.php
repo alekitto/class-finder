@@ -6,6 +6,7 @@ namespace Kcs\ClassFinder\Finder;
 
 use Kcs\ClassFinder\Iterator\RecursiveIterator;
 use Kcs\ClassFinder\PathNormalizer;
+use Traversable;
 
 final class RecursiveFinder implements FinderInterface
 {
@@ -19,10 +20,7 @@ final class RecursiveFinder implements FinderInterface
         $this->path = $path;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return $this->applyFilters(new RecursiveIterator($this->path));
     }

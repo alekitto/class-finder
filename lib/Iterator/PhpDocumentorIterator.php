@@ -16,6 +16,7 @@ use phpDocumentor\Reflection\Php\Factory;
 use phpDocumentor\Reflection\Php\File;
 use phpDocumentor\Reflection\Php\Interface_;
 use phpDocumentor\Reflection\Php\NodesFactory;
+use phpDocumentor\Reflection\Php\Project;
 use phpDocumentor\Reflection\Php\ProjectFactoryStrategies;
 use phpDocumentor\Reflection\Php\Trait_;
 use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
@@ -29,6 +30,7 @@ use function array_merge;
 use function array_push;
 use function array_unique;
 use function assert;
+use function class_exists;
 use function defined;
 use function is_dir;
 use function is_file;
@@ -57,24 +59,46 @@ final class PhpDocumentorIterator extends ClassIterator
     /** @var string[] */
     private ?array $notPaths = null;
     private ProjectFactoryStrategies $strategies;
+    private DocBlockFactory $docBlockFactory;
 
     public function __construct(string $path, int $flags = 0)
     {
         $this->path = PathNormalizer::resolvePath($path);
-        $this->strategies = new ProjectFactoryStrategies([
-            new Factory\Argument(new PrettyPrinter()),
-            new Factory\Class_(),
-            new Factory\Define(new PrettyPrinter()),
-            new Factory\GlobalConstant(new PrettyPrinter()),
-            new Factory\ClassConstant(new PrettyPrinter()),
-            new Factory\DocBlock(DocBlockFactory::createInstance()),
-            new Factory\File(NodesFactory::createInstance()),
-            new Factory\Function_(),
-            new Factory\Interface_(),
-            new Factory\Method(),
-            new Factory\Property(new PrettyPrinter()),
-            new Factory\Trait_(),
-        ]);
+        $this->docBlockFactory = DocBlockFactory::createInstance();
+        if (class_exists(Factory\DocBlock::class)) {
+            // phpdoc/reflection 4.x
+            $this->strategies = new ProjectFactoryStrategies([
+                new Factory\Argument(new PrettyPrinter()),
+                new Factory\Class_(),
+                new Factory\Define(new PrettyPrinter()),
+                new Factory\GlobalConstant(new PrettyPrinter()),
+                new Factory\ClassConstant(new PrettyPrinter()),
+                new Factory\DocBlock($this->docBlockFactory),
+                new Factory\File(NodesFactory::createInstance()),
+                new Factory\Function_(),
+                new Factory\Interface_(),
+                new Factory\Method(),
+                new Factory\Property(new PrettyPrinter()),
+                new Factory\Trait_(),
+            ]);
+        } else {
+            $this->strategies = new ProjectFactoryStrategies([
+                new Factory\Argument(new PrettyPrinter()),
+                new Factory\Class_($this->docBlockFactory),
+                new Factory\Define($this->docBlockFactory, new PrettyPrinter()),
+                new Factory\GlobalConstant($this->docBlockFactory, new PrettyPrinter()),
+                new Factory\ClassConstant($this->docBlockFactory, new PrettyPrinter()),
+                new Factory\File($this->docBlockFactory, NodesFactory::createInstance()),
+                new Factory\Function_($this->docBlockFactory),
+                new Factory\Namespace_(),
+                new Factory\Interface_($this->docBlockFactory),
+                new Factory\Method($this->docBlockFactory),
+                new Factory\Property($this->docBlockFactory, new PrettyPrinter()),
+                new Factory\Trait_($this->docBlockFactory),
+            ]);
+
+            $this->strategies->addStrategy(new Factory\Noop(), -1000);
+        }
 
         parent::__construct($flags);
     }
@@ -84,7 +108,7 @@ final class PhpDocumentorIterator extends ClassIterator
      *
      * @param string|string[] $dirs
      */
-    public function in($dirs): self
+    public function in(string|array $dirs): self
     {
         $resolvedDirs = [];
 
@@ -146,8 +170,18 @@ final class PhpDocumentorIterator extends ClassIterator
                 continue;
             }
 
-            $factory = new Factory\File(NodesFactory::createInstance());
-            $reflector = $factory->create(new LocalFile($path), $this->strategies);
+            if (class_exists(Factory\DocBlock::class)) {
+                // phpdoc/reflection 4.x
+                $factory = new Factory\File(NodesFactory::createInstance());
+                $reflector = $factory->create(new LocalFile($path), $this->strategies);
+            } else {
+                $project = new Project('project');
+                $contextStack = new Factory\ContextStack($project);
+                $factory = new Factory\File($this->docBlockFactory, NodesFactory::createInstance());
+                $factory->create($contextStack, new LocalFile($path), $this->strategies);
+                $reflector = $project->getFiles()[$path];
+            }
+
             assert($reflector instanceof File);
 
             yield from $this->processClasses($reflector->getClasses());

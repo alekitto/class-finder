@@ -32,11 +32,8 @@ abstract class ClassIterator implements Iterator
     /** @var callable */
     private $_apply;
 
-    /** @var mixed */
-    private $_currentElement;
-
-    /** @var mixed */
-    private $_current;
+    private mixed $_currentElement;
+    private mixed $_current = null;
 
     public function __construct(int $flags = 0)
     {
@@ -45,12 +42,7 @@ abstract class ClassIterator implements Iterator
         $this->rewind();
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return mixed
-     */
-    public function current()
+    public function current(): mixed
     {
         if (! $this->valid()) {
             return null;
@@ -77,12 +69,7 @@ abstract class ClassIterator implements Iterator
         }
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return int|string
-     */
-    public function key()
+    public function key(): int | string
     {
         return $this->generator()->key();
     }
@@ -128,10 +115,8 @@ abstract class ClassIterator implements Iterator
 
     /**
      * Checks whether the given class is instantiable.
-     *
-     * @param mixed $reflector
      */
-    protected function isInstantiable($reflector): bool
+    protected function isInstantiable(mixed $reflector): bool
     {
         return $reflector instanceof ReflectionClass && $reflector->isInstantiable();
     }

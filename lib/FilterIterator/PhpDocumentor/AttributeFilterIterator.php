@@ -21,7 +21,6 @@ final class AttributeFilterIterator extends FilterIterator
 
     /**
      * @param Iterator<Element> $iterator
-     *
      * @phpstan-param class-string $attribute
      */
     public function __construct(Iterator $iterator, string $attribute)

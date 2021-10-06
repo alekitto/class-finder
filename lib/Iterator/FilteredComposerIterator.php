@@ -46,7 +46,7 @@ final class FilteredComposerIterator extends ClassIterator
      * @param string[]|null $notNamespaces
      * @param string[]|null $dirs
      */
-    public function __construct(ClassLoader $classLoader, ?ReflectorFactoryInterface $reflectorFactory = null, ?array $namespaces, ?array $notNamespaces, ?array $dirs, int $flags = 0)
+    public function __construct(ClassLoader $classLoader, ?ReflectorFactoryInterface $reflectorFactory, ?array $namespaces, ?array $notNamespaces, ?array $dirs, int $flags = 0)
     {
         $this->classLoader = $classLoader;
         $this->reflectorFactory = $reflectorFactory ?? new NativeReflectorFactory();

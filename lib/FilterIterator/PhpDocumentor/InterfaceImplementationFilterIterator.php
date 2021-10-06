@@ -21,7 +21,6 @@ final class InterfaceImplementationFilterIterator extends FilterIterator
     /**
      * @param Iterator<Element> $iterator
      * @param string[] $interfaces
-     *
      * @phpstan-param class-string[] $interfaces
      */
     public function __construct(Iterator $iterator, array $interfaces)

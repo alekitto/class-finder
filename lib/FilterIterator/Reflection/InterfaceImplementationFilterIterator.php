@@ -16,7 +16,6 @@ final class InterfaceImplementationFilterIterator extends FilterIterator
     /**
      * @param Iterator<Reflector> $iterator
      * @param string[] $interfaces
-     *
      * @phpstan-param class-string[] $interfaces
      */
     public function __construct(Iterator $iterator, array $interfaces)
@@ -26,10 +25,7 @@ final class InterfaceImplementationFilterIterator extends FilterIterator
         $this->interfaces = $interfaces;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function accept()
+    public function accept(): bool
     {
         $className = $this->getInnerIterator()->key();
         $reflectionClass = $this->getInnerIterator()->current();

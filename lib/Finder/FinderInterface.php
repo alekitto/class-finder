@@ -15,21 +15,20 @@ interface FinderInterface extends IteratorAggregate
      * Pass null to disable this filter.
      *
      * @param string|string[] $interface
+     * @phpstan-param class-string|class-string[] $interface
      *
      * @return $this
-     *
-     * @phpstan-param class-string|class-string[] $interface
      */
-    public function implementationOf($interface): self;
+    public function implementationOf(string|array $interface): self;
 
     /**
      * Filters by class extension.
      * The class matches only if is an extension of $superClass.
      * Use null to disable this filter.
      *
-     * @return $this
-     *
      * @phpstan-param class-string|null $superClass
+     *
+     * @return $this
      */
     public function subclassOf(?string $superClass): self;
 
@@ -38,9 +37,9 @@ interface FinderInterface extends IteratorAggregate
      * The class matches only if a class annotation is present on the class.
      * The annotation target must be the class itself.
      *
-     * @return $this
-     *
      * @phpstan-param class-string|null $annotationClass
+     *
+     * @return $this
      */
     public function annotatedBy(?string $annotationClass): self;
 
@@ -49,9 +48,9 @@ interface FinderInterface extends IteratorAggregate
      * The class matches only if a PHP attribute is present on the class.
      * The attribute target must be the class itself.
      *
-     * @return $this
-     *
      * @phpstan-param class-string|null $attributeClass
+     *
+     * @return $this
      */
     public function withAttribute(?string $attributeClass): self;
 
@@ -62,7 +61,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function in($dirs): self;
+    public function in(string|array $dirs): self;
 
     /**
      * Adds namespace(s) to search classes into.
@@ -71,7 +70,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function inNamespace($namespaces): self;
+    public function inNamespace(string|array $namespaces): self;
 
     /**
      * Adds namespace(s) to exclude from search.
@@ -80,7 +79,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function notInNamespace($namespaces): self;
+    public function notInNamespace(string|array $namespaces): self;
 
     /**
      * Sets a custom callback for class filtering.

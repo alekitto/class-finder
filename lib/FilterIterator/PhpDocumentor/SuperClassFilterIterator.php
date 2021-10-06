@@ -17,7 +17,6 @@ final class SuperClassFilterIterator extends FilterIterator
 
     /**
      * @param Iterator<Element> $iterator
-     *
      * @phpstan-param class-string $superClass
      */
     public function __construct(Iterator $iterator, string $superClass)

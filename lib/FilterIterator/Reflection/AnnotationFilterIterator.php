@@ -17,7 +17,6 @@ final class AnnotationFilterIterator extends FilterIterator
 
     /**
      * @param Iterator<Reflector> $iterator
-     *
      * @phpstan-param class-string $annotation
      */
     public function __construct(Iterator $iterator, string $annotation)

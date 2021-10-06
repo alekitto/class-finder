@@ -10,7 +10,6 @@ use Kcs\ClassFinder\Fixtures\Psr4;
 use Kcs\ClassFinder\Fixtures\Psr4WithClassMap;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use Symfony\Component\Debug\DebugClassLoader;
 use Symfony\Component\ErrorHandler\DebugClassLoader as ErrorHandlerClassLoader;
 use Traversable;
 
@@ -22,21 +21,6 @@ class ComposerFinderTest extends TestCase
     {
         $finder = new ComposerFinder();
         self::assertInstanceOf(Traversable::class, $finder);
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testShouldNotThrowWhenSymfonyDebugClassLoaderIsEnabled(): void
-    {
-        DebugClassLoader::enable();
-
-        try {
-            $finder = new ComposerFinder();
-            self::assertInstanceOf(ComposerFinder::class, $finder);
-        } finally {
-            DebugClassLoader::disable();
-        }
     }
 
     public function testShouldNotThrowWhenSymfonyErrorHandlerClassLoaderIsEnabled(): void

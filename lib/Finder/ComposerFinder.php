@@ -11,8 +11,7 @@ use Kcs\ClassFinder\Iterator\FilteredComposerIterator;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Reflector;
 use RuntimeException;
-use Symfony\Component\Debug\DebugClassLoader;
-use Symfony\Component\ErrorHandler\DebugClassLoader as ErrorHandlerClassLoader;
+use Symfony\Component\ErrorHandler\DebugClassLoader;
 
 use function class_exists;
 use function is_array;
@@ -62,12 +61,8 @@ final class ComposerFinder implements FinderInterface
     private static function getValidLoader(): ClassLoader
     {
         foreach (spl_autoload_functions() as $autoloadFn) {
-            if (is_array($autoloadFn)) {
-                if (class_exists(DebugClassLoader::class) && $autoloadFn[0] instanceof DebugClassLoader) {
-                    $autoloadFn = $autoloadFn[0]->getClassLoader();
-                } elseif (class_exists(ErrorHandlerClassLoader::class) && $autoloadFn[0] instanceof ErrorHandlerClassLoader) {
-                    $autoloadFn = $autoloadFn[0]->getClassLoader();
-                }
+            if (is_array($autoloadFn) && class_exists(DebugClassLoader::class) && $autoloadFn[0] instanceof DebugClassLoader) {
+                $autoloadFn = $autoloadFn[0]->getClassLoader();
             }
 
             if (is_array($autoloadFn) && $autoloadFn[0] instanceof ClassLoader) {
