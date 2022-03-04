@@ -75,4 +75,17 @@ class ErrorHandlerTest extends TestCase
         self::assertNotNull($error);
         self::assertEquals('unlink(this_file_does_not_exist.bad_idea): No such file or directory', $error[1]);
     }
+
+    public function testShouldNotCrashIfPreviousErrorHandlerReturnsNullOrVoid(): void
+    {
+        $this->expectNotToPerformAssertions();
+
+        ErrorHandler::unregister();
+        $previous = set_error_handler(static function () use (&$previous): void {
+            call_user_func_array($previous, func_get_args());
+        });
+
+        ErrorHandler::register();
+        @unlink('this_file_does_not_exist.bad_idea');
+    }
 }

@@ -32,7 +32,7 @@ final class ErrorHandler
     {
         // Do not raise an exception when the error suppression operator (@) was used.
         if (! ($errorNumber & error_reporting())) {
-            return call_user_func_array(self::$previous, func_get_args());
+            return call_user_func_array(self::$previous, func_get_args()) ?? false;
         }
 
         switch ($errorNumber) {
@@ -49,7 +49,7 @@ final class ErrorHandler
                 throw new Error($errorString, $errorNumber);
         }
 
-        return call_user_func_array(self::$previous, func_get_args());
+        return call_user_func_array(self::$previous, func_get_args()) ?? false;
     }
 
     public static function register(): void
