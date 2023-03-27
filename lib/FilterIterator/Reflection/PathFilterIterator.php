@@ -4,13 +4,20 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\FilterIterator\Reflection;
 
+use Iterator;
 use Kcs\ClassFinder\FilterIterator\MultiplePcreFilterIterator;
+use ReflectionClass;
 
 use function preg_quote;
 use function str_replace;
 
 use const DIRECTORY_SEPARATOR;
 
+/**
+ * @template-covariant TValue of ReflectionClass
+ * @template T of Iterator<class-string, TValue>
+ * @template-extends MultiplePcreFilterIterator<TValue, T>
+ */
 final class PathFilterIterator extends MultiplePcreFilterIterator
 {
     /**
@@ -26,6 +33,10 @@ final class PathFilterIterator extends MultiplePcreFilterIterator
         }
 
         $filename = $reflector->getFileName();
+        if ($filename === false) {
+            return false;
+        }
+
         if (DIRECTORY_SEPARATOR === '\\') {
             $filename = str_replace('\\', '/', $filename);
         }

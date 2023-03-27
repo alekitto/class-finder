@@ -67,19 +67,19 @@ final class PhpDocumentorIterator extends ClassIterator
         $this->docBlockFactory = DocBlockFactory::createInstance();
         if (class_exists(Factory\DocBlock::class)) {
             // phpdoc/reflection 4.x
-            $this->strategies = new ProjectFactoryStrategies([
+            $this->strategies = new ProjectFactoryStrategies([ // @phpstan-ignore-line
                 new Factory\Argument(new PrettyPrinter()),
-                new Factory\Class_(),
-                new Factory\Define(new PrettyPrinter()),
-                new Factory\GlobalConstant(new PrettyPrinter()),
-                new Factory\ClassConstant(new PrettyPrinter()),
+                new Factory\Class_(), // @phpstan-ignore-line
+                new Factory\Define(new PrettyPrinter()), // @phpstan-ignore-line
+                new Factory\GlobalConstant(new PrettyPrinter()), // @phpstan-ignore-line
+                new Factory\ClassConstant(new PrettyPrinter()), // @phpstan-ignore-line
                 new Factory\DocBlock($this->docBlockFactory),
-                new Factory\File(NodesFactory::createInstance()),
-                new Factory\Function_(),
-                new Factory\Interface_(),
-                new Factory\Method(),
-                new Factory\Property(new PrettyPrinter()),
-                new Factory\Trait_(),
+                new Factory\File(NodesFactory::createInstance()), // @phpstan-ignore-line
+                new Factory\Function_(), // @phpstan-ignore-line
+                new Factory\Interface_(), // @phpstan-ignore-line
+                new Factory\Method(), // @phpstan-ignore-line
+                new Factory\Property(new PrettyPrinter()), // @phpstan-ignore-line
+                new Factory\Trait_(), // @phpstan-ignore-line
             ]);
         } else {
             $this->strategies = new ProjectFactoryStrategies([
@@ -147,10 +147,7 @@ final class PhpDocumentorIterator extends ClassIterator
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function isInstantiable($reflector): bool
+    protected function isInstantiable(mixed $reflector): bool
     {
         return $reflector instanceof Class_ && ! $reflector->isAbstract();
     }
@@ -168,8 +165,8 @@ final class PhpDocumentorIterator extends ClassIterator
 
             if (class_exists(Factory\DocBlock::class)) {
                 // phpdoc/reflection 4.x
-                $factory = new Factory\File(NodesFactory::createInstance());
-                $reflector = $factory->create(new LocalFile($path), $this->strategies);
+                $factory = new Factory\File(NodesFactory::createInstance()); // @phpstan-ignore-line
+                $reflector = $factory->create(new LocalFile($path), $this->strategies); // @phpstan-ignore-line
             } else {
                 $project = new Project('project');
                 $contextStack = new Factory\ContextStack($project);

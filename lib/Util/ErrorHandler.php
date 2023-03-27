@@ -44,7 +44,7 @@ final class ErrorHandler
                 break;
 
             default:
-                throw new Error($errorString, $errorNumber);
+                throw new Error($errorString, $errorNumber); // @phpstan-ignore-line
         }
 
         return call_user_func_array(self::$previous, func_get_args()) ?? false;
@@ -69,7 +69,7 @@ final class ErrorHandler
         $previous = set_error_handler(static fn () => false);
         restore_error_handler();
         if ($previous !== [self::class, 'handleError']) {
-            throw new Error('Error handler has changed, cannot unregister the handler');
+            throw new Error('Error handler has changed, cannot unregister the handler'); // @phpstan-ignore-line
         }
 
         restore_error_handler();

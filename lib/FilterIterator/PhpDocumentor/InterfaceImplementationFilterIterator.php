@@ -8,6 +8,7 @@ use FilterIterator;
 use Iterator;
 use phpDocumentor\Reflection\Element;
 use phpDocumentor\Reflection\Php\Class_;
+use Stringable;
 
 use function array_map;
 use function in_array;
@@ -32,7 +33,7 @@ final class InterfaceImplementationFilterIterator extends FilterIterator
             return false;
         }
 
-        $interfaces = array_map(static fn (string $interface) => ltrim($interface, '\\'), $reflector->getInterfaces());
+        $interfaces = array_map(static fn (string|Stringable $interface) => ltrim((string) $interface, '\\'), $reflector->getInterfaces());
         foreach ($this->interfaces as $interface) {
             if (in_array($interface, $interfaces, true)) {
                 return true;

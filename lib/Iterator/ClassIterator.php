@@ -10,6 +10,7 @@ use ReflectionClass;
 
 use function assert;
 use function call_user_func;
+use function is_string;
 
 /**
  * Abstract class iterator.
@@ -131,6 +132,7 @@ abstract class ClassIterator implements Iterator
         }
 
         $className = $this->generator()->key();
+        assert(is_string($className));
         if (isset($this->foundClasses[$className])) {
             return false;
         }

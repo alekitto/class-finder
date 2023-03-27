@@ -6,12 +6,17 @@ namespace Kcs\ClassFinder\FilterIterator\Reflection;
 
 use FilterIterator;
 use Iterator;
-use Reflector;
+use ReflectionClass;
 
+/**
+ * @template-covariant TValue of ReflectionClass
+ * @template T of Iterator<class-string, TValue>
+ * @template-extends FilterIterator<class-string, TValue, T>
+ */
 final class InterfaceImplementationFilterIterator extends FilterIterator
 {
     /**
-     * @param Iterator<Reflector> $iterator
+     * @param T $iterator
      * @param string[] $interfaces
      * @phpstan-param class-string[] $interfaces
      */

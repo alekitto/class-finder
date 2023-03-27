@@ -22,7 +22,7 @@ final class AttributeFilterIterator extends FilterIterator
      * @param Iterator<Element> $iterator
      * @phpstan-param class-string $attribute
      */
-    public function __construct(Iterator $iterator, private string $attribute)
+    public function __construct(Iterator $iterator, private string $attribute) // @phpstan-ignore-line
     {
         parent::__construct($iterator);
     }

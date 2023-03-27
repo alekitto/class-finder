@@ -7,18 +7,24 @@ namespace Kcs\ClassFinder\FilterIterator\Reflection;
 use FilterIterator;
 use Iterator;
 use Kcs\ClassFinder\PathNormalizer;
-use Reflector;
+use ReflectionClass;
 
 use function array_map;
-use function strpos;
+use function is_string;
+use function str_starts_with;
 
+/**
+ * @template-covariant TValue of ReflectionClass
+ * @template T of Iterator<class-string, TValue>
+ * @template-extends FilterIterator<class-string, TValue, T>
+ */
 final class DirectoryFilterIterator extends FilterIterator
 {
     /** @var string[] */
     private array $dirs;
 
     /**
-     * @param Iterator<Reflector> $iterator
+     * @param T $iterator
      * @param string[] $dirs
      */
     public function __construct(Iterator $iterator, array $dirs)
@@ -38,7 +44,8 @@ final class DirectoryFilterIterator extends FilterIterator
         }
 
         foreach ($this->dirs as $dir) {
-            if (strpos($reflectionClass->getFileName(), $dir) === 0) {
+            $filename = $reflectionClass->getFileName();
+            if (is_string($filename) && str_starts_with($filename, $dir)) {
                 return true;
             }
         }
