@@ -7,7 +7,7 @@ namespace Kcs\ClassFinder\Finder;
 use CallbackFilterIterator;
 use Iterator;
 use Kcs\ClassFinder\FilterIterator\Reflection as Filters;
-use Reflector;
+use ReflectionClass;
 
 use function assert;
 
@@ -16,9 +16,11 @@ trait ReflectionFilterTrait
     use FinderTrait;
 
     /**
-     * @param Iterator<Reflector> $iterator
+     * @param T $iterator
      *
-     * @return Iterator<Reflector>
+     * @return Iterator<class-string, ReflectionClass>
+     *
+     * @template T of Iterator<class-string, ReflectionClass>
      */
     private function applyFilters(Iterator $iterator): Iterator
     {

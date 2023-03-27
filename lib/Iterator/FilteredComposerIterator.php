@@ -76,6 +76,7 @@ final class FilteredComposerIterator extends ClassIterator
      */
     private function searchInClassMap(): Generator
     {
+        /** @var class-string $class */
         foreach ($this->classLoader->getClassMap() as $class => $file) {
             if (! $this->validNamespace($class)) {
                 continue;
@@ -120,7 +121,7 @@ final class FilteredComposerIterator extends ClassIterator
         }
     }
 
-    /** @param array<string, string[]> $prefixes */
+    /** @param array<string, string[]|string> $prefixes */
     private function traversePrefixes(array $prefixes): Generator
     {
         foreach ($prefixes as $ns => $dirs) {
@@ -128,6 +129,7 @@ final class FilteredComposerIterator extends ClassIterator
                 continue;
             }
 
+            $dirs = (array) $dirs;
             foreach ($dirs as $dir) {
                 $dir = PathNormalizer::resolvePath($dir);
                 if (! $this->validDir($dir)) {

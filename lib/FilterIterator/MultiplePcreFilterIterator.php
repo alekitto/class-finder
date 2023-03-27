@@ -6,10 +6,16 @@ namespace Kcs\ClassFinder\FilterIterator;
 
 use FilterIterator;
 use Iterator;
+use ReflectionClass;
 
 use function Safe\preg_match;
 use function Safe\substr;
 
+/**
+ * @template-covariant TValue of ReflectionClass
+ * @template T of Iterator<class-string, TValue>
+ * @template-extends FilterIterator<class-string, TValue, T>
+ */
 abstract class MultiplePcreFilterIterator extends FilterIterator
 {
     /** @var string[] */
@@ -19,9 +25,9 @@ abstract class MultiplePcreFilterIterator extends FilterIterator
     protected array $noMatchRegexps = [];
 
     /**
-     * @param Iterator<mixed> $iterator The Iterator to filter
-     * @param string[]     $matchPatterns   An array of patterns that need to match
-     * @param string[]     $noMatchPatterns An array of patterns that need to not match
+     * @param T        $iterator The Iterator to filter
+     * @param string[] $matchPatterns   An array of patterns that need to match
+     * @param string[] $noMatchPatterns An array of patterns that need to not match
      */
     public function __construct(Iterator $iterator, array $matchPatterns, array $noMatchPatterns)
     {

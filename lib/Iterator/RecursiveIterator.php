@@ -26,6 +26,7 @@ final class RecursiveIterator extends ClassIterator
         parent::__construct($flags);
     }
 
+    /** @return Generator<class-string, ReflectionClass> */
     protected function getGenerator(): Generator
     {
         $includedFiles = [];

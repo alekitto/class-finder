@@ -7,14 +7,19 @@ namespace Kcs\ClassFinder\FilterIterator\Reflection;
 use Doctrine\Common\Annotations\AnnotationReader;
 use FilterIterator;
 use Iterator;
-use Reflector;
+use ReflectionClass;
 
+/**
+ * @template-covariant TValue of ReflectionClass
+ * @template T of Iterator<class-string, TValue>
+ * @template-extends FilterIterator<class-string, TValue, T>
+ */
 final class AnnotationFilterIterator extends FilterIterator
 {
     private AnnotationReader $reader;
 
     /**
-     * @param Iterator<Reflector> $iterator
+     * @param T $iterator
      * @phpstan-param class-string $annotation
      */
     public function __construct(Iterator $iterator, private string $annotation)

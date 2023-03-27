@@ -36,6 +36,7 @@ final class ComposerIterator extends ClassIterator
      */
     private function searchInClassMap(): Generator
     {
+        /** @var class-string $class */
         foreach ($this->classLoader->getClassMap() as $class => $file) {
             ErrorHandler::register();
             try {
@@ -70,7 +71,7 @@ final class ComposerIterator extends ClassIterator
         }
 
         foreach ($this->classLoader->getPrefixes() as $ns => $dirs) {
-            foreach ($dirs as $dir) {
+            foreach ((array) $dirs as $dir) {
                 yield from new Psr0Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap());
             }
         }
