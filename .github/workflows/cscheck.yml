@@ -23,7 +23,7 @@ jobs:
                     tools: cs2pr
 
             -   name: Cache dependencies installed with composer
-                uses: actions/cache@v1
+                uses: actions/cache@v3
                 with:
                     path: "~/.composer/cache"
                     key: php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}
@@ -32,11 +32,5 @@ jobs:
             -   name: Install dependencies with composer
                 run: composer update --no-interaction --no-progress --no-suggest
 
-            -   name: Install git-phpcs
-                run: wget https://github.com/diff-sniffer/git/releases/download/0.3.2/git-phpcs.phar
-
-            -   name: Fetch head branch
-                run: git remote add upstream ${{ github.event.pull_request.base.repo.clone_url }} && git fetch upstream
-
             -   name: Run git-phpcs
-                run: php git-phpcs.phar ${{ github.event.pull_request.base.sha }}...$GITHUB_SHA --report=checkstyle | cs2pr
+                run: composer cscheck -- --report=checkstyle | cs2pr
