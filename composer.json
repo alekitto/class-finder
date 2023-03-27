@@ -17,7 +17,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": "^8.0",
-        "thecodingmachine/safe": "^1.0"
+        "thecodingmachine/safe": "^1.0 || ^2.0"
     },
     "require-dev": {
         "doctrine/annotations": "^1.0",
