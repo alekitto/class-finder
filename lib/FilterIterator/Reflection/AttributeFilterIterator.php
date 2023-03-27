@@ -12,18 +12,13 @@ use function count;
 
 final class AttributeFilterIterator extends FilterIterator
 {
-    /** @phpstan-var class-string */
-    private string $attribute;
-
     /**
      * @param Iterator<Reflector> $iterator
      * @phpstan-param class-string $attribute
      */
-    public function __construct(Iterator $iterator, string $attribute)
+    public function __construct(Iterator $iterator, private string $attribute)
     {
         parent::__construct($iterator);
-
-        $this->attribute = $attribute;
     }
 
     public function accept(): bool

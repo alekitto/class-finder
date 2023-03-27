@@ -17,16 +17,14 @@ use function assert;
 final class AttributeFilterIterator extends FilterIterator
 {
     // phpcs:ignore SlevomatCodingStandard.Classes.UnusedPrivateElements.WriteOnlyProperty
-    private string $attribute;
 
     /**
      * @param Iterator<Element> $iterator
      * @phpstan-param class-string $attribute
      */
-    public function __construct(Iterator $iterator, string $attribute)
+    public function __construct(Iterator $iterator, private string $attribute)
     {
         parent::__construct($iterator);
-        $this->attribute = $attribute;
     }
 
     public function accept(): bool

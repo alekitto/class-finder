@@ -30,7 +30,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function subclassOf(?string $superClass): self;
+    public function subclassOf(string|null $superClass): self;
 
     /**
      * Filters by a given annotation on the class.
@@ -41,7 +41,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function annotatedBy(?string $annotationClass): self;
+    public function annotatedBy(string|null $annotationClass): self;
 
     /**
      * Filters by a given attribute on the class.
@@ -52,7 +52,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function withAttribute(?string $attributeClass): self;
+    public function withAttribute(string|null $attributeClass): self;
 
     /**
      * Adds a search directory.
@@ -87,7 +87,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function filter(?callable $callback): self;
+    public function filter(callable|null $callback): self;
 
     /**
      * Adds rules that filenames must match.

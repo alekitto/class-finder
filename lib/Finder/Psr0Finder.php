@@ -23,7 +23,7 @@ final class Psr0Finder implements FinderInterface
 
     private string $namespace;
     private string $path;
-    private ?ReflectorFactoryInterface $reflectorFactory = null;
+    private ReflectorFactoryInterface|null $reflectorFactory = null;
 
     public function __construct(string $namespace, string $path)
     {
@@ -40,16 +40,14 @@ final class Psr0Finder implements FinderInterface
         $this->path = PathNormalizer::resolvePath($path);
     }
 
-    public function setReflectorFactory(?ReflectorFactoryInterface $reflectorFactory): self
+    public function setReflectorFactory(ReflectorFactoryInterface|null $reflectorFactory): self
     {
         $this->reflectorFactory = $reflectorFactory;
 
         return $this;
     }
 
-    /**
-     * @return Iterator<Reflector>
-     */
+    /** @return Iterator<Reflector> */
     public function getIterator(): Iterator
     {
         return $this->applyFilters(new Psr0Iterator($this->namespace, $this->path, $this->reflectorFactory));

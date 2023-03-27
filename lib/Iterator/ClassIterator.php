@@ -22,12 +22,10 @@ abstract class ClassIterator implements Iterator
 {
     public const SKIP_NON_INSTANTIABLE = 1;
 
-    private ?Generator $generator = null;
+    private Generator|null $generator = null;
 
     /** @var array<string, bool> */
     private array $foundClasses = [];
-
-    private int $flags;
 
     /** @var callable */
     private $_apply;
@@ -35,9 +33,8 @@ abstract class ClassIterator implements Iterator
     private mixed $_currentElement;
     private mixed $_current = null;
 
-    public function __construct(int $flags = 0)
+    public function __construct(private int $flags = 0)
     {
-        $this->flags = $flags;
         $this->apply(null);
         $this->rewind();
     }
@@ -69,7 +66,7 @@ abstract class ClassIterator implements Iterator
         }
     }
 
-    public function key(): int | string
+    public function key(): int|string
     {
         return $this->generator()->key();
     }
@@ -92,7 +89,7 @@ abstract class ClassIterator implements Iterator
      *
      * @return $this
      */
-    public function apply(?callable $func = null): self
+    public function apply(callable|null $func = null): self
     {
         if ($func === null) {
             $func = static function ($val) {

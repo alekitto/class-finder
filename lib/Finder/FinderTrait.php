@@ -27,28 +27,28 @@ trait FinderTrait
     private array $implements = [];
 
     /** @phpstan-var class-string|null */
-    private ?string $extends = null;
+    private string|null $extends = null;
 
     /** @phpstan-var class-string|null */
-    private ?string $annotation = null;
+    private string|null $annotation = null;
 
     /** @phpstan-var class-string|null */
-    private ?string $attribute = null;
+    private string|null $attribute = null;
 
     /** @var string[] */
-    private ?array $dirs = null;
+    private array|null $dirs = null;
 
     /** @var string[] */
-    private ?array $namespaces = null;
+    private array|null $namespaces = null;
 
     /** @var string[] */
-    private ?array $notNamespaces = null;
+    private array|null $notNamespaces = null;
 
     /** @var string[] */
-    private ?array $paths = null;
+    private array|null $paths = null;
 
     /** @var string[] */
-    private ?array $notPaths = null;
+    private array|null $notPaths = null;
 
     /** @var callable|null */
     private $callback = null;
@@ -63,21 +63,21 @@ trait FinderTrait
         return $this;
     }
 
-    public function subclassOf(?string $superClass): self
+    public function subclassOf(string|null $superClass): self
     {
         $this->extends = $superClass;
 
         return $this;
     }
 
-    public function annotatedBy(?string $annotationClass): self
+    public function annotatedBy(string|null $annotationClass): self
     {
         $this->annotation = $annotationClass;
 
         return $this;
     }
 
-    public function withAttribute(?string $attributeClass): self
+    public function withAttribute(string|null $attributeClass): self
     {
         $this->attribute = $attributeClass;
 
@@ -130,7 +130,7 @@ trait FinderTrait
         return $this;
     }
 
-    public function filter(?callable $callback): self
+    public function filter(callable|null $callback): self
     {
         $this->callback = $callback;
 

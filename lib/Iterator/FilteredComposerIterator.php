@@ -29,26 +29,24 @@ use function strpos;
  */
 final class FilteredComposerIterator extends ClassIterator
 {
-    private ClassLoader $classLoader;
     private ReflectorFactoryInterface $reflectorFactory;
 
     /** @var string[]|null */
-    private ?array $namespaces = null;
+    private array|null $namespaces = null;
 
     /** @var string[]|null */
-    private ?array $notNamespaces = null;
+    private array|null $notNamespaces = null;
 
     /** @var string[]|null */
-    private ?array $dirs;
+    private array|null $dirs;
 
     /**
      * @param string[]|null $namespaces
      * @param string[]|null $notNamespaces
      * @param string[]|null $dirs
      */
-    public function __construct(ClassLoader $classLoader, ?ReflectorFactoryInterface $reflectorFactory, ?array $namespaces, ?array $notNamespaces, ?array $dirs, int $flags = 0)
+    public function __construct(private ClassLoader $classLoader, ReflectorFactoryInterface|null $reflectorFactory, array|null $namespaces, array|null $notNamespaces, array|null $dirs, int $flags = 0)
     {
-        $this->classLoader = $classLoader;
         $this->reflectorFactory = $reflectorFactory ?? new NativeReflectorFactory();
         $this->dirs = $dirs !== null ? array_map(PathNormalizer::class . '::resolvePath', $dirs) : $dirs;
 
@@ -90,7 +88,7 @@ final class FilteredComposerIterator extends ClassIterator
             ErrorHandler::register();
             try {
                 $reflectionClass = $this->reflectorFactory->reflect($class);
-            } catch (Throwable $e) { /** @phpstan-ignore-line */
+            } catch (Throwable) { /** @phpstan-ignore-line */
                 continue;
             } finally {
                 ErrorHandler::unregister();
@@ -122,9 +120,7 @@ final class FilteredComposerIterator extends ClassIterator
         }
     }
 
-    /**
-     * @param array<string, string[]> $prefixes
-     */
+    /** @param array<string, string[]> $prefixes */
     private function traversePrefixes(array $prefixes): Generator
     {
         foreach ($prefixes as $ns => $dirs) {

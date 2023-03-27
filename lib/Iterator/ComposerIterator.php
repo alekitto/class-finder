@@ -16,12 +16,10 @@ use Throwable;
  */
 final class ComposerIterator extends ClassIterator
 {
-    private ClassLoader $classLoader;
     private ReflectorFactoryInterface $reflectorFactory;
 
-    public function __construct(ClassLoader $classLoader, ?ReflectorFactoryInterface $reflectorFactory = null, int $flags = 0)
+    public function __construct(private ClassLoader $classLoader, ReflectorFactoryInterface|null $reflectorFactory = null, int $flags = 0)
     {
-        $this->classLoader = $classLoader;
         $this->reflectorFactory = $reflectorFactory ?? new NativeReflectorFactory();
 
         parent::__construct($flags);
@@ -42,7 +40,7 @@ final class ComposerIterator extends ClassIterator
             ErrorHandler::register();
             try {
                 $reflectionClass = $this->reflectorFactory->reflect($class);
-            } catch (Throwable $e) { /** @phpstan-ignore-line */
+            } catch (Throwable) { /** @phpstan-ignore-line */
                 continue;
             } finally {
                 ErrorHandler::unregister();

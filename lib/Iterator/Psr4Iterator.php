@@ -26,34 +26,28 @@ final class Psr4Iterator extends ClassIterator
 {
     use PsrIteratorTrait;
 
-    private string $namespace;
     private int $prefixLen;
     private ReflectorFactoryInterface $reflectorFactory;
 
     /** @var array<string, mixed> */
     private array $classMap;
 
-    /** @var string[]|null */
-    private ?array $excludeNamespaces;
-
     /**
      * @param array<string, mixed> $classMap
      * @param string[] $excludeNamespaces
      */
     public function __construct(
-        string $namespace,
+        private string $namespace,
         string $path,
-        ?ReflectorFactoryInterface $reflectorFactory = null,
+        ReflectorFactoryInterface|null $reflectorFactory = null,
         int $flags = 0,
         array $classMap = [],
-        ?array $excludeNamespaces = null
+        private array|null $excludeNamespaces = null,
     ) {
-        $this->namespace = $namespace;
         $this->path = PathNormalizer::resolvePath($path);
         $this->reflectorFactory = $reflectorFactory ?? new NativeReflectorFactory();
         $this->prefixLen = strlen($this->path);
         $this->classMap = array_map(PathNormalizer::class . '::resolvePath', $classMap);
-        $this->excludeNamespaces = $excludeNamespaces;
 
         parent::__construct($flags);
     }
@@ -95,7 +89,7 @@ final class Psr4Iterator extends ClassIterator
             ErrorHandler::register();
             try {
                 $include($path);
-            } catch (Throwable $e) { /** @phpstan-ignore-line */
+            } catch (Throwable) { /** @phpstan-ignore-line */
                 continue;
             } finally {
                 ErrorHandler::unregister();

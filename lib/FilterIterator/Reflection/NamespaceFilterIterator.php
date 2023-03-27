@@ -12,18 +12,13 @@ use function strpos;
 
 final class NamespaceFilterIterator extends FilterIterator
 {
-    /** @var string[] */
-    private array $namespaces;
-
     /**
      * @param Iterator<Reflector> $iterator
      * @param string[] $namespaces
      */
-    public function __construct(Iterator $iterator, array $namespaces)
+    public function __construct(Iterator $iterator, private array $namespaces)
     {
         parent::__construct($iterator);
-
-        $this->namespaces = $namespaces;
     }
 
     public function accept(): bool

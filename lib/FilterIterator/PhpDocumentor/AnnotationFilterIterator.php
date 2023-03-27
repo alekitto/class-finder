@@ -15,16 +15,13 @@ use function assert;
 
 final class AnnotationFilterIterator extends FilterIterator
 {
-    private string $annotation;
-
     /**
      * @param Iterator<Element> $iterator
      * @phpstan-param class-string $annotation
      */
-    public function __construct(Iterator $iterator, string $annotation)
+    public function __construct(Iterator $iterator, private string $annotation)
     {
         parent::__construct($iterator);
-        $this->annotation = $annotation;
     }
 
     public function accept(): bool

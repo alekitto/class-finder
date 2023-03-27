@@ -25,23 +25,21 @@ final class ComposerFinder implements FinderInterface
     use ReflectionFilterTrait;
 
     private ClassLoader $loader;
-    private ?ReflectorFactoryInterface $reflectorFactory = null;
+    private ReflectorFactoryInterface|null $reflectorFactory = null;
 
-    public function __construct(?ClassLoader $loader = null)
+    public function __construct(ClassLoader|null $loader = null)
     {
         $this->loader = $loader ?? self::getValidLoader();
     }
 
-    public function setReflectorFactory(?ReflectorFactoryInterface $reflectorFactory): self
+    public function setReflectorFactory(ReflectorFactoryInterface|null $reflectorFactory): self
     {
         $this->reflectorFactory = $reflectorFactory;
 
         return $this;
     }
 
-    /**
-     * @return Iterator<Reflector>
-     */
+    /** @return Iterator<Reflector> */
     public function getIterator(): Iterator
     {
         if ($this->namespaces || $this->dirs || $this->notNamespaces) {
