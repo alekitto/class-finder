@@ -18,9 +18,7 @@ use const E_USER_NOTICE;
 use const E_USER_WARNING;
 use const E_WARNING;
 
-/**
- * @internal
- */
+/** @internal */
 final class ErrorHandler
 {
     private static bool $registered = false;

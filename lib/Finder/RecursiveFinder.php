@@ -21,9 +21,7 @@ final class RecursiveFinder implements FinderInterface
         $this->path = $path;
     }
 
-    /**
-     * @return Traversable<class-string, ReflectionClass>
-     */
+    /** @return Traversable<class-string, ReflectionClass> */
     public function getIterator(): Traversable
     {
         return $this->applyFilters(new RecursiveIterator($this->path));

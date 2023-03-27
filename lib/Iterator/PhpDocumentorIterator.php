@@ -51,13 +51,13 @@ final class PhpDocumentorIterator extends ClassIterator
     private string $path;
 
     /** @var string[] */
-    private ?array $dirs = null;
+    private array|null $dirs = null;
 
     /** @var string[] */
-    private ?array $paths = null;
+    private array|null $paths = null;
 
     /** @var string[] */
-    private ?array $notPaths = null;
+    private array|null $notPaths = null;
     private ProjectFactoryStrategies $strategies;
     private DocBlockFactory $docBlockFactory;
 
@@ -131,9 +131,7 @@ final class PhpDocumentorIterator extends ClassIterator
         return $this;
     }
 
-    /**
-     * @param string[] $patterns
-     */
+    /** @param string[] $patterns */
     public function path(array $patterns): self
     {
         $this->paths = array_map(PathFilterIterator::class . '::toRegex', $patterns);
@@ -141,9 +139,7 @@ final class PhpDocumentorIterator extends ClassIterator
         return $this;
     }
 
-    /**
-     * @param string[] $patterns
-     */
+    /** @param string[] $patterns */
     public function notPath(array $patterns): self
     {
         $this->notPaths = array_map(PathFilterIterator::class . '::toRegex', $patterns);
@@ -213,9 +209,9 @@ final class PhpDocumentorIterator extends ClassIterator
                         new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS | FilesystemIterator::FOLLOW_SYMLINKS),
                         static function (SplFileInfo $file) {
                             return $file->getBasename()[0] !== '.';
-                        }
+                        },
                     ),
-                    RecursiveIteratorIterator::LEAVES_ONLY
+                    RecursiveIteratorIterator::LEAVES_ONLY,
                 ));
                 uasort($files, static function (SplFileInfo $a, SplFileInfo $b) {
                     return (string) $a <=> (string) $b;

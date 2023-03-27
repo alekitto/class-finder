@@ -19,20 +19,14 @@ final class PhpDocumentorFinder implements FinderInterface
 {
     use PhpDocumentorFilterTrait;
 
-    private string $dir;
-
-    public function __construct(string $dir)
+    public function __construct(private string $dir)
     {
         if (! class_exists(Class_::class)) {
             throw new RuntimeException('phpdocumentor/reflection 4 is not installed. Try execute composer require phpdocumentor/reflection:^4.0');
         }
-
-        $this->dir = $dir;
     }
 
-    /**
-     * @return Iterator<Element>
-     */
+    /** @return Iterator<Element> */
     public function getIterator(): Iterator
     {
         $iterator = new PhpDocumentorIterator($this->dir);

@@ -10,19 +10,14 @@ use Reflector;
 
 final class InterfaceImplementationFilterIterator extends FilterIterator
 {
-    /** @var string[] */
-    private array $interfaces;
-
     /**
      * @param Iterator<Reflector> $iterator
      * @param string[] $interfaces
      * @phpstan-param class-string[] $interfaces
      */
-    public function __construct(Iterator $iterator, array $interfaces)
+    public function __construct(Iterator $iterator, private array $interfaces)
     {
         parent::__construct($iterator);
-
-        $this->interfaces = $interfaces;
     }
 
     public function accept(): bool
