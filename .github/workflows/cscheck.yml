@@ -36,7 +36,7 @@ jobs:
                 run: wget https://github.com/diff-sniffer/git/releases/download/0.3.2/git-phpcs.phar
 
             -   name: Fetch head branch
-                run: git remote set-branches --add origin $GITHUB_BASE_REF && git fetch origin $GITHUB_BASE_REF
+                run: git remote add upstream ${{ github.event.pull_request.base.repo.clone_url }} && git fetch upstream
 
             -   name: Run git-phpcs
-                run: php git-phpcs.phar origin/$GITHUB_BASE_REF...$GITHUB_SHA --report=checkstyle | cs2pr
+                run: php git-phpcs.phar ${{ github.event.pull_request.base.sha }}...$GITHUB_SHA --report=checkstyle | cs2pr
