@@ -5,6 +5,9 @@ on:
 
 jobs:
     build:
+        env:
+            COMPOSER_ROOT_VERSION: dev-master
+
         runs-on: ubuntu-latest
         name: Check code style
         steps:

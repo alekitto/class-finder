@@ -3,6 +3,9 @@ on: [push, pull_request]
 
 jobs:
     build:
+        env:
+            COMPOSER_ROOT_VERSION: dev-master
+
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
