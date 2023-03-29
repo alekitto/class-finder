@@ -32,17 +32,19 @@ use function array_unique;
 use function assert;
 use function class_exists;
 use function defined;
+use function function_exists;
+use function is_callable;
 use function is_dir;
 use function is_file;
 use function iterator_to_array;
 use function ltrim;
 use function Safe\glob;
 use function Safe\preg_match;
-use function Safe\uasort;
 use function strpos;
 
 use const GLOB_BRACE;
 use const GLOB_ONLYDIR;
+use const PHP_VERSION_ID;
 
 final class PhpDocumentorIterator extends ClassIterator
 {
@@ -213,15 +215,17 @@ final class PhpDocumentorIterator extends ClassIterator
 
                 /**
                  * Compatibility layer for uasort:
+                 *
                  * @see https://www.php.net/manual/en/function.uasort.php
                  * - in php 8.2.0 uasort always returns true instead of bool
                  * - subsequently the function has been removed from thecodingmachine\safe >= 2.0
                  */
-                $method =
-                    function_exists('\Safe\uasort') &&
-                    version_compare(phpversion(), "8.2.0", "<=") ? '\Safe\uasort' : '\uasort';
+                $uasort = function_exists('\Safe\uasort') && PHP_VERSION_ID <= 80200
+                    ? '\Safe\uasort'
+                    : '\uasort';
 
-                $method($files, static function (SplFileInfo $a, SplFileInfo $b) {
+                assert(is_callable($uasort));
+                $uasort($files, static function (SplFileInfo $a, SplFileInfo $b) {
                     return (string) $a <=> (string) $b;
                 });
 
