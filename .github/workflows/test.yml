@@ -27,21 +27,28 @@ jobs:
 
         name: 'PHP ${{ matrix.php_version }} (composer_flags: "${{ matrix.composer_flags }}")'
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
             - name: Setup PHP with pecl extension
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php_version }}
                   extensions: :opcache, pcov
-            - run: composer install ${{ matrix.composer_flags }}
+
+            - name: Install Composer dependencies
+              uses: ramsey/composer-install@v2
+              with:
+                  composer-options: ${{ matrix.composer_flags }}
+                  custom-cache-suffix: $(date -u "+%Y-%m")
+
             - run: vendor/bin/phpunit
               if: ${{ matrix.php_version != '8.0' }}
             - run: vendor/bin/phpunit --coverage-clover coverage.xml
               if: ${{ matrix.php_version == '8.0' }}
               env:
                   XDEBUG_MODE: coverage
+
             - name: Upload coverage to Codecov
               if: ${{ matrix.php_version == '8.0' }}
-              uses: codecov/codecov-action@v1
+              uses: codecov/codecov-action@v3
               with:
                   file: ./coverage.xml

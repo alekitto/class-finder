@@ -11,7 +11,7 @@ jobs:
         runs-on: ubuntu-latest
         name: Static analysis
         steps:
-            -   uses: actions/checkout@v2
+            -   uses: actions/checkout@v3
 
             -   name: Install PHP
                 uses: shivammathur/setup-php@v2
@@ -20,15 +20,11 @@ jobs:
                     php-version: "8.1"
                     tools: cs2pr
 
-            -   name: Cache dependencies installed with composer
-                uses: actions/cache@v3
-                with:
-                    path: "~/.composer/cache"
-                    key: php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}
-                    restore-keys: php-${{ matrix.php-version }}-composer-locked-
-
-            -   name: Install dependencies with composer
-                run: composer update --no-progress --no-interaction --prefer-dist
+            - name: Install Composer dependencies
+              uses: ramsey/composer-install@v2
+              with:
+                  # Bust the cache at least once a month - output format: YYYY-MM.
+                  custom-cache-suffix: $(date -u "+%Y-%m")
 
             -   name: Run a static analysis with phpstan/phpstan
                 run: php vendor/bin/phpstan analyse lib/ -c vendor/solido/php-coding-standards/phpstan.neon --level=8 --no-progress -vvv --memory-limit=2048M --error-format=checkstyle | cs2pr
