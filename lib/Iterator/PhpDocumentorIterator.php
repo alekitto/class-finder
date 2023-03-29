@@ -210,7 +210,18 @@ final class PhpDocumentorIterator extends ClassIterator
                     ),
                     RecursiveIteratorIterator::LEAVES_ONLY,
                 ));
-                uasort($files, static function (SplFileInfo $a, SplFileInfo $b) {
+
+                /**
+                 * Compatibility layer for uasort:
+                 * @see https://www.php.net/manual/en/function.uasort.php
+                 * - in php 8.2.0 uasort always returns true instead of bool
+                 * - subsequently the function has been removed from thecodingmachine\safe >= 2.0
+                 */
+                $method =
+                    function_exists('\Safe\uasort') &&
+                    version_compare(phpversion(), "8.2.0", "<=") ? '\Safe\uasort' : '\uasort';
+
+                $method($files, static function (SplFileInfo $a, SplFileInfo $b) {
                     return (string) $a <=> (string) $b;
                 });
 
