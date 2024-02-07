@@ -7,10 +7,11 @@ namespace Kcs\ClassFinder\Tests\Finder;
 use Kcs\ClassFinder\Finder\RecursiveFinder;
 use Kcs\ClassFinder\Fixtures\Psr0;
 use Kcs\ClassFinder\Fixtures\Psr4;
+use Kcs\ClassFinder\Fixtures\Recursive;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use SplFileInfo;
 use Traversable;
-
 use function iterator_to_array;
 
 class RecursiveFinderTest extends TestCase
@@ -106,5 +107,20 @@ class RecursiveFinderTest extends TestCase
         self::assertEquals([
             Psr4\AbstractClass::class => new ReflectionClass(Psr4\AbstractClass::class),
         ], iterator_to_array($finder));
+    }
+
+    public function testFinderShouldFilterByIteratorCallback(): void
+    {
+        $finder = new RecursiveFinder(__DIR__ . '/../../data/Recursive');
+        $finder->fileFilter(static function (string $path, SplFileInfo $info): bool {
+            return !str_starts_with($info->getFilename(), 'class-');
+        });
+
+        $classes = iterator_to_array($finder);
+
+        self::assertEquals([
+            Recursive\Bar::class => new ReflectionClass(Recursive\Bar::class),
+            Recursive\Foo::class => new ReflectionClass(Recursive\Foo::class),
+        ], $classes);
     }
 }

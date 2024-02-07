@@ -15,6 +15,9 @@ final class RecursiveFinder implements FinderInterface
 
     private string $path;
 
+    /** @var callable|null */
+    private $iteratorCallback = null;
+
     public function __construct(string $path)
     {
         $path = PathNormalizer::resolvePath($path);
@@ -24,6 +27,13 @@ final class RecursiveFinder implements FinderInterface
     /** @return Traversable<class-string, ReflectionClass> */
     public function getIterator(): Traversable
     {
-        return $this->applyFilters(new RecursiveIterator($this->path));
+        return $this->applyFilters(new RecursiveIterator($this->path, 0, $this->iteratorCallback));
+    }
+
+    public function fileFilter(callable|null $callback): self
+    {
+        $this->iteratorCallback = $callback;
+
+        return $this;
     }
 }

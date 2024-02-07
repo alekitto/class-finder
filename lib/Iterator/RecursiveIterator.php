@@ -19,9 +19,14 @@ final class RecursiveIterator extends ClassIterator
 {
     use RecursiveIteratorTrait;
 
-    public function __construct(string $path, int $flags = 0)
+    /** @var callable|null */
+    private $callback = null;
+
+    public function __construct(string $path, int $flags = 0, callable|null $callback = null)
     {
         $this->path = PathNormalizer::resolvePath($path);
+
+        $this->callback = $callback;
 
         parent::__construct($flags);
     }
@@ -34,6 +39,10 @@ final class RecursiveIterator extends ClassIterator
 
         foreach ($this->search() as $path => $info) {
             if (! preg_match($pattern, $path, $m) || ! $info->isReadable()) {
+                continue;
+            }
+
+            if($this->callback && !call_user_func($this->callback, $path, $info)) {
                 continue;
             }
 
