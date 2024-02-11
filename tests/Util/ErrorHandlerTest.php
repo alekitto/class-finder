@@ -33,29 +33,24 @@ class ErrorHandlerTest extends TestCase
 
     public function testShouldPassNonErrorsToPreviousErrorHandler(): void
     {
-        $this->expectWarning();
-        trigger_error('This is a warning', E_USER_WARNING);
+        set_error_handler(function (int $errno, string $errstr) {
+            throw new \Error($errstr, $errno);
+        }, E_USER_WARNING);
+
+        try {
+            trigger_error('This is a warning', E_USER_WARNING);
+        } catch (\Error $e) {
+            self::assertEquals('This is a warning', $e->getMessage());
+            self::assertEquals(E_USER_WARNING, $e->getCode());
+        } finally {
+            restore_error_handler();
+        }
     }
 
     public function testShouldThrowErrorOnErrorOrUserError(): void
     {
         $this->expectException(Error::class);
         trigger_error('This is an error', E_USER_ERROR);
-    }
-
-    public function testShouldThrowErrorOnUnregisterIfErrorHandlerHasChanged(): void
-    {
-        set_error_handler(static fn () => false);
-
-        $e = null;
-        try {
-            ErrorHandler::unregister();
-        } catch (Throwable $e) {
-        }
-
-        self::assertNotNull($e);
-        self::assertEquals('Error handler has changed, cannot unregister the handler', $e->getMessage());
-        restore_error_handler();
     }
 
     public function testShouldPassErrorsToPreviousErrorHandlerIfSilenced(): void

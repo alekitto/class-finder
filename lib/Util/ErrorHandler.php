@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Util;
 
+use function array_map;
+use function array_reverse;
 use function call_user_func_array;
 use function error_reporting;
 use function func_get_args;
@@ -66,13 +68,23 @@ final class ErrorHandler
             return;
         }
 
-        $previous = set_error_handler(static fn () => false);
-        restore_error_handler();
-        if ($previous !== [self::class, 'handleError']) {
-            throw new Error('Error handler has changed, cannot unregister the handler'); // @phpstan-ignore-line
+        $stack = [];
+        while (true) {
+            $previous = set_error_handler(static fn () => false);
+            restore_error_handler();
+            if ($previous === null) {
+                throw new Error('Error handler has changed, cannot unregister the handler'); // @phpstan-ignore-line
+            }
+
+            restore_error_handler();
+            if ($previous === [self::class, 'handleError']) {
+                array_map('set_error_handler', array_reverse($stack));
+                break;
+            }
+
+            $stack[] = $previous;
         }
 
-        restore_error_handler();
         self::$registered = false;
     }
 }
