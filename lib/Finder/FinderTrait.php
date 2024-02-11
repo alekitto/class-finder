@@ -51,10 +51,13 @@ trait FinderTrait
     private array|null $notPaths = null;
 
     /** @var callable|null */
-    private $callback = null;
+    private $filterCallback = null;
+
+    /** @var callable|null */
+    private $pathFilterCallback = null;
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function implementationOf($interface): self
     {
@@ -85,7 +88,7 @@ trait FinderTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function in($dirs): self
     {
@@ -111,7 +114,7 @@ trait FinderTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function inNamespace($namespaces): self
     {
@@ -121,7 +124,7 @@ trait FinderTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function notInNamespace($namespaces): self
     {
@@ -132,13 +135,13 @@ trait FinderTrait
 
     public function filter(callable|null $callback): self
     {
-        $this->callback = $callback;
+        $this->filterCallback = $callback;
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function path($pattern): self
     {
@@ -148,11 +151,18 @@ trait FinderTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function notPath($pattern): self
     {
         $this->notPaths[] = $pattern;
+
+        return $this;
+    }
+
+    public function pathFilter(callable|null $callback): self
+    {
+        $this->pathFilterCallback = $callback;
 
         return $this;
     }

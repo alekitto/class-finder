@@ -50,6 +50,11 @@ final class Psr0Finder implements FinderInterface
     /** @return Iterator<Reflector> */
     public function getIterator(): Iterator
     {
-        return $this->applyFilters(new Psr0Iterator($this->namespace, $this->path, $this->reflectorFactory));
+        return $this->applyFilters(new Psr0Iterator(
+            $this->namespace,
+            $this->path,
+            reflectorFactory: $this->reflectorFactory,
+            pathCallback: $this->pathFilterCallback !== null ? ($this->pathFilterCallback)(...) : null,
+        ));
     }
 }

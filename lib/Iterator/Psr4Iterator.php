@@ -17,10 +17,10 @@ use function defined;
 use function in_array;
 use function ltrim;
 use function Safe\preg_match;
-use function Safe\substr;
 use function str_replace;
 use function strlen;
 use function strpos;
+use function substr;
 
 final class Psr4Iterator extends ClassIterator
 {
@@ -37,19 +37,20 @@ final class Psr4Iterator extends ClassIterator
      * @param string[] $excludeNamespaces
      */
     public function __construct(
-        private string $namespace,
+        private readonly string $namespace,
         string $path,
         ReflectorFactoryInterface|null $reflectorFactory = null,
         int $flags = 0,
         array $classMap = [],
-        private array|null $excludeNamespaces = null,
+        private readonly array|null $excludeNamespaces = null,
+        Closure|null $pathCallback = null,
     ) {
         $this->path = PathNormalizer::resolvePath($path);
         $this->reflectorFactory = $reflectorFactory ?? new NativeReflectorFactory();
         $this->prefixLen = strlen($this->path);
         $this->classMap = array_map(PathNormalizer::class . '::resolvePath', $classMap);
 
-        parent::__construct($flags);
+        parent::__construct($flags, $pathCallback);
     }
 
     protected function getGenerator(): Generator
@@ -65,6 +66,10 @@ final class Psr4Iterator extends ClassIterator
             }
 
             if (in_array($path, $this->classMap, true)) {
+                continue;
+            }
+
+            if ($this->pathCallback && ! ($this->pathCallback)($path)) {
                 continue;
             }
 

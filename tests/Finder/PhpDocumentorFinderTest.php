@@ -55,6 +55,7 @@ class PhpDocumentorFinderTest extends TestCase
         $finder
             ->inNamespace(['Kcs\ClassFinder\Fixtures'])
             ->notInNamespace([
+                'Kcs\ClassFinder\Fixtures\Recursive',
                 'Kcs\ClassFinder\Fixtures\Psr4',
                 'Kcs\ClassFinder\Fixtures\Psr4WithClassMap',
             ]);
@@ -150,5 +151,22 @@ class PhpDocumentorFinderTest extends TestCase
         self::assertCount(1, $classes);
         self::assertArrayHasKey(Psr4\AbstractClass::class, $classes);
         self::assertInstanceOf(Class_::class, $classes[Psr4\AbstractClass::class]);
+    }
+
+    public function testFinderShouldFilterByPathCallback(): void
+    {
+        $finder = new PhpDocumentorFinder(__DIR__ . '/../../data');
+        $finder->in([__DIR__ . '/../../data/Composer/Psr?']);
+        $finder->pathFilter(static fn (string $path): bool => !str_ends_with($path, 'BarBar.php'));
+
+        $classes = iterator_to_array($finder);
+
+        self::assertCount(8, $classes);
+        self::assertArrayHasKey(Psr4\AbstractClass::class, $classes);
+        self::assertInstanceOf(Class_::class, $classes[Psr4\AbstractClass::class]);
+        self::assertArrayHasKey(Psr0\Foobar::class, $classes);
+        self::assertInstanceOf(Class_::class, $classes[Psr0\Foobar::class]);
+        self::assertArrayHasKey(Psr0\SubNs\FooBaz::class, $classes);
+        self::assertInstanceOf(Class_::class, $classes[Psr0\SubNs\FooBaz::class]);
     }
 }

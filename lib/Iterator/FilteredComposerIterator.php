@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Iterator;
 
+use Closure;
 use Composer\Autoload\ClassLoader;
 use Generator;
 use Kcs\ClassFinder\PathNormalizer;
@@ -45,8 +46,15 @@ final class FilteredComposerIterator extends ClassIterator
      * @param string[]|null $notNamespaces
      * @param string[]|null $dirs
      */
-    public function __construct(private ClassLoader $classLoader, ReflectorFactoryInterface|null $reflectorFactory, array|null $namespaces, array|null $notNamespaces, array|null $dirs, int $flags = 0)
-    {
+    public function __construct(
+        private readonly ClassLoader $classLoader,
+        ReflectorFactoryInterface|null $reflectorFactory,
+        array|null $namespaces,
+        array|null $notNamespaces,
+        array|null $dirs,
+        int $flags = 0,
+        Closure|null $pathCallback = null,
+    ) {
         $this->reflectorFactory = $reflectorFactory ?? new NativeReflectorFactory();
         $this->dirs = $dirs !== null ? array_map(PathNormalizer::class . '::resolvePath', $dirs) : $dirs;
 
@@ -62,7 +70,7 @@ final class FilteredComposerIterator extends ClassIterator
             $this->notNamespaces = array_unique($notNamespaces);
         }
 
-        parent::__construct($flags);
+        parent::__construct($flags, $pathCallback);
     }
 
     protected function getGenerator(): Generator
@@ -82,7 +90,12 @@ final class FilteredComposerIterator extends ClassIterator
                 continue;
             }
 
-            if (! $this->validDir(PathNormalizer::resolvePath($file))) {
+            $file = PathNormalizer::resolvePath($file);
+            if (! $this->validDir($file)) {
+                continue;
+            }
+
+            if ($this->pathCallback && ! ($this->pathCallback)($file)) {
                 continue;
             }
 
@@ -113,11 +126,11 @@ final class FilteredComposerIterator extends ClassIterator
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixesPsr4()) as $ns => $dir) {
-            yield from new Psr4Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap(), $this->notNamespaces);
+            yield from new Psr4Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap(), $this->notNamespaces, $this->pathCallback);
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixes()) as $ns => $dir) {
-            yield from new Psr0Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap(), $this->notNamespaces);
+            yield from new Psr0Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap(), $this->notNamespaces, $this->pathCallback);
         }
     }
 

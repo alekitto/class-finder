@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 use function iterator_to_array;
+use function str_ends_with;
 
 class FilteredComposerIteratorTest extends TestCase
 {
@@ -55,6 +56,24 @@ class FilteredComposerIteratorTest extends TestCase
             Psr4\FooTrait::class => new ReflectionClass(Psr4\FooTrait::class),
             Psr4\SubNs\FooBaz::class => new ReflectionClass(Psr4\SubNs\FooBaz::class),
             Psr0\BarBar::class => new ReflectionClass(Psr0\BarBar::class),
+            Psr0\Foobar::class => new ReflectionClass(Psr0\Foobar::class),
+            Psr0\SubNs\FooBaz::class => new ReflectionClass(Psr0\SubNs\FooBaz::class),
+        ], iterator_to_array($iterator));
+    }
+
+    public function testComposerIteratorShouldCallPathCallback(): void
+    {
+        $iterator = new FilteredComposerIterator($this->loader, null, null, null, null, 0, function (string $path): bool {
+            return !str_ends_with($path, 'BarBar.php');
+        });
+
+        self::assertEquals([
+            self::class => new ReflectionClass(self::class),
+            Psr4\Foobar::class => new ReflectionClass(Psr4\Foobar::class),
+            Psr4\AbstractClass::class => new ReflectionClass(Psr4\AbstractClass::class),
+            Psr4\FooInterface::class => new ReflectionClass(Psr4\FooInterface::class),
+            Psr4\FooTrait::class => new ReflectionClass(Psr4\FooTrait::class),
+            Psr4\SubNs\FooBaz::class => new ReflectionClass(Psr4\SubNs\FooBaz::class),
             Psr0\Foobar::class => new ReflectionClass(Psr0\Foobar::class),
             Psr0\SubNs\FooBaz::class => new ReflectionClass(Psr0\SubNs\FooBaz::class),
         ], iterator_to_array($iterator));

@@ -83,4 +83,27 @@ class PhpDocumentorIteratorTest extends TestCase
             Psr0\SubNs\FooBaz::class,
         ], array_keys($classes));
     }
+
+    public function testIteratorShouldCallPathCallback(): void
+    {
+        $iterator = new PhpDocumentorIterator(
+            realpath(__DIR__ . '/../../data/Composer/Psr4'),
+            pathCallback: function (string $path): bool {
+                return !str_ends_with($path, 'BarBar.php');
+            }
+        );
+
+        $classes = iterator_to_array($iterator);
+
+        self::assertArrayHasKey(Psr4\Foobar::class, $classes);
+        self::assertInstanceOf(Class_::class, $classes[Psr4\Foobar::class]);
+        self::assertArrayHasKey(Psr4\AbstractClass::class, $classes);
+        self::assertInstanceOf(Class_::class, $classes[Psr4\AbstractClass::class]);
+        self::assertArrayHasKey(Psr4\SubNs\FooBaz::class, $classes);
+        self::assertInstanceOf(Class_::class, $classes[Psr4\SubNs\FooBaz::class]);
+        self::assertArrayHasKey(Psr4\FooInterface::class, $classes);
+        self::assertInstanceOf(Interface_::class, $classes[Psr4\FooInterface::class]);
+        self::assertArrayHasKey(Psr4\FooTrait::class, $classes);
+        self::assertInstanceOf(Trait_::class, $classes[Psr4\FooTrait::class]);
+    }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Iterator;
 
+use Closure;
 use Composer\Autoload\ClassLoader;
 use Generator;
 use Kcs\ClassFinder\Reflection\NativeReflectorFactory;
@@ -18,11 +19,15 @@ final class ComposerIterator extends ClassIterator
 {
     private ReflectorFactoryInterface $reflectorFactory;
 
-    public function __construct(private ClassLoader $classLoader, ReflectorFactoryInterface|null $reflectorFactory = null, int $flags = 0)
-    {
+    public function __construct(
+        private readonly ClassLoader $classLoader,
+        ReflectorFactoryInterface|null $reflectorFactory = null,
+        int $flags = 0,
+        Closure|null $pathCallback = null,
+    ) {
         $this->reflectorFactory = $reflectorFactory ?? new NativeReflectorFactory();
 
-        parent::__construct($flags);
+        parent::__construct($flags, $pathCallback);
     }
 
     protected function getGenerator(): Generator
@@ -38,6 +43,10 @@ final class ComposerIterator extends ClassIterator
     {
         /** @var class-string $class */
         foreach ($this->classLoader->getClassMap() as $class => $file) {
+            if ($this->pathCallback && ! ($this->pathCallback)($file)) {
+                continue;
+            }
+
             ErrorHandler::register();
             try {
                 $reflectionClass = $this->reflectorFactory->reflect($class);
@@ -66,13 +75,19 @@ final class ComposerIterator extends ClassIterator
 
         foreach ($this->classLoader->getPrefixesPsr4() as $ns => $dirs) {
             foreach ($dirs as $dir) {
-                yield from new Psr4Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap());
+                $itr = new Psr4Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap());
+                $itr->pathCallback = $this->pathCallback;
+
+                yield from $itr;
             }
         }
 
         foreach ($this->classLoader->getPrefixes() as $ns => $dirs) {
             foreach ((array) $dirs as $dir) {
-                yield from new Psr0Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap());
+                $itr = new Psr0Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap());
+                $itr->pathCallback = $this->pathCallback;
+
+                yield from $itr;
             }
         }
     }

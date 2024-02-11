@@ -84,4 +84,15 @@ class Psr0FinderTest extends TestCase
             Psr0\SubNs\FooBaz::class => new ReflectionClass(Psr0\SubNs\FooBaz::class),
         ], iterator_to_array($finder));
     }
+
+    public function testFinderShouldFilterByPathCallback(): void
+    {
+        $finder = new Psr0Finder('Kcs\ClassFinder\Fixtures\Psr0', __DIR__ . '/../../data/Composer/Psr0');
+        $finder->pathFilter(static fn (string $path): bool => !str_ends_with($path, 'BarBar.php'));
+
+        self::assertEquals([
+            Psr0\Foobar::class => new ReflectionClass(Psr0\Foobar::class),
+            Psr0\SubNs\FooBaz::class => new ReflectionClass(Psr0\SubNs\FooBaz::class),
+        ], iterator_to_array($finder));
+    }
 }

@@ -209,4 +209,21 @@ class ComposerFinderTest extends TestCase
             Psr4WithClassMap\BarBar::class => new ReflectionClass(Psr4WithClassMap\BarBar::class),
         ], iterator_to_array($finder));
     }
+
+    public function testFinderShouldFilterByPathCallback(): void
+    {
+        $finder = new ComposerFinder();
+        $finder->in([__DIR__ . '/../../data']);
+        $finder->pathFilter(static fn (string $path): bool => !str_ends_with($path, 'BarBar.php'));
+
+        self::assertEquals([
+            Psr4\Foobar::class => new ReflectionClass(Psr4\Foobar::class),
+            Psr4\AbstractClass::class => new ReflectionClass(Psr4\AbstractClass::class),
+            Psr4\FooInterface::class => new ReflectionClass(Psr4\FooInterface::class),
+            Psr4\FooTrait::class => new ReflectionClass(Psr4\FooTrait::class),
+            Psr0\Foobar::class => new ReflectionClass(Psr0\Foobar::class),
+            Psr4\SubNs\FooBaz::class => new ReflectionClass(Psr4\SubNs\FooBaz::class),
+            Psr0\SubNs\FooBaz::class => new ReflectionClass(Psr0\SubNs\FooBaz::class),
+        ], iterator_to_array($finder));
+    }
 }

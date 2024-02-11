@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Iterator;
 
+use Closure;
 use Generator;
 use Iterator;
 use ReflectionClass;
 
 use function assert;
-use function call_user_func;
 use function is_string;
 
 /**
@@ -28,13 +28,11 @@ abstract class ClassIterator implements Iterator
     /** @var array<string, bool> */
     private array $foundClasses = [];
 
-    /** @var callable */
-    private $_apply;
-
+    private Closure $_apply;
     private mixed $_currentElement;
     private mixed $_current = null;
 
-    public function __construct(private int $flags = 0)
+    public function __construct(private readonly int $flags = 0, protected Closure|null $pathCallback = null)
     {
         $this->apply(null);
         $this->rewind();
@@ -47,7 +45,7 @@ abstract class ClassIterator implements Iterator
         }
 
         if ($this->_current === null) {
-            $this->_current = call_user_func($this->_apply, $this->_currentElement);
+            $this->_current = ($this->_apply)($this->_currentElement);
         }
 
         return $this->_current;
@@ -99,7 +97,7 @@ abstract class ClassIterator implements Iterator
         }
 
         $this->_current = null;
-        $this->_apply = $func;
+        $this->_apply = $func(...);
 
         return $this;
     }

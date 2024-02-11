@@ -46,11 +46,11 @@ trait PhpDocumentorFilterTrait
             $iterator = new Filters\AttributeFilterIterator($iterator, $this->attribute);
         }
 
-        if ($this->callback !== null) {
+        if ($this->filterCallback !== null) {
             $iterator = new CallbackFilterIterator($iterator, function ($current, $key) {
-                assert($this->callback !== null);
+                assert($this->filterCallback !== null);
 
-                return (bool) ($this->callback)($current, $key);
+                return (bool) ($this->filterCallback)($current, $key);
             });
         }
 

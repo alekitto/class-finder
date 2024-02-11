@@ -10,7 +10,7 @@ use Kcs\ClassFinder\PathNormalizer;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Reflector;
 
-use function Safe\substr;
+use function substr;
 
 use const DIRECTORY_SEPARATOR;
 
@@ -50,6 +50,11 @@ final class Psr4Finder implements FinderInterface
     /** @return Iterator<Reflector> */
     public function getIterator(): Iterator
     {
-        return $this->applyFilters(new Psr4Iterator($this->namespace, $this->path, $this->reflectorFactory));
+        return $this->applyFilters(new Psr4Iterator(
+            $this->namespace,
+            $this->path,
+            $this->reflectorFactory,
+            pathCallback: $this->pathFilterCallback !== null ? ($this->pathFilterCallback)(...) : null,
+        ));
     }
 }

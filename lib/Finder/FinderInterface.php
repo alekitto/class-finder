@@ -120,4 +120,12 @@ interface FinderInterface extends IteratorAggregate
      * @return $this
      */
     public function notPath(string $pattern): self;
+
+    /**
+     * Sets a custom callback for file filtering.
+     * The callback will receive the full filepath as the only argument.
+     *
+     * @return $this
+     */
+    public function pathFilter(callable|null $callback): self;
 }

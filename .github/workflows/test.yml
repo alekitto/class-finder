@@ -18,8 +18,9 @@ jobs:
                     - windows-latest
 
                 php_version:
-                    - '8.0'
                     - '8.1'
+                    - '8.2'
+                    - '8.3'
 
                 composer_flags:
                     - ''
@@ -41,14 +42,14 @@ jobs:
                   custom-cache-suffix: $(date -u "+%Y-%m")
 
             - run: vendor/bin/phpunit
-              if: ${{ matrix.php_version != '8.0' }}
+              if: ${{ matrix.php_version != '8.2' }}
             - run: vendor/bin/phpunit --coverage-clover coverage.xml
-              if: ${{ matrix.php_version == '8.0' }}
+              if: ${{ matrix.php_version == '8.2' }}
               env:
                   XDEBUG_MODE: coverage
 
             - name: Upload coverage to Codecov
-              if: ${{ matrix.php_version == '8.0' }}
+              if: ${{ matrix.php_version == '8.2' }}
               uses: codecov/codecov-action@v3
               with:
                   file: ./coverage.xml

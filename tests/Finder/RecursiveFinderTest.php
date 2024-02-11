@@ -112,8 +112,8 @@ class RecursiveFinderTest extends TestCase
     public function testFinderShouldFilterByIteratorCallback(): void
     {
         $finder = new RecursiveFinder(__DIR__ . '/../../data/Recursive');
-        $finder->fileFilter(static function (string $path, SplFileInfo $info): bool {
-            return !str_starts_with($info->getFilename(), 'class-');
+        $finder->pathFilter(static function (string $path): bool {
+            return !str_starts_with(basename($path), 'class-');
         });
 
         $classes = iterator_to_array($finder);

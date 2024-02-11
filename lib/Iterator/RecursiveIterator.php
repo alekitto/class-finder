@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Iterator;
 
+use Closure;
 use Generator;
 use Kcs\ClassFinder\PathNormalizer;
 use ReflectionClass;
@@ -19,16 +20,11 @@ final class RecursiveIterator extends ClassIterator
 {
     use RecursiveIteratorTrait;
 
-    /** @var callable|null */
-    private $callback = null;
-
-    public function __construct(string $path, int $flags = 0, callable|null $callback = null)
+    public function __construct(string $path, int $flags = 0, Closure|null $pathCallback = null)
     {
         $this->path = PathNormalizer::resolvePath($path);
 
-        $this->callback = $callback;
-
-        parent::__construct($flags);
+        parent::__construct($flags, $pathCallback);
     }
 
     /** @return Generator<class-string, ReflectionClass> */
@@ -42,7 +38,7 @@ final class RecursiveIterator extends ClassIterator
                 continue;
             }
 
-            if($this->callback && !call_user_func($this->callback, $path, $info)) {
+            if ($this->pathCallback && ! ($this->pathCallback)($path)) {
                 continue;
             }
 

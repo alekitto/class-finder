@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Iterator;
 
+use Closure;
 use FilesystemIterator;
 use Generator;
 use InvalidArgumentException;
@@ -63,7 +64,7 @@ final class PhpDocumentorIterator extends ClassIterator
     private ProjectFactoryStrategies $strategies;
     private DocBlockFactory $docBlockFactory;
 
-    public function __construct(string $path, int $flags = 0)
+    public function __construct(string $path, int $flags = 0, Closure|null $pathCallback = null)
     {
         $this->path = PathNormalizer::resolvePath($path);
         $this->docBlockFactory = DocBlockFactory::createInstance();
@@ -102,7 +103,7 @@ final class PhpDocumentorIterator extends ClassIterator
             $this->strategies->addStrategy(new Factory\Noop(), -1000);
         }
 
-        parent::__construct($flags);
+        parent::__construct($flags, $pathCallback);
     }
 
     /**
@@ -244,6 +245,10 @@ final class PhpDocumentorIterator extends ClassIterator
 
     private function accept(string $path): bool
     {
+        if ($this->pathCallback && ! ($this->pathCallback)($path)) {
+            return false;
+        }
+
         return $this->acceptDirs($path) &&
             $this->acceptPaths($path);
     }

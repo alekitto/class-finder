@@ -49,12 +49,7 @@ You can filter classes using the methods exposed by `FinderInterface`:
 - `in(array $dirs)`: Searches only in given directories.
 - `inNamespace(array $namespaces)`: Searches only in given namespaces.
 - `filter(callable $callback)`: Custom filtering callback.
-
-#### Specific finder filters
-
-##### RecursiveFinder
-
-- `fileFilter(callable $callback)`: Custom filtering callback for loading files.
+- `pathFilter(callable $callback)`: Custom filtering callback for loading files.
 
 
 ## License
