@@ -6,6 +6,7 @@ namespace Kcs\ClassFinder\Finder;
 
 use Composer\Autoload\ClassLoader;
 use Iterator;
+use Kcs\ClassFinder\Iterator\ClassIterator;
 use Kcs\ClassFinder\Iterator\ComposerIterator;
 use Kcs\ClassFinder\Iterator\FilteredComposerIterator;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
@@ -13,6 +14,8 @@ use Reflector;
 use RuntimeException;
 use Symfony\Component\ErrorHandler\DebugClassLoader;
 
+use function array_combine;
+use function array_search;
 use function class_exists;
 use function is_array;
 use function spl_autoload_functions;
@@ -27,9 +30,25 @@ final class ComposerFinder implements FinderInterface
     private ClassLoader $loader;
     private ReflectorFactoryInterface|null $reflectorFactory = null;
 
+    /** @var array<string, string> */
+    private array $files = [];
+    private bool $useAutoloading = false;
+
     public function __construct(ClassLoader|null $loader = null)
     {
         $this->loader = $loader ?? self::getValidLoader();
+        $vendorDir = array_search($this->loader, ClassLoader::getRegisteredLoaders());
+
+        if ($vendorDir === false) {
+            return;
+        }
+
+        $files = include $vendorDir . '/composer/autoload_files.php';
+        if (! is_array($files)) {
+            return;
+        }
+
+        $this->files = array_combine($files, $files);
     }
 
     public function setReflectorFactory(ReflectorFactoryInterface|null $reflectorFactory): self
@@ -39,9 +58,35 @@ final class ComposerFinder implements FinderInterface
         return $this;
     }
 
+    public function useAutoloading(bool $use = true): self
+    {
+        $this->useAutoloading = $use;
+
+        return $this;
+    }
+
     /** @return Iterator<Reflector> */
     public function getIterator(): Iterator
     {
+        $flags = 0;
+        if ($this->skipNonInstantiable) {
+            $flags |= ClassIterator::SKIP_NON_INSTANTIABLE;
+        }
+
+        $pathFilterCallback = $this->pathFilterCallback ? ($this->pathFilterCallback)(...) : null;
+        if ($this->useAutoloading) {
+            $flags |= ClassIterator::USE_AUTOLOADING;
+
+            $pathFilterCallback ??= static fn () => true;
+            $pathFilterCallback = function (string $path) use ($pathFilterCallback): bool {
+                if (isset($this->files[$path])) {
+                    return false;
+                }
+
+                return $pathFilterCallback($path);
+            };
+        }
+
         if ($this->namespaces || $this->dirs || $this->notNamespaces) {
             $iterator = new FilteredComposerIterator(
                 $this->loader,
@@ -49,13 +94,15 @@ final class ComposerFinder implements FinderInterface
                 $this->namespaces,
                 $this->notNamespaces,
                 $this->dirs,
-                pathCallback: $this->pathFilterCallback !== null ? ($this->pathFilterCallback)(...) : null,
+                $flags,
+                $pathFilterCallback,
             );
         } else {
             $iterator = new ComposerIterator(
                 $this->loader,
                 $this->reflectorFactory,
-                pathCallback: $this->pathFilterCallback !== null ? ($this->pathFilterCallback)(...) : null,
+                $flags,
+                $pathFilterCallback,
             );
         }
 

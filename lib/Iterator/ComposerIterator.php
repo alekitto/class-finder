@@ -75,7 +75,7 @@ final class ComposerIterator extends ClassIterator
 
         foreach ($this->classLoader->getPrefixesPsr4() as $ns => $dirs) {
             foreach ($dirs as $dir) {
-                $itr = new Psr4Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap());
+                $itr = new Psr4Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap());
                 $itr->pathCallback = $this->pathCallback;
 
                 yield from $itr;
@@ -84,7 +84,7 @@ final class ComposerIterator extends ClassIterator
 
         foreach ($this->classLoader->getPrefixes() as $ns => $dirs) {
             foreach ((array) $dirs as $dir) {
-                $itr = new Psr0Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap());
+                $itr = new Psr0Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap());
                 $itr->pathCallback = $this->pathCallback;
 
                 yield from $itr;

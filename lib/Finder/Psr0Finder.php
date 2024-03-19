@@ -10,7 +10,7 @@ use Kcs\ClassFinder\PathNormalizer;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Reflector;
 
-use function Safe\substr;
+use function substr;
 
 use const DIRECTORY_SEPARATOR;
 

@@ -128,4 +128,11 @@ interface FinderInterface extends IteratorAggregate
      * @return $this
      */
     public function pathFilter(callable|null $callback): self;
+
+    /**
+     * Skips non-instantiable (abstract) classes, as well as interfaces and traits.
+     *
+     * @return $this
+     */
+    public function skipNonInstantiable(bool $skip = true): self;
 }

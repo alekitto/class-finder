@@ -126,11 +126,11 @@ final class FilteredComposerIterator extends ClassIterator
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixesPsr4()) as $ns => $dir) {
-            yield from new Psr4Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap(), $this->notNamespaces, $this->pathCallback);
+            yield from new Psr4Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->notNamespaces, $this->pathCallback);
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixes()) as $ns => $dir) {
-            yield from new Psr0Iterator($ns, $dir, $this->reflectorFactory, 0, $this->classLoader->getClassMap(), $this->notNamespaces, $this->pathCallback);
+            yield from new Psr0Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->notNamespaces, $this->pathCallback);
         }
     }
 

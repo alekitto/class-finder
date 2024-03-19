@@ -13,14 +13,15 @@ use Kcs\ClassFinder\Util\ErrorHandler;
 use Throwable;
 
 use function array_map;
+use function class_exists;
 use function defined;
 use function in_array;
 use function ltrim;
 use function Safe\preg_match;
-use function Safe\substr;
 use function str_replace;
 use function strlen;
 use function strpos;
+use function substr;
 
 final class Psr0Iterator extends ClassIterator
 {
@@ -56,9 +57,16 @@ final class Psr0Iterator extends ClassIterator
     protected function getGenerator(): Generator
     {
         $pattern = defined('HHVM_VERSION') ? '/\\.(php|hh)$/i' : '/\\.php$/i';
-        $include = Closure::bind(static function (string $path): void {
-            include_once $path;
-        }, null, null);
+        $include = Closure::bind(
+            $this->flags & self::USE_AUTOLOADING ?
+                static function (string $path, string $class): void {
+                    class_exists($class, true);
+                } : static function (string $path): void {
+                    include_once $path;
+                },
+            null,
+            null,
+        );
 
         foreach ($this->search() as $path => $info) {
             if (! preg_match($pattern, $path, $m) || ! $info->isReadable()) {
@@ -97,7 +105,7 @@ final class Psr0Iterator extends ClassIterator
 
             ErrorHandler::register();
             try {
-                $include($path);
+                $include($path, $class);
             } catch (Throwable) { /** @phpstan-ignore-line */
                 continue;
             } finally {

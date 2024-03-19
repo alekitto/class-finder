@@ -56,31 +56,33 @@ trait FinderTrait
     /** @var callable|null */
     private $pathFilterCallback = null;
 
+    private bool $skipNonInstantiable = false;
+
     /**
      * {@inheritDoc}
      */
-    public function implementationOf($interface): self
+    public function implementationOf($interface): static
     {
         $this->implements = (array) $interface;
 
         return $this;
     }
 
-    public function subclassOf(string|null $superClass): self
+    public function subclassOf(string|null $superClass): static
     {
         $this->extends = $superClass;
 
         return $this;
     }
 
-    public function annotatedBy(string|null $annotationClass): self
+    public function annotatedBy(string|null $annotationClass): static
     {
         $this->annotation = $annotationClass;
 
         return $this;
     }
 
-    public function withAttribute(string|null $attributeClass): self
+    public function withAttribute(string|null $attributeClass): static
     {
         $this->attribute = $attributeClass;
 
@@ -90,7 +92,7 @@ trait FinderTrait
     /**
      * {@inheritDoc}
      */
-    public function in($dirs): self
+    public function in($dirs): static
     {
         $resolvedDirs = [];
 
@@ -116,7 +118,7 @@ trait FinderTrait
     /**
      * {@inheritDoc}
      */
-    public function inNamespace($namespaces): self
+    public function inNamespace($namespaces): static
     {
         $this->namespaces = array_unique(array_merge($this->namespaces ?? [], (array) $namespaces));
 
@@ -126,14 +128,14 @@ trait FinderTrait
     /**
      * {@inheritDoc}
      */
-    public function notInNamespace($namespaces): self
+    public function notInNamespace($namespaces): static
     {
         $this->notNamespaces = array_unique(array_merge($this->notNamespaces ?? [], (array) $namespaces));
 
         return $this;
     }
 
-    public function filter(callable|null $callback): self
+    public function filter(callable|null $callback): static
     {
         $this->filterCallback = $callback;
 
@@ -143,7 +145,7 @@ trait FinderTrait
     /**
      * {@inheritDoc}
      */
-    public function path($pattern): self
+    public function path($pattern): static
     {
         $this->paths[] = $pattern;
 
@@ -153,16 +155,23 @@ trait FinderTrait
     /**
      * {@inheritDoc}
      */
-    public function notPath($pattern): self
+    public function notPath($pattern): static
     {
         $this->notPaths[] = $pattern;
 
         return $this;
     }
 
-    public function pathFilter(callable|null $callback): self
+    public function pathFilter(callable|null $callback): static
     {
         $this->pathFilterCallback = $callback;
+
+        return $this;
+    }
+
+    public function skipNonInstantiable(bool $skip = true): static
+    {
+        $this->skipNonInstantiable = $skip;
 
         return $this;
     }

@@ -21,7 +21,8 @@ use function is_string;
  */
 abstract class ClassIterator implements Iterator
 {
-    public const SKIP_NON_INSTANTIABLE = 1;
+    public const SKIP_NON_INSTANTIABLE = 0x01;
+    public const USE_AUTOLOADING = 0x02;
 
     private Generator|null $generator = null;
 
@@ -32,7 +33,7 @@ abstract class ClassIterator implements Iterator
     private mixed $_currentElement;
     private mixed $_current = null;
 
-    public function __construct(private readonly int $flags = 0, protected Closure|null $pathCallback = null)
+    public function __construct(protected readonly int $flags = 0, protected Closure|null $pathCallback = null)
     {
         $this->apply(null);
         $this->rewind();
