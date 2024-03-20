@@ -59,5 +59,8 @@
         "branch-alias": {
             "dev-master": "1.x-dev"
         }
+    },
+    "archive": {
+        "exclude": [ "tests", "data", "docs" ]
     }
 }
