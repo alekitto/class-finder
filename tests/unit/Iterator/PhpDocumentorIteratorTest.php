@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Tests\Iterator;
+namespace Kcs\ClassFinder\Tests\unit\Iterator;
 
 use Kcs\ClassFinder\Fixtures\Psr0;
 use Kcs\ClassFinder\Fixtures\Psr4;
@@ -11,7 +11,6 @@ use phpDocumentor\Reflection\Php\Class_;
 use phpDocumentor\Reflection\Php\Interface_;
 use phpDocumentor\Reflection\Php\Trait_;
 use PHPUnit\Framework\TestCase;
-
 use function iterator_to_array;
 use function realpath;
 
@@ -20,7 +19,7 @@ class PhpDocumentorIteratorTest extends TestCase
     public function testIteratorShouldWork(): void
     {
         $iterator = new PhpDocumentorIterator(
-            realpath(__DIR__ . '/../../data/Composer/Psr4')
+            realpath(__DIR__ . '/../../../data/Composer/Psr4')
         );
 
         $classes = iterator_to_array($iterator);
@@ -42,10 +41,10 @@ class PhpDocumentorIteratorTest extends TestCase
     public function testComposerIteratorShouldFilterNotIntersectingPath(): void
     {
         $iterator = new PhpDocumentorIterator(
-            realpath(__DIR__ . '/../../data/Composer')
+            realpath(__DIR__ . '/../../../data/Composer')
         );
 
-        $iterator->in([__DIR__ . '/../..' . '/data/Composer/Psr?']);
+        $iterator->in([__DIR__ . '/../../..' . '/data/Composer/Psr?']);
         $classes = iterator_to_array($iterator);
 
         self::assertArrayHasKey(Psr4\BarBar::class, $classes);
@@ -87,7 +86,7 @@ class PhpDocumentorIteratorTest extends TestCase
     public function testIteratorShouldCallPathCallback(): void
     {
         $iterator = new PhpDocumentorIterator(
-            realpath(__DIR__ . '/../../data/Composer/Psr4'),
+            realpath(__DIR__ . '/../../../data/Composer/Psr4'),
             pathCallback: function (string $path): bool {
                 return !str_ends_with($path, 'BarBar.php');
             }

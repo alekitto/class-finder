@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Tests\Iterator;
+namespace Kcs\ClassFinder\Tests\unit\Iterator;
 
 use Closure;
 use Composer\Autoload\ClassLoader;
@@ -11,7 +11,6 @@ use Kcs\ClassFinder\Fixtures\Psr4;
 use Kcs\ClassFinder\Iterator\FilteredComposerIterator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-
 use function iterator_to_array;
 use function str_ends_with;
 
@@ -27,14 +26,14 @@ class FilteredComposerIteratorTest extends TestCase
 
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
-                    __DIR__ . '/../..' . '/data/Composer/Psr4',
+                    __DIR__ . '/../../..' . '/data/Composer/Psr4',
                 ],
             ];
 
             $loader->prefixesPsr0 = [
                 'K' => [
                     'Kcs\\ClassFinder\\Fixtures\\Psr0\\' => [
-                        __DIR__ . '/../..' . '/data/Composer/Psr0',
+                        __DIR__ . '/../../..' . '/data/Composer/Psr0',
                     ],
                 ],
             ];
@@ -87,7 +86,7 @@ class FilteredComposerIteratorTest extends TestCase
         // intersects perfectly with the requested dirs. The upper finder should filter out the
         // non-matching results.
 
-        $iterator = new FilteredComposerIterator($this->loader, null, null, null, [__DIR__ . '/../..' . '/data/Composer/Psr4/SubNs']);
+        $iterator = new FilteredComposerIterator($this->loader, null, null, null, [__DIR__ . '/../../..' . '/data/Composer/Psr4/SubNs']);
 
         self::assertEquals([
             Psr4\BarBar::class => new ReflectionClass(Psr4\BarBar::class),

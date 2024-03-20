@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Tests\Iterator;
+namespace Kcs\ClassFinder\Tests\unit\Iterator;
 
 use Kcs\ClassFinder\Fixtures\Psr4;
 use Kcs\ClassFinder\Iterator\Psr4Iterator;
 use Kcs\ClassFinder\Reflection\NativeReflectorFactory;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-
 use function iterator_to_array;
 use function realpath;
 
@@ -19,7 +18,7 @@ class Psr4IteratorTest extends TestCase
     {
         $iterator = new Psr4Iterator(
             'Kcs\\ClassFinder\\Fixtures\\Psr4\\',
-            realpath(__DIR__ . '/../../data/Composer/Psr4'),
+            realpath(__DIR__ . '/../../../data/Composer/Psr4'),
             new NativeReflectorFactory(),
         );
 
@@ -37,7 +36,7 @@ class Psr4IteratorTest extends TestCase
     {
         $iterator = new Psr4Iterator(
             'Kcs\\ClassFinder\\Fixtures\\Psr4\\',
-            realpath(__DIR__ . '/../../data/Composer/Psr4'),
+            realpath(__DIR__ . '/../../../data/Composer/Psr4'),
             new NativeReflectorFactory(),
             pathCallback: function (string $path): bool {
                 return !str_ends_with($path, 'BarBar.php');

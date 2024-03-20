@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Tests\Finder;
+namespace Kcs\ClassFinder\Tests\unit\Finder;
 
 use Kcs\ClassFinder\Finder\PhpDocumentorFinder;
 use Kcs\ClassFinder\Fixtures\Psr0;
@@ -14,7 +14,6 @@ use phpDocumentor\Reflection\Php\Trait_;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Traversable;
-
 use function iterator_to_array;
 
 class PhpDocumentorFinderTest extends TestCase
@@ -27,7 +26,7 @@ class PhpDocumentorFinderTest extends TestCase
 
     public function testFinderShouldFilterByNamespace(): void
     {
-        $finder = new PhpDocumentorFinder(__DIR__ . '/../../data');
+        $finder = new PhpDocumentorFinder(__DIR__ . '/../../../data');
         $finder->inNamespace(['Kcs\ClassFinder\Fixtures\Psr4']);
 
         $classes = iterator_to_array($finder);
@@ -51,7 +50,7 @@ class PhpDocumentorFinderTest extends TestCase
 
     public function testFinderShouldFilterByExcludedNamespace(): void
     {
-        $finder = new PhpDocumentorFinder(__DIR__ . '/../../data');
+        $finder = new PhpDocumentorFinder(__DIR__ . '/../../../data');
         $finder
             ->inNamespace(['Kcs\ClassFinder\Fixtures'])
             ->notInNamespace([
@@ -73,8 +72,8 @@ class PhpDocumentorFinderTest extends TestCase
 
     public function testFinderShouldFilterByDirectory(): void
     {
-        $finder = new PhpDocumentorFinder(__DIR__ . '/../../data');
-        $finder->in([__DIR__ . '/../../data/Composer/Psr0']);
+        $finder = new PhpDocumentorFinder(__DIR__ . '/../../../data');
+        $finder->in([__DIR__ . '/../../../data/Composer/Psr0']);
 
         $classes = iterator_to_array($finder);
 
@@ -88,8 +87,8 @@ class PhpDocumentorFinderTest extends TestCase
 
     public function testFinderShouldFilterByInterfaceImplementation(): void
     {
-        $finder = new PhpDocumentorFinder(__DIR__ . '/../../data');
-        $finder->in([__DIR__ . '/../../data']);
+        $finder = new PhpDocumentorFinder(__DIR__ . '/../../../data');
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->implementationOf(Psr4\FooInterface::class);
 
         $classes = iterator_to_array($finder);
@@ -100,8 +99,8 @@ class PhpDocumentorFinderTest extends TestCase
 
     public function testFinderShouldFilterBySuperClass(): void
     {
-        $finder = new PhpDocumentorFinder(__DIR__ . '/../../data');
-        $finder->in([__DIR__ . '/../../data']);
+        $finder = new PhpDocumentorFinder(__DIR__ . '/../../../data');
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->subclassOf(Psr4\AbstractClass::class);
 
         $classes = iterator_to_array($finder);
@@ -112,8 +111,8 @@ class PhpDocumentorFinderTest extends TestCase
 
     public function testFinderShouldFilterByAnnotation(): void
     {
-        $finder = new PhpDocumentorFinder(__DIR__ . '/../../data');
-        $finder->in([__DIR__ . '/../../data']);
+        $finder = new PhpDocumentorFinder(__DIR__ . '/../../../data');
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->annotatedBy(Psr4\SubNs\FooBaz::class);
 
         $classes = iterator_to_array($finder);
@@ -127,8 +126,8 @@ class PhpDocumentorFinderTest extends TestCase
      */
     public function testFinderShouldFilterByAttribute(): void
     {
-        $finder = new PhpDocumentorFinder(__DIR__ . '/../../data');
-        $finder->in([__DIR__ . '/../../data']);
+        $finder = new PhpDocumentorFinder(__DIR__ . '/../../../data');
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->withAttribute(Psr4\SubNs\FooBaz::class);
 
         // Not implemented yet
@@ -141,7 +140,7 @@ class PhpDocumentorFinderTest extends TestCase
 
     public function testFinderShouldFilterByCallback(): void
     {
-        $finder = new PhpDocumentorFinder(__DIR__ . '/../../data');
+        $finder = new PhpDocumentorFinder(__DIR__ . '/../../../data');
         $finder->filter(static function (Element $class) {
             return (string) $class->getFqsen() === '\\' . Psr4\AbstractClass::class;
         });
@@ -155,8 +154,8 @@ class PhpDocumentorFinderTest extends TestCase
 
     public function testFinderShouldFilterByPathCallback(): void
     {
-        $finder = new PhpDocumentorFinder(__DIR__ . '/../../data');
-        $finder->in([__DIR__ . '/../../data/Composer/Psr?']);
+        $finder = new PhpDocumentorFinder(__DIR__ . '/../../../data');
+        $finder->in([__DIR__ . '/../../../data/Composer/Psr?']);
         $finder->pathFilter(static fn (string $path): bool => !str_ends_with($path, 'BarBar.php'));
 
         $classes = iterator_to_array($finder);

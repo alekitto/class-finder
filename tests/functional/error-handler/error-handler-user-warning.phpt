@@ -5,7 +5,7 @@ ErrorHandler - Test User Warning does not throw Error
 
 use Kcs\ClassFinder\Util\ErrorHandler;
 
-require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../../../vendor/autoload.php';
 
 ErrorHandler::register();
 trigger_error('This is a warning', E_USER_WARNING);

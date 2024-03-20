@@ -2,20 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Tests\Util;
+namespace Kcs\ClassFinder\Tests\unit\Util;
 
 use Kcs\ClassFinder\Util\Error;
 use Kcs\ClassFinder\Util\ErrorHandler;
 use PHPUnit\Framework\TestCase;
-use Throwable;
-
 use function call_user_func_array;
 use function func_get_args;
 use function restore_error_handler;
 use function set_error_handler;
 use function trigger_error;
 use function unlink;
-
 use const E_USER_ERROR;
 use const E_USER_WARNING;
 
@@ -49,8 +46,17 @@ class ErrorHandlerTest extends TestCase
 
     public function testShouldThrowErrorOnErrorOrUserError(): void
     {
-        $this->expectException(Error::class);
-        trigger_error('This is an error', E_USER_ERROR);
+        $prev = error_reporting(E_ALL);
+        try {
+            trigger_error('This is an error', E_USER_ERROR);
+        } catch (Error $e) {
+            self::assertNotNull($e);
+            return;
+        } finally {
+            error_reporting($prev);
+        }
+
+        self::fail('Expected error');
     }
 
     public function testShouldPassErrorsToPreviousErrorHandlerIfSilenced(): void

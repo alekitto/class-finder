@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Tests\Iterator;
+namespace Kcs\ClassFinder\Tests\unit\Iterator;
 
 use Kcs\ClassFinder\Fixtures\Recursive\Bar;
 use Kcs\ClassFinder\Fixtures\Recursive\Foo;
@@ -10,14 +10,13 @@ use Kcs\ClassFinder\Fixtures\Recursive\FooBar;
 use Kcs\ClassFinder\Iterator\RecursiveIterator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use SplFileInfo;
 use function iterator_to_array;
 
 class RecursiveIteratorTest extends TestCase
 {
     public function testRecursiveIteratorShouldSearchInDirectory(): void
     {
-        $iterator = new RecursiveIterator(__DIR__ . '/../../data/Recursive');
+        $iterator = new RecursiveIterator(__DIR__ . '/../../../data/Recursive');
 
         self::assertEquals([
             Bar::class => new ReflectionClass(Bar::class),
@@ -29,7 +28,7 @@ class RecursiveIteratorTest extends TestCase
     public function testRecursiveIteratorShouldSkipFilesThatDoNotMatchFilter(): void
     {
         $iterator = new RecursiveIterator(
-            __DIR__ . '/../../data/Recursive',
+            __DIR__ . '/../../../data/Recursive',
             0,
             static function (string $path): bool {
                 return str_starts_with(basename($path), 'class-');

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Tests\Iterator;
+namespace Kcs\ClassFinder\Tests\unit\Iterator;
 
 use Closure;
 use Composer\Autoload\ClassLoader;
@@ -12,7 +12,6 @@ use Kcs\ClassFinder\Iterator\ClassIterator;
 use Kcs\ClassFinder\Iterator\ComposerIterator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-
 use function iterator_to_array;
 use function str_ends_with;
 
@@ -47,7 +46,7 @@ class ComposerIteratorTest extends TestCase
 
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\' => [
-                    __DIR__ . '/../..' . '/lib',
+                    __DIR__ . '/../../..' . '/lib',
                 ],
             ];
         }, null, ClassLoader::class))();
@@ -65,7 +64,7 @@ class ComposerIteratorTest extends TestCase
         (Closure::bind(static function () use ($loader) {
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
-                    __DIR__ . '/../..' . '/data/Composer/Psr4',
+                    __DIR__ . '/../../..' . '/data/Composer/Psr4',
                 ],
             ];
         }, null, ClassLoader::class))();
@@ -88,14 +87,14 @@ class ComposerIteratorTest extends TestCase
         (Closure::bind(static function () use ($loader) {
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
-                    __DIR__ . '/../..' . '/data/Composer/Psr4',
+                    __DIR__ . '/../../..' . '/data/Composer/Psr4',
                 ],
             ];
 
             $loader->prefixesPsr0 = [
                 'K' => [
                     'Kcs\\ClassFinder\\Fixtures\\Psr0\\' => [
-                        __DIR__ . '/../..' . '/data/Composer/Psr0',
+                        __DIR__ . '/../../..' . '/data/Composer/Psr0',
                     ],
                 ],
             ];
@@ -122,7 +121,7 @@ class ComposerIteratorTest extends TestCase
         (Closure::bind(static function () use ($loader) {
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
-                    __DIR__ . '/../..' . '/data/Composer/Psr4',
+                    __DIR__ . '/../../..' . '/data/Composer/Psr4',
                 ],
             ];
         }, null, ClassLoader::class))();
@@ -141,13 +140,13 @@ class ComposerIteratorTest extends TestCase
         $loader = new ClassLoader();
         (Closure::bind(static function () use ($loader) {
             $loader->classMap = [
-                Psr4\FooInterface::class => __DIR__ . '/../..' . '/data/Composer/Psr4/FooInterface.php',
-                Psr4\FooTrait::class => __DIR__ . '/../..' . '/data/Composer/Psr4/FooTrait.php',
+                Psr4\FooInterface::class => __DIR__ . '/../../..' . '/data/Composer/Psr4/FooInterface.php',
+                Psr4\FooTrait::class => __DIR__ . '/../../..' . '/data/Composer/Psr4/FooTrait.php',
             ];
 
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
-                    __DIR__ . '/../..' . '/data/Composer/Psr4',
+                    __DIR__ . '/../../..' . '/data/Composer/Psr4',
                 ],
             ];
         }, null, ClassLoader::class))();
@@ -170,7 +169,7 @@ class ComposerIteratorTest extends TestCase
         (Closure::bind(static function () use ($loader) {
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
-                    __DIR__ . '/../..' . '/data/Composer/Psr4',
+                    __DIR__ . '/../../..' . '/data/Composer/Psr4',
                 ],
             ];
         }, null, ClassLoader::class))();

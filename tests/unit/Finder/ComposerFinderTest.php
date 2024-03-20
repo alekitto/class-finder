@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kcs\ClassFinder\Tests\Finder;
+namespace Kcs\ClassFinder\Tests\unit\Finder;
 
 use Kcs\ClassFinder\Finder\ComposerFinder;
 use Kcs\ClassFinder\Fixtures\Psr0;
@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Symfony\Component\ErrorHandler\DebugClassLoader as ErrorHandlerClassLoader;
 use Traversable;
-
 use function iterator_to_array;
 
 class ComposerFinderTest extends TestCase
@@ -37,7 +36,7 @@ class ComposerFinderTest extends TestCase
 
     public function testFinderShouldFilterByNamespace(): void
     {
-        $finder = new ComposerFinder();
+        $finder = (new ComposerFinder())->useAutoloading(false);
         $finder->inNamespace(['Kcs\ClassFinder\Fixtures\Psr4']);
 
         self::assertEquals([
@@ -67,7 +66,7 @@ class ComposerFinderTest extends TestCase
     public function testFinderShouldFilterByDirectory(): void
     {
         $finder = new ComposerFinder();
-        $finder->in([__DIR__ . '/../../data/Composer/Psr0']);
+        $finder->in([__DIR__ . '/../../../data/Composer/Psr0']);
 
         self::assertEquals([
             Psr0\BarBar::class => new ReflectionClass(Psr0\BarBar::class),
@@ -79,7 +78,7 @@ class ComposerFinderTest extends TestCase
     public function testFinderShouldFilterBySubDirectory(): void
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
-        $finder->in([__DIR__ . '/../../data/Composer/Psr4/SubNs']);
+        $finder->in([__DIR__ . '/../../../data/Composer/Psr4/SubNs']);
 
         self::assertEquals([
             Psr4\SubNs\FooBaz::class => new ReflectionClass(Psr4\SubNs\FooBaz::class),
@@ -89,7 +88,7 @@ class ComposerFinderTest extends TestCase
     public function testFinderShouldFilterByInterfaceImplementation(): void
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
-        $finder->in([__DIR__ . '/../../data']);
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->implementationOf(Psr4\FooInterface::class);
 
         self::assertEquals([
@@ -101,7 +100,7 @@ class ComposerFinderTest extends TestCase
     public function testFinderShouldFilterBySuperClass(): void
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
-        $finder->in([__DIR__ . '/../../data']);
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->subclassOf(Psr4\AbstractClass::class);
 
         self::assertEquals([
@@ -113,7 +112,7 @@ class ComposerFinderTest extends TestCase
     public function testFinderShouldFilterByAnnotation(): void
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
-        $finder->in([__DIR__ . '/../../data']);
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->annotatedBy(Psr4\SubNs\FooBaz::class);
 
         self::assertEquals([
@@ -125,7 +124,7 @@ class ComposerFinderTest extends TestCase
     public function testFinderShouldFilterByAttribute(): void
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
-        $finder->in([__DIR__ . '/../../data']);
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->withAttribute(Psr4\SubNs\FooBaz::class);
 
         self::assertEquals([
@@ -137,7 +136,7 @@ class ComposerFinderTest extends TestCase
     public function testFinderShouldFilterByCallback(): void
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
-        $finder->in([__DIR__ . '/../../data']);
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->filter(static function (ReflectionClass $class) {
             return $class->getName() === Psr4\AbstractClass::class;
         });
@@ -150,7 +149,7 @@ class ComposerFinderTest extends TestCase
     public function testFinderShouldFilterByPath(): void
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
-        $finder->in([__DIR__ . '/../../data']);
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->path('SubNs');
 
         self::assertEquals([
@@ -162,7 +161,7 @@ class ComposerFinderTest extends TestCase
     public function testFinderShouldFilterByPathRegex(): void
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
-        $finder->in([__DIR__ . '/../../data']);
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->path('/subns/i');
 
         self::assertEquals([
@@ -174,7 +173,7 @@ class ComposerFinderTest extends TestCase
     public function testFinderShouldFilterByNotPath(): void
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
-        $finder->in([__DIR__ . '/../../data']);
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->notPath('SubNs');
 
         self::assertEquals([
@@ -192,7 +191,7 @@ class ComposerFinderTest extends TestCase
     public function testFinderShouldFilterByNotPathRegex(): void
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
-        $finder->in([__DIR__ . '/../../data']);
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->notPath('/subns/i');
 
         self::assertEquals([
@@ -210,7 +209,7 @@ class ComposerFinderTest extends TestCase
     public function testFinderShouldFilterByPathCallback(): void
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
-        $finder->in([__DIR__ . '/../../data']);
+        $finder->in([__DIR__ . '/../../../data']);
         $finder->pathFilter(static fn (string $path): bool => !str_ends_with($path, 'BarBar.php'));
 
         self::assertEquals([

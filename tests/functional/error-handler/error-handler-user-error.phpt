@@ -5,7 +5,7 @@ ErrorHandler - Test User Error does throw Error
 
 use Kcs\ClassFinder\Util\ErrorHandler;
 
-require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../../../vendor/autoload.php';
 
 ErrorHandler::register();
 trigger_error('This is an error', E_USER_ERROR);
