@@ -78,7 +78,7 @@ class ComposerFinderTest extends TestCase
 
     public function testFinderShouldFilterBySubDirectory(): void
     {
-        $finder = new ComposerFinder();
+        $finder = (new ComposerFinder())->useAutoloading(false);
         $finder->in([__DIR__ . '/../../data/Composer/Psr4/SubNs']);
 
         self::assertEquals([
@@ -88,7 +88,7 @@ class ComposerFinderTest extends TestCase
 
     public function testFinderShouldFilterByInterfaceImplementation(): void
     {
-        $finder = new ComposerFinder();
+        $finder = (new ComposerFinder())->useAutoloading(false);
         $finder->in([__DIR__ . '/../../data']);
         $finder->implementationOf(Psr4\FooInterface::class);
 
@@ -100,7 +100,7 @@ class ComposerFinderTest extends TestCase
 
     public function testFinderShouldFilterBySuperClass(): void
     {
-        $finder = new ComposerFinder();
+        $finder = (new ComposerFinder())->useAutoloading(false);
         $finder->in([__DIR__ . '/../../data']);
         $finder->subclassOf(Psr4\AbstractClass::class);
 
@@ -112,7 +112,7 @@ class ComposerFinderTest extends TestCase
 
     public function testFinderShouldFilterByAnnotation(): void
     {
-        $finder = new ComposerFinder();
+        $finder = (new ComposerFinder())->useAutoloading(false);
         $finder->in([__DIR__ . '/../../data']);
         $finder->annotatedBy(Psr4\SubNs\FooBaz::class);
 
@@ -122,12 +122,9 @@ class ComposerFinderTest extends TestCase
         ], iterator_to_array($finder));
     }
 
-    /**
-     * @requires PHP >= 8.0
-     */
     public function testFinderShouldFilterByAttribute(): void
     {
-        $finder = new ComposerFinder();
+        $finder = (new ComposerFinder())->useAutoloading(false);
         $finder->in([__DIR__ . '/../../data']);
         $finder->withAttribute(Psr4\SubNs\FooBaz::class);
 
@@ -139,7 +136,7 @@ class ComposerFinderTest extends TestCase
 
     public function testFinderShouldFilterByCallback(): void
     {
-        $finder = new ComposerFinder();
+        $finder = (new ComposerFinder())->useAutoloading(false);
         $finder->in([__DIR__ . '/../../data']);
         $finder->filter(static function (ReflectionClass $class) {
             return $class->getName() === Psr4\AbstractClass::class;
@@ -152,7 +149,7 @@ class ComposerFinderTest extends TestCase
 
     public function testFinderShouldFilterByPath(): void
     {
-        $finder = new ComposerFinder();
+        $finder = (new ComposerFinder())->useAutoloading(false);
         $finder->in([__DIR__ . '/../../data']);
         $finder->path('SubNs');
 
@@ -164,7 +161,7 @@ class ComposerFinderTest extends TestCase
 
     public function testFinderShouldFilterByPathRegex(): void
     {
-        $finder = new ComposerFinder();
+        $finder = (new ComposerFinder())->useAutoloading(false);
         $finder->in([__DIR__ . '/../../data']);
         $finder->path('/subns/i');
 
@@ -176,7 +173,7 @@ class ComposerFinderTest extends TestCase
 
     public function testFinderShouldFilterByNotPath(): void
     {
-        $finder = new ComposerFinder();
+        $finder = (new ComposerFinder())->useAutoloading(false);
         $finder->in([__DIR__ . '/../../data']);
         $finder->notPath('SubNs');
 
@@ -194,7 +191,7 @@ class ComposerFinderTest extends TestCase
 
     public function testFinderShouldFilterByNotPathRegex(): void
     {
-        $finder = new ComposerFinder();
+        $finder = (new ComposerFinder())->useAutoloading(false);
         $finder->in([__DIR__ . '/../../data']);
         $finder->notPath('/subns/i');
 
@@ -212,7 +209,7 @@ class ComposerFinderTest extends TestCase
 
     public function testFinderShouldFilterByPathCallback(): void
     {
-        $finder = new ComposerFinder();
+        $finder = (new ComposerFinder())->useAutoloading(false);
         $finder->in([__DIR__ . '/../../data']);
         $finder->pathFilter(static fn (string $path): bool => !str_ends_with($path, 'BarBar.php'));
 

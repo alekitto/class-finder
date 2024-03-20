@@ -31,8 +31,8 @@ final class ComposerFinder implements FinderInterface
     private ReflectorFactoryInterface|null $reflectorFactory = null;
 
     /** @var array<string, string> */
-    private array $files = [];
-    private bool $useAutoloading = false;
+    private array $files;
+    private bool $useAutoloading = true;
 
     public function __construct(ClassLoader|null $loader = null)
     {

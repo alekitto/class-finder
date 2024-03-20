@@ -15,7 +15,7 @@ class FunctionalTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
 
-        $finder = new ComposerFinder();
+        $finder = (new ComposerFinder())->useAutoloading(false);
         iterator_to_array($finder);
     }
 }
