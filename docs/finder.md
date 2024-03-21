@@ -42,7 +42,7 @@ Criteria can be added to the finder using the following methods:
   You can pass a single interface as string.
 - `subclassOf(string $superClass)` - Only the classes that are subclasses of the given class will be yielded.
 - `annontatedBy(string $annotationClass)` - Finds all the classes that have the given annotation in the class docblock.
-- `withAttribtue(string $attributeClass)` - Finds all the classes that have the given attribute applied on the 
+- `withAttribute(string $attributeClass)` - Finds all the classes that have the given attribute applied on the 
   class (PHP >= 8.0) only. NOTE: This will not work with php documentor finder as attributes support has been not
   implemented yet ([here's the relevant issue](https://github.com/phpDocumentor/Reflection/issues/185))
 - `in(array $dirs)` - Searches only in given directories.
