@@ -17,6 +17,7 @@ use Symfony\Component\ErrorHandler\DebugClassLoader;
 use function array_combine;
 use function array_search;
 use function class_exists;
+use function file_exists;
 use function is_array;
 use function spl_autoload_functions;
 
@@ -31,7 +32,7 @@ final class ComposerFinder implements FinderInterface
     private ReflectorFactoryInterface|null $reflectorFactory = null;
 
     /** @var array<string, string> */
-    private array $files;
+    private array $files = [];
     private bool $useAutoloading = true;
 
     public function __construct(ClassLoader|null $loader = null)
@@ -43,7 +44,12 @@ final class ComposerFinder implements FinderInterface
             return;
         }
 
-        $files = include $vendorDir . '/composer/autoload_files.php';
+        $autoloadFilesFn = $vendorDir . '/composer/autoload_files.php';
+        if (! file_exists($autoloadFilesFn)) {
+            return;
+        }
+
+        $files = include $autoloadFilesFn;
         if (! is_array($files)) {
             return;
         }
