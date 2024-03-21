@@ -11,7 +11,8 @@ $count = 0;
 foreach ($finder as $className => $reflector) {
     ++$count;
 }
-printf('> found %d class(es)' . PHP_EOL, $count);
+
+echo "OK"
 ?>
---EXPECTF--
-> found %d class(es)
+--EXPECT--
+OK

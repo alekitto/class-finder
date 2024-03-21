@@ -41,10 +41,9 @@ jobs:
                   composer-options: ${{ matrix.composer_flags }}
 
             - name: Install Composer dependencies (tests)
-              uses: ramsey/composer-install@v3
-              with:
-                  composer-options: ${{ matrix.composer_flags }}
-                  working-directory: tests/issue-13
+              run: php tests/install-deps.php
+              env:
+                  COMPOSER_FLAGS: ${{ matrix.composer_flags }}
 
             - run: vendor/bin/phpunit
               if: ${{ matrix.php_version != '8.2' }}

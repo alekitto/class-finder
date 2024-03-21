@@ -9,7 +9,8 @@
       <directory suffix="Test.php">tests/unit/</directory>
     </testsuite>
     <testsuite name="Functional tests">
-      <directory suffix=".phpt">tests/functional/</directory>
+      <directory suffix=".phpt">tests/functional/error-handler/</directory>
+      <file>tests/functional/nested-composer-projects/test.phpt</file>
       <file>tests/issue-13/test.phpt</file>
       <file>tests/issue-13/test-path-callback.phpt</file>
     </testsuite>
