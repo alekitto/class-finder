@@ -44,7 +44,7 @@ You can filter classes using the methods exposed by `FinderInterface`:
   of the given class.
 - `annontatedBy(string $annotationClass)`: Finds all the classes that have
   the given annotation in the class docblock.
-- `withAttribtue(string $attributeClass)`: Finds all the classes that have
+- `withAttribute(string $attributeClass)`: Finds all the classes that have
   the given attribute applied on the class (PHP >= 8.0) only.
 - `in(array $dirs)`: Searches only in given directories.
 - `inNamespace(array $namespaces)`: Searches only in given namespaces.
