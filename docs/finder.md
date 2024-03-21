@@ -3,7 +3,7 @@
 A finder finds classes, interfaces and traits based on different criteria (namespace, location,
 attributes, annotations, etc) via an intuitive fluent interface.
 
-?> `Finder` interface is inspired by Symfony finder component.
+> `Finder` interface is inspired by Symfony finder component.
 
 ## Available finders
 
