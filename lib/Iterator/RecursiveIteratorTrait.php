@@ -27,9 +27,7 @@ trait RecursiveIteratorTrait
                 $files = new RecursiveIteratorIterator(
                     new RecursiveCallbackFilterIterator(
                         new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS | FilesystemIterator::FOLLOW_SYMLINKS),
-                        static function (SplFileInfo $file) {
-                            return $file->getBasename()[0] !== '.';
-                        },
+                        static fn (SplFileInfo $file): bool => $file->getBasename()[0] !== '.',
                     ),
                     RecursiveIteratorIterator::LEAVES_ONLY,
                 );

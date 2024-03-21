@@ -13,6 +13,7 @@ use Kcs\ClassFinder\Util\ErrorHandler;
 use Throwable;
 
 use function array_map;
+use function assert;
 use function class_exists;
 use function defined;
 use function in_array;
@@ -67,6 +68,8 @@ final class Psr0Iterator extends ClassIterator
             null,
             null,
         );
+
+        assert($include instanceof Closure);
 
         foreach ($this->search() as $path => $info) {
             if (! preg_match($pattern, $path, $m) || ! $info->isReadable()) {
