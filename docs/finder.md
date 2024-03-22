@@ -48,5 +48,9 @@ Criteria can be added to the finder using the following methods:
 - `in(array $dirs)` - Searches only in given directories.
 - `inNamespace(array $namespaces)` -  Searches only in given namespaces.
 - `notInNamespace(array $namespaces)` -  Searches only *outside* the given namespaces.
+- `path(string $pattern)` - Adds a filter based on file pathname. If starts with '/' will be interpreted as a regex.
+- `notPath(string $pattern)` - Adds a negative filter based on file pathname. If starts with '/' will be interpreted as a regex.
 - `filter(callable $callback)` - Adds a custom filter callback.
-
+- `pathFilter(callable $callback)` - Adds a custom file pathname filter callback.
+- `skipNonInstantiable(bool $skip = true)` - Whether to skip or not abstract classes, traits and interfaces.
+- `skipBogonFiles(bool $skip = true)` - Prevents the inclusion of files known to cause bugs and possible fatal errors.
