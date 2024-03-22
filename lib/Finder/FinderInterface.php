@@ -19,7 +19,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function implementationOf(string|array $interface): self;
+    public function implementationOf(string|array $interface): static;
 
     /**
      * Filters by class extension.
@@ -30,7 +30,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function subclassOf(string|null $superClass): self;
+    public function subclassOf(string|null $superClass): static;
 
     /**
      * Filters by a given annotation on the class.
@@ -41,7 +41,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function annotatedBy(string|null $annotationClass): self;
+    public function annotatedBy(string|null $annotationClass): static;
 
     /**
      * Filters by a given attribute on the class.
@@ -52,7 +52,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function withAttribute(string|null $attributeClass): self;
+    public function withAttribute(string|null $attributeClass): static;
 
     /**
      * Adds a search directory.
@@ -61,7 +61,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function in(string|array $dirs): self;
+    public function in(string|array $dirs): static;
 
     /**
      * Adds namespace(s) to search classes into.
@@ -70,7 +70,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function inNamespace(string|array $namespaces): self;
+    public function inNamespace(string|array $namespaces): static;
 
     /**
      * Adds namespace(s) to exclude from search.
@@ -79,7 +79,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function notInNamespace(string|array $namespaces): self;
+    public function notInNamespace(string|array $namespaces): static;
 
     /**
      * Sets a custom callback for class filtering.
@@ -87,7 +87,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function filter(callable|null $callback): self;
+    public function filter(callable|null $callback): static;
 
     /**
      * Adds rules that filenames must match.
@@ -103,7 +103,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function path(string $pattern): self;
+    public function path(string $pattern): static;
 
     /**
      * Adds rules that filenames must not match.
@@ -119,7 +119,7 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function notPath(string $pattern): self;
+    public function notPath(string $pattern): static;
 
     /**
      * Sets a custom callback for file filtering.
@@ -127,12 +127,19 @@ interface FinderInterface extends IteratorAggregate
      *
      * @return $this
      */
-    public function pathFilter(callable|null $callback): self;
+    public function pathFilter(callable|null $callback): static;
 
     /**
      * Skips non-instantiable (abstract) classes, as well as interfaces and traits.
      *
      * @return $this
      */
-    public function skipNonInstantiable(bool $skip = true): self;
+    public function skipNonInstantiable(bool $skip = true): static;
+
+    /**
+     * Prevents the inclusion of files known to cause bugs and possible fatal errors.
+     *
+     * @return $this
+     */
+    public function skipBogonFiles(bool $skip = true): static;
 }

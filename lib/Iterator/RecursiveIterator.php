@@ -34,6 +34,7 @@ final class RecursiveIterator extends ClassIterator
         $pattern = defined('HHVM_VERSION') ? '/\\.(php|hh)$/i' : '/\\.php$/i';
 
         foreach ($this->search() as $path => $info) {
+            $path = PathNormalizer::resolvePath($path);
             if (! preg_match($pattern, $path, $m) || ! $info->isReadable()) {
                 continue;
             }

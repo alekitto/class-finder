@@ -72,6 +72,7 @@ final class Psr4Iterator extends ClassIterator
         assert($include instanceof Closure);
 
         foreach ($this->search() as $path => $info) {
+            $path = PathNormalizer::resolvePath($path);
             if (! preg_match($pattern, $path, $m) || ! $info->isReadable()) {
                 continue;
             }

@@ -8,6 +8,7 @@ use Iterator;
 use Kcs\ClassFinder\Iterator\Psr4Iterator;
 use Kcs\ClassFinder\PathNormalizer;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
+use Kcs\ClassFinder\Util\BogonFilesFilter;
 use Reflector;
 
 use function substr;
@@ -50,11 +51,16 @@ final class Psr4Finder implements FinderInterface
     /** @return Iterator<Reflector> */
     public function getIterator(): Iterator
     {
+        $pathFilterCallback = $this->pathFilterCallback !== null ? ($this->pathFilterCallback)(...) : null;
+        if ($this->skipBogonClasses) {
+            $pathFilterCallback = BogonFilesFilter::getFileFilterFn($pathFilterCallback);
+        }
+
         return $this->applyFilters(new Psr4Iterator(
             $this->namespace,
             $this->path,
             $this->reflectorFactory,
-            pathCallback: $this->pathFilterCallback !== null ? ($this->pathFilterCallback)(...) : null,
+            pathCallback: $pathFilterCallback,
         ));
     }
 }

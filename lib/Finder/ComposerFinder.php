@@ -10,6 +10,7 @@ use Kcs\ClassFinder\Iterator\ClassIterator;
 use Kcs\ClassFinder\Iterator\ComposerIterator;
 use Kcs\ClassFinder\Iterator\FilteredComposerIterator;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
+use Kcs\ClassFinder\Util\BogonFilesFilter;
 use Reflector;
 use RuntimeException;
 use Symfony\Component\ErrorHandler\DebugClassLoader;
@@ -91,6 +92,10 @@ final class ComposerFinder implements FinderInterface
 
                 return $pathFilterCallback($path);
             };
+        }
+
+        if ($this->skipBogonClasses) {
+            $pathFilterCallback = BogonFilesFilter::getFileFilterFn($pathFilterCallback);
         }
 
         if ($this->namespaces || $this->dirs || $this->notNamespaces) {

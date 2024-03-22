@@ -57,6 +57,7 @@ trait FinderTrait
     private $pathFilterCallback = null;
 
     private bool $skipNonInstantiable = false;
+    private bool $skipBogonClasses = false;
 
     /**
      * {@inheritDoc}
@@ -172,6 +173,13 @@ trait FinderTrait
     public function skipNonInstantiable(bool $skip = true): static
     {
         $this->skipNonInstantiable = $skip;
+
+        return $this;
+    }
+
+    public function skipBogonFiles(bool $skip = true): static
+    {
+        $this->skipBogonClasses = $skip;
 
         return $this;
     }

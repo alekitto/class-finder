@@ -158,7 +158,7 @@ final class PhpDocumentorIterator extends ClassIterator
     protected function getGenerator(): Generator
     {
         foreach ($this->scan() as $path => $info) {
-            if (! $this->accept($path)) {
+            if (! $this->accept(PathNormalizer::resolvePath($path))) {
                 continue;
             }
 

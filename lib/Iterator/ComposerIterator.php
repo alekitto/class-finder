@@ -7,6 +7,7 @@ namespace Kcs\ClassFinder\Iterator;
 use Closure;
 use Composer\Autoload\ClassLoader;
 use Generator;
+use Kcs\ClassFinder\PathNormalizer;
 use Kcs\ClassFinder\Reflection\NativeReflectorFactory;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Kcs\ClassFinder\Util\ErrorHandler;
@@ -43,7 +44,7 @@ final class ComposerIterator extends ClassIterator
     {
         /** @var class-string $class */
         foreach ($this->classLoader->getClassMap() as $class => $file) {
-            if ($this->pathCallback && ! ($this->pathCallback)($file)) {
+            if ($this->pathCallback && ! ($this->pathCallback)(PathNormalizer::resolvePath($file))) {
                 continue;
             }
 
