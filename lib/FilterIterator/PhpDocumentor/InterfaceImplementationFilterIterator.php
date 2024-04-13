@@ -21,7 +21,7 @@ final class InterfaceImplementationFilterIterator extends FilterIterator
      * @param string[] $interfaces
      * @phpstan-param class-string[] $interfaces
      */
-    public function __construct(Iterator $iterator, private array $interfaces)
+    public function __construct(Iterator $iterator, private readonly array $interfaces)
     {
         parent::__construct($iterator);
     }

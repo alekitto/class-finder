@@ -131,11 +131,14 @@ class PhpDocumentorFinderTest extends TestCase
         $finder->withAttribute(Psr4\SubNs\FooBaz::class);
 
         // Not implemented yet
-        $this->expectException(RuntimeException::class);
-        /* $classes = */ iterator_to_array($finder);
+        if (!method_exists(Class_::class, 'getAttributes')) {
+            $this->expectException(RuntimeException::class);
+        }
 
-//        self::assertArrayHasKey(Psr4\AbstractClass::class, $classes);
-//        self::assertInstanceOf(Class_::class, $classes[Psr4\AbstractClass::class]);
+        $classes = iterator_to_array($finder);
+
+        self::assertArrayHasKey(Psr4\AbstractClass::class, $classes);
+        self::assertInstanceOf(Class_::class, $classes[Psr4\AbstractClass::class]);
     }
 
     public function testFinderShouldFilterByCallback(): void

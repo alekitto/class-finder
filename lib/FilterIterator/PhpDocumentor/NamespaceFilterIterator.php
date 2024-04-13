@@ -10,9 +10,9 @@ use phpDocumentor\Reflection\Element;
 
 use function assert;
 use function ltrim;
-use function Safe\substr;
-use function strpos;
+use function str_starts_with;
 use function strrpos;
+use function substr;
 
 final class NamespaceFilterIterator extends FilterIterator
 {
@@ -20,7 +20,7 @@ final class NamespaceFilterIterator extends FilterIterator
      * @param Iterator<Element> $iterator
      * @param string[] $namespaces
      */
-    public function __construct(Iterator $iterator, private array $namespaces)
+    public function __construct(Iterator $iterator, private readonly array $namespaces)
     {
         parent::__construct($iterator);
     }
@@ -35,7 +35,7 @@ final class NamespaceFilterIterator extends FilterIterator
         $classNamespace = ltrim($index !== false ? substr($fqen, 0, $index) : $fqen, '\\');
 
         foreach ($this->namespaces as $namespace) {
-            if ($classNamespace === $namespace || strpos($classNamespace, $namespace . '\\') === 0) {
+            if ($classNamespace === $namespace || str_starts_with($classNamespace, $namespace . '\\')) {
                 return true;
             }
         }

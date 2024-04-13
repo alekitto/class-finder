@@ -11,6 +11,7 @@ use InvalidArgumentException;
 use Kcs\ClassFinder\FilterIterator\Reflection\PathFilterIterator;
 use Kcs\ClassFinder\PathNormalizer;
 use phpDocumentor\Reflection\DocBlockFactory;
+use phpDocumentor\Reflection\DocBlockFactoryInterface;
 use phpDocumentor\Reflection\File\LocalFile;
 use phpDocumentor\Reflection\Php\Class_;
 use phpDocumentor\Reflection\Php\Factory;
@@ -62,7 +63,7 @@ final class PhpDocumentorIterator extends ClassIterator
     /** @var string[] */
     private array|null $notPaths = null;
     private ProjectFactoryStrategies $strategies;
-    private DocBlockFactory $docBlockFactory;
+    private DocBlockFactory|DocBlockFactoryInterface $docBlockFactory;
 
     public function __construct(string $path, int $flags = 0, Closure|null $pathCallback = null)
     {
@@ -71,7 +72,7 @@ final class PhpDocumentorIterator extends ClassIterator
         if (class_exists(Factory\DocBlock::class)) {
             // phpdoc/reflection 4.x
             $this->strategies = new ProjectFactoryStrategies([ // @phpstan-ignore-line
-                new Factory\Argument(new PrettyPrinter()),
+                new Factory\Argument(new PrettyPrinter()), // @phpstan-ignore-line
                 new Factory\Class_(), // @phpstan-ignore-line
                 new Factory\Define(new PrettyPrinter()), // @phpstan-ignore-line
                 new Factory\GlobalConstant(new PrettyPrinter()), // @phpstan-ignore-line
@@ -84,8 +85,8 @@ final class PhpDocumentorIterator extends ClassIterator
                 new Factory\Property(new PrettyPrinter()), // @phpstan-ignore-line
                 new Factory\Trait_(), // @phpstan-ignore-line
             ]);
-        } else {
-            $this->strategies = new ProjectFactoryStrategies([
+        } elseif (class_exists(Factory\Argument::class)) {
+            $this->strategies = new ProjectFactoryStrategies([ // @phpstan-ignore-line
                 new Factory\Argument(new PrettyPrinter()),
                 new Factory\Class_($this->docBlockFactory),
                 new Factory\Define($this->docBlockFactory, new PrettyPrinter()),
@@ -100,6 +101,32 @@ final class PhpDocumentorIterator extends ClassIterator
                 new Factory\Trait_($this->docBlockFactory),
             ]);
 
+            $this->strategies->addStrategy(new Factory\Noop(), -1000);
+        } else {
+            $attributeReducer = new Factory\Reducer\Attribute();
+            $parameterReducer = new Factory\Reducer\Parameter(new PrettyPrinter());
+            $methodStrategy = new Factory\Method($this->docBlockFactory, [$attributeReducer, $parameterReducer]);
+
+            $this->strategies = new ProjectFactoryStrategies([
+                new Factory\Namespace_(),
+                new Factory\Class_($this->docBlockFactory, [$attributeReducer]),
+                new Factory\Enum_($this->docBlockFactory, [$attributeReducer]),
+                new Factory\EnumCase($this->docBlockFactory, new PrettyPrinter()),
+                new Factory\Define($this->docBlockFactory, new PrettyPrinter()),
+                new Factory\GlobalConstant($this->docBlockFactory, new PrettyPrinter()),
+                new Factory\ClassConstant($this->docBlockFactory, new PrettyPrinter()),
+                new Factory\File($this->docBlockFactory, NodesFactory::createInstance()),
+                new Factory\Function_($this->docBlockFactory, [$attributeReducer, $parameterReducer]),
+                new Factory\Interface_($this->docBlockFactory),
+                $methodStrategy,
+                new Factory\Property($this->docBlockFactory, new PrettyPrinter()),
+                new Factory\Trait_($this->docBlockFactory),
+
+                new Factory\IfStatement(),
+                new Factory\TraitUse(),
+            ]);
+
+            $this->strategies->addStrategy(new Factory\ConstructorPromotion($methodStrategy, $this->docBlockFactory, new PrettyPrinter()), -1000);
             $this->strategies->addStrategy(new Factory\Noop(), -1000);
         }
 
