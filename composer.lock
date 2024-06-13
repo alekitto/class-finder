@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "97c12960b4c910c1e717f14d0f8f0ce6",
+    "content-hash": "2e2871e5c0d076f49ec0c816d89e780d",
     "packages": [
         {
             "name": "thecodingmachine/safe",
@@ -766,16 +766,16 @@
         },
         {
             "name": "phpdocumentor/reflection",
-            "version": "6.x-dev",
+            "version": "6.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/Reflection.git",
-                "reference": "e45dd2eb4102226d1f34a90dbde6598549597dd1"
+                "reference": "61e2f1fe7683e9647b9ed8d9e53d08699385267d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/Reflection/zipball/e45dd2eb4102226d1f34a90dbde6598549597dd1",
-                "reference": "e45dd2eb4102226d1f34a90dbde6598549597dd1",
+                "url": "https://api.github.com/repos/phpDocumentor/Reflection/zipball/61e2f1fe7683e9647b9ed8d9e53d08699385267d",
+                "reference": "61e2f1fe7683e9647b9ed8d9e53d08699385267d",
                 "shasum": ""
             },
             "require": {
@@ -801,7 +801,6 @@
                 "rector/rector": "^1.0.0",
                 "squizlabs/php_codesniffer": "^3.8"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -828,9 +827,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpDocumentor/Reflection/issues",
-                "source": "https://github.com/phpDocumentor/Reflection/tree/6.x"
+                "source": "https://github.com/phpDocumentor/Reflection/tree/6.0.0"
             },
-            "time": "2024-06-10T08:45:39+00:00"
+            "time": "2024-05-23T19:28:12+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -4703,7 +4702,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "phpdocumentor/reflection": 20,
         "roave/security-advisories": 20,
         "solido/php-coding-standards": 20
     },

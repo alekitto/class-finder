@@ -21,7 +21,7 @@
     },
     "require-dev": {
         "doctrine/annotations": "^1.0",
-        "phpdocumentor/reflection": "^4.0 || ^5.0 || ^6.0@dev",
+        "phpdocumentor/reflection": "^4.0 || ^5.0 || ^6.0",
         "phpunit/phpunit": "^10.5",
         "roave/better-reflection": "^6.0",
         "roave/security-advisories": "dev-master",
