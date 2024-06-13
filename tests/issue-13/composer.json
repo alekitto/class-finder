@@ -7,6 +7,6 @@
     ],
     "require": {
         "symfony/cache": "^6.4 || ^7.0",
-        "kcs/class-finder": "^1.0@dev"
+        "kcs/class-finder": "dev-master"
     }
 }

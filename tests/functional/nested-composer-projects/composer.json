@@ -6,6 +6,6 @@
         }
     ],
     "require": {
-        "kcs/class-finder": "^0.5@dev"
+        "kcs/class-finder": "dev-master"
     }
 }
