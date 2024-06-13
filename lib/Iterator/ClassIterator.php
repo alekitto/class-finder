@@ -36,7 +36,6 @@ abstract class ClassIterator implements Iterator
     public function __construct(protected readonly int $flags = 0, protected Closure|null $pathCallback = null)
     {
         $this->apply(null);
-        $this->rewind();
     }
 
     public function current(): mixed

@@ -41,10 +41,8 @@ final class ComposerIterator extends ClassIterator
      */
     private function searchInClassMap(): Generator
     {
-        $itr = new ClassMapIterator($this->classLoader->getClassMap(), $this->reflectorFactory, $this->flags); /** @phpstan-ignore-line */
-        $itr->pathCallback = $this->pathCallback;
-
-        yield from $itr;
+        /** @phpstan-ignore-next-line */
+        yield from new ClassMapIterator($this->classLoader->getClassMap(), $this->reflectorFactory, $this->flags, $this->pathCallback);
     }
 
     /**
@@ -62,8 +60,7 @@ final class ComposerIterator extends ClassIterator
 
         foreach ($this->classLoader->getPrefixesPsr4() as $ns => $dirs) {
             foreach ($dirs as $dir) {
-                $itr = new Psr4Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap());
-                $itr->pathCallback = $this->pathCallback;
+                $itr = new Psr4Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), pathCallback: $this->pathCallback);
                 if (isset($this->fileFinder)) {
                     $itr->setFileFinder($this->fileFinder);
                 }
@@ -74,8 +71,7 @@ final class ComposerIterator extends ClassIterator
 
         foreach ($this->classLoader->getPrefixes() as $ns => $dirs) {
             foreach ($dirs as $dir) {
-                $itr = new Psr0Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap());
-                $itr->pathCallback = $this->pathCallback;
+                $itr = new Psr0Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), pathCallback: $this->pathCallback);
                 if (isset($this->fileFinder)) {
                     $itr->setFileFinder($this->fileFinder);
                 }
