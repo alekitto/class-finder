@@ -28,7 +28,7 @@ jobs:
 
         name: 'PHP ${{ matrix.php_version }} (composer_flags: "${{ matrix.composer_flags }}")'
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - name: Setup PHP with pecl extension
               uses: shivammathur/setup-php@v2
               with:
@@ -54,6 +54,6 @@ jobs:
 
             - name: Upload coverage to Codecov
               if: ${{ matrix.php_version == '8.2' }}
-              uses: codecov/codecov-action@v3
+              uses: codecov/codecov-action@v4
               with:
                   file: ./coverage.xml
