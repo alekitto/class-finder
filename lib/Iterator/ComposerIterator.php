@@ -18,6 +18,8 @@ use Throwable;
  */
 final class ComposerIterator extends ClassIterator
 {
+    use RecursiveIteratorTrait;
+
     private ReflectorFactoryInterface $reflectorFactory;
 
     public function __construct(
@@ -78,15 +80,21 @@ final class ComposerIterator extends ClassIterator
             foreach ($dirs as $dir) {
                 $itr = new Psr4Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap());
                 $itr->pathCallback = $this->pathCallback;
+                if (isset($this->fileFinder)) {
+                    $itr->setFileFinder($this->fileFinder);
+                }
 
                 yield from $itr;
             }
         }
 
         foreach ($this->classLoader->getPrefixes() as $ns => $dirs) {
-            foreach ((array) $dirs as $dir) {
+            foreach ($dirs as $dir) {
                 $itr = new Psr0Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap());
                 $itr->pathCallback = $this->pathCallback;
+                if (isset($this->fileFinder)) {
+                    $itr->setFileFinder($this->fileFinder);
+                }
 
                 yield from $itr;
             }

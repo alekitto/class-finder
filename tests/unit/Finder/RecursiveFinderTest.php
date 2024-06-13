@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Tests\unit\Finder;
 
+use Kcs\ClassFinder\FileFinder\FileFinderInterface;
 use Kcs\ClassFinder\Finder\RecursiveFinder;
 use Kcs\ClassFinder\Fixtures\Psr0;
 use Kcs\ClassFinder\Fixtures\Psr4;
 use Kcs\ClassFinder\Fixtures\Recursive;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use SplFileInfo;
 use Traversable;
+
+use function basename;
 use function iterator_to_array;
+use function realpath;
+use function str_starts_with;
 
 class RecursiveFinderTest extends TestCase
 {
@@ -111,7 +117,7 @@ class RecursiveFinderTest extends TestCase
     {
         $finder = new RecursiveFinder(__DIR__ . '/../../../data/Recursive');
         $finder->pathFilter(static function (string $path): bool {
-            return !str_starts_with(basename($path), 'class-');
+            return ! str_starts_with(basename($path), 'class-');
         });
 
         $classes = iterator_to_array($finder);
@@ -119,6 +125,27 @@ class RecursiveFinderTest extends TestCase
         self::assertEquals([
             Recursive\Bar::class => new ReflectionClass(Recursive\Bar::class),
             Recursive\Foo::class => new ReflectionClass(Recursive\Foo::class),
+        ], $classes);
+    }
+
+    public function testFinderShouldUseGivenFileFinder(): void
+    {
+        $finder = new RecursiveFinder(__DIR__ . '/../../../data/Recursive');
+        $fileFinder = $this->createMock(FileFinderInterface::class);
+        $finder->withFileFinder($fileFinder);
+
+        $fileFinder->expects(self::once())
+            ->method('search')
+            ->willReturn([
+                realpath(__DIR__ . '/../../../data/Recursive/Foo.php') => new SplFileInfo(realpath(__DIR__ . '/../../../data/Recursive/Foo.php')),
+                realpath(__DIR__ . '/../../../data/Recursive/class-foo-bar.php') => new SplFileInfo(realpath(__DIR__ . '/../../../data/Recursive/class-foo-bar.php')),
+            ]);
+
+        $classes = iterator_to_array($finder);
+
+        self::assertEquals([
+            Recursive\Foo::class => new ReflectionClass(Recursive\Foo::class),
+            Recursive\FooBar::class => new ReflectionClass(Recursive\FooBar::class),
         ], $classes);
     }
 }

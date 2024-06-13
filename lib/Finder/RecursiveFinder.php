@@ -13,6 +13,7 @@ use Traversable;
 final class RecursiveFinder implements FinderInterface
 {
     use ReflectionFilterTrait;
+    use RecursiveFinderTrait;
 
     private string $path;
 
@@ -30,9 +31,15 @@ final class RecursiveFinder implements FinderInterface
             $pathFilterCallback = BogonFilesFilter::getFileFilterFn($pathFilterCallback);
         }
 
-        return $this->applyFilters(new RecursiveIterator(
+        $iterator = new RecursiveIterator(
             $this->path,
             pathCallback: $pathFilterCallback,
-        ));
+        );
+
+        if (isset($this->fileFinder)) {
+            $iterator->setFileFinder($this->fileFinder);
+        }
+
+        return $this->applyFilters($iterator);
     }
 }

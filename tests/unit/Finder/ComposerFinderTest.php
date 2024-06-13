@@ -12,7 +12,9 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Symfony\Component\ErrorHandler\DebugClassLoader as ErrorHandlerClassLoader;
 use Traversable;
+
 use function iterator_to_array;
+use function str_ends_with;
 
 class ComposerFinderTest extends TestCase
 {
@@ -210,7 +212,7 @@ class ComposerFinderTest extends TestCase
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
         $finder->in([__DIR__ . '/../../../data']);
-        $finder->pathFilter(static fn (string $path): bool => !str_ends_with($path, 'BarBar.php'));
+        $finder->pathFilter(static fn (string $path): bool => ! str_ends_with($path, 'BarBar.php'));
 
         self::assertEquals([
             Psr4\Foobar::class => new ReflectionClass(Psr4\Foobar::class),

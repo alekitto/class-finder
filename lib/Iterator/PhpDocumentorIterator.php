@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kcs\ClassFinder\Iterator;
 
 use Closure;
-use FilesystemIterator;
 use Generator;
 use InvalidArgumentException;
 use Kcs\ClassFinder\FilterIterator\Reflection\PathFilterIterator;
@@ -22,10 +21,6 @@ use phpDocumentor\Reflection\Php\Project;
 use phpDocumentor\Reflection\Php\ProjectFactoryStrategies;
 use phpDocumentor\Reflection\Php\Trait_;
 use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
-use RecursiveCallbackFilterIterator;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use SplFileInfo;
 
 use function array_map;
 use function array_merge;
@@ -34,11 +29,7 @@ use function array_unique;
 use function assert;
 use function class_exists;
 use function defined;
-use function function_exists;
-use function is_callable;
 use function is_dir;
-use function is_file;
-use function iterator_to_array;
 use function ltrim;
 use function Safe\glob;
 use function Safe\preg_match;
@@ -46,13 +37,12 @@ use function strpos;
 
 use const GLOB_BRACE;
 use const GLOB_ONLYDIR;
-use const PHP_VERSION_ID;
 
 final class PhpDocumentorIterator extends ClassIterator
 {
-    private const EXTENSION_PATTERN = '/\\.php$/i';
+    use RecursiveIteratorTrait;
 
-    private string $path;
+    private const EXTENSION_PATTERN = '/\\.php$/i';
 
     /** @var string[] */
     private array|null $dirs = null;
@@ -141,7 +131,6 @@ final class PhpDocumentorIterator extends ClassIterator
     public function in(string|array $dirs): self
     {
         $resolvedDirs = [];
-
         foreach ((array) $dirs as $dir) {
             if (is_dir($dir)) {
                 $resolvedDirs[] = $dir;
@@ -184,7 +173,7 @@ final class PhpDocumentorIterator extends ClassIterator
 
     protected function getGenerator(): Generator
     {
-        foreach ($this->scan() as $path => $info) {
+        foreach ($this->search() as $path => $info) {
             if (! $this->accept(PathNormalizer::resolvePath($path))) {
                 continue;
             }
@@ -224,49 +213,6 @@ final class PhpDocumentorIterator extends ClassIterator
     {
         foreach ($classes as $reflector) {
             yield ltrim((string) $reflector->getFqsen(), '\\') => $reflector;
-        }
-    }
-
-    private function scan(): Generator
-    {
-        foreach (glob($this->path . '/*') as $path) {
-            if (is_dir($path)) {
-                $files = iterator_to_array(new RecursiveIteratorIterator(
-                    new RecursiveCallbackFilterIterator(
-                        new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS | FilesystemIterator::FOLLOW_SYMLINKS),
-                        static function (SplFileInfo $file) {
-                            return $file->getBasename()[0] !== '.';
-                        },
-                    ),
-                    RecursiveIteratorIterator::LEAVES_ONLY,
-                ));
-
-                /**
-                 * Compatibility layer for uasort:
-                 *
-                 * @see https://www.php.net/manual/en/function.uasort.php
-                 * - in php 8.2.0 uasort always returns true instead of bool
-                 * - subsequently the function has been removed from thecodingmachine\safe >= 2.0
-                 */
-                $uasort = function_exists('\Safe\uasort') && PHP_VERSION_ID <= 80200
-                    ? '\Safe\uasort'
-                    : '\uasort';
-
-                assert(is_callable($uasort));
-                $uasort($files, static function (SplFileInfo $a, SplFileInfo $b) {
-                    return (string) $a <=> (string) $b;
-                });
-
-                foreach ($files as $filepath => $info) {
-                    if (! $info->isFile()) {
-                        continue;
-                    }
-
-                    yield PathNormalizer::resolvePath($filepath) => $info;
-                }
-            } elseif (is_file($path)) {
-                yield PathNormalizer::resolvePath($path) => new SplFileInfo($path);
-            }
         }
     }
 

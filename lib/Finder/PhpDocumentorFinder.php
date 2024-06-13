@@ -18,6 +18,7 @@ use function class_exists;
 final class PhpDocumentorFinder implements FinderInterface
 {
     use PhpDocumentorFilterTrait;
+    use RecursiveFinderTrait;
 
     public function __construct(private string $dir)
     {
@@ -31,6 +32,9 @@ final class PhpDocumentorFinder implements FinderInterface
     {
         $pathCallback = $this->pathFilterCallback !== null ? ($this->pathFilterCallback)(...) : null;
         $iterator = new PhpDocumentorIterator($this->dir, pathCallback: $pathCallback);
+        if (isset($this->fileFinder)) {
+            $iterator->setFileFinder($this->fileFinder);
+        }
 
         if ($this->dirs !== null) {
             $iterator->in($this->dirs);

@@ -21,6 +21,7 @@ use const DIRECTORY_SEPARATOR;
 final class Psr4Finder implements FinderInterface
 {
     use ReflectionFilterTrait;
+    use RecursiveFinderTrait;
 
     private string $namespace;
     private string $path;
@@ -56,11 +57,17 @@ final class Psr4Finder implements FinderInterface
             $pathFilterCallback = BogonFilesFilter::getFileFilterFn($pathFilterCallback);
         }
 
-        return $this->applyFilters(new Psr4Iterator(
+        $iterator = new Psr4Iterator(
             $this->namespace,
             $this->path,
             $this->reflectorFactory,
             pathCallback: $pathFilterCallback,
-        ));
+        );
+
+        if (isset($this->fileFinder)) {
+            $iterator->setFileFinder($this->fileFinder);
+        }
+
+        return $this->applyFilters($iterator);
     }
 }

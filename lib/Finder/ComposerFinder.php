@@ -28,6 +28,7 @@ use function spl_autoload_functions;
 final class ComposerFinder implements FinderInterface
 {
     use ReflectionFilterTrait;
+    use RecursiveFinderTrait;
 
     private ClassLoader $loader;
     private ReflectorFactoryInterface|null $reflectorFactory = null;
@@ -115,6 +116,10 @@ final class ComposerFinder implements FinderInterface
                 $flags,
                 $pathFilterCallback,
             );
+        }
+
+        if (isset($this->fileFinder)) {
+            $iterator->setFileFinder($this->fileFinder);
         }
 
         return $this->applyFilters($iterator);

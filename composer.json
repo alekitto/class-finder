@@ -26,6 +26,7 @@
         "roave/better-reflection": "^6.0",
         "roave/security-advisories": "dev-master",
         "solido/php-coding-standards": "dev-master",
+        "symfony/cache": "^5.0 || ^6.0 || ^7.0",
         "symfony/error-handler": "^5.0 || ^6.0 || ^7.0"
     },
     "autoload": {
@@ -58,7 +59,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.x-dev"
+            "dev-master": "0.5.x-dev"
         }
     },
     "archive": {

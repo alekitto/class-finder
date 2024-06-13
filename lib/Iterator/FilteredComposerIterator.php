@@ -16,7 +16,8 @@ use Throwable;
 use function array_map;
 use function array_unique;
 use function explode;
-use function strpos;
+use function str_contains;
+use function str_starts_with;
 
 /**
  * Iterates over classes defined in a composer-generated ClassLoader
@@ -30,6 +31,8 @@ use function strpos;
  */
 final class FilteredComposerIterator extends ClassIterator
 {
+    use RecursiveIteratorTrait;
+
     private ReflectorFactoryInterface $reflectorFactory;
 
     /** @var string[]|null */
@@ -126,11 +129,21 @@ final class FilteredComposerIterator extends ClassIterator
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixesPsr4()) as $ns => $dir) {
-            yield from new Psr4Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->notNamespaces, $this->pathCallback);
+            $itr = new Psr4Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->notNamespaces, $this->pathCallback);
+            if (isset($this->fileFinder)) {
+                $itr->setFileFinder($this->fileFinder);
+            }
+
+            yield from $itr;
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixes()) as $ns => $dir) {
-            yield from new Psr0Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->notNamespaces, $this->pathCallback);
+            $itr = new Psr0Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->notNamespaces, $this->pathCallback);
+            if (isset($this->fileFinder)) {
+                $itr->setFileFinder($this->fileFinder);
+            }
+
+            yield from $itr;
         }
     }
 
@@ -158,7 +171,7 @@ final class FilteredComposerIterator extends ClassIterator
     {
         if ($this->notNamespaces !== null) {
             foreach ($this->notNamespaces as $namespace) {
-                if (strpos($class, $namespace) === 0) {
+                if (str_starts_with($class, $namespace)) {
                     return false;
                 }
             }
@@ -169,7 +182,7 @@ final class FilteredComposerIterator extends ClassIterator
         }
 
         foreach ($this->namespaces as $namespace) {
-            if (strpos($class, $namespace) === 0) {
+            if (str_starts_with($class, $namespace)) {
                 return true;
             }
         }
@@ -185,7 +198,7 @@ final class FilteredComposerIterator extends ClassIterator
 
         foreach ($this->dirs as $dir) {
             // Check for intersection of required path and evaluated dir
-            if (strpos($path, $dir) !== false || strpos($dir, $path) !== false) {
+            if (str_contains($path, $dir) || str_contains($dir, $path)) {
                 return true;
             }
         }
