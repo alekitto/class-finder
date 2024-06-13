@@ -6,6 +6,6 @@
         }
     ],
     "require": {
-        "kcs/class-finder": "^1.0@dev"
+        "kcs/class-finder": "^0.5@dev"
     }
 }
