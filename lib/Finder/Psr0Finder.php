@@ -49,7 +49,7 @@ final class Psr0Finder implements FinderInterface
         return $this;
     }
 
-    /** @return Iterator<Reflector> */
+    /** @return Iterator<class-string, Reflector> */
     public function getIterator(): Iterator
     {
         $pathFilterCallback = $this->pathFilterCallback !== null ? ($this->pathFilterCallback)(...) : null;

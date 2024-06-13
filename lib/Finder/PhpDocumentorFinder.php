@@ -27,7 +27,7 @@ final class PhpDocumentorFinder implements FinderInterface
         }
     }
 
-    /** @return Iterator<Element> */
+    /** @return Iterator<class-string, Element> */
     public function getIterator(): Iterator
     {
         $pathCallback = $this->pathFilterCallback !== null ? ($this->pathFilterCallback)(...) : null;

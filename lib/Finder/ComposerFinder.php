@@ -73,7 +73,7 @@ final class ComposerFinder implements FinderInterface
         return $this;
     }
 
-    /** @return Iterator<Reflector> */
+    /** @return Iterator<class-string, Reflector> */
     public function getIterator(): Iterator
     {
         $flags = 0;
