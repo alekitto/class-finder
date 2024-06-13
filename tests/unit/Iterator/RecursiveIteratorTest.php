@@ -10,7 +10,10 @@ use Kcs\ClassFinder\Fixtures\Recursive\FooBar;
 use Kcs\ClassFinder\Iterator\RecursiveIterator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+
+use function basename;
 use function iterator_to_array;
+use function str_starts_with;
 
 class RecursiveIteratorTest extends TestCase
 {
@@ -32,7 +35,8 @@ class RecursiveIteratorTest extends TestCase
             0,
             static function (string $path): bool {
                 return str_starts_with(basename($path), 'class-');
-            });
+            },
+        );
 
         self::assertEquals([
             FooBar::class => new ReflectionClass(FooBar::class),

@@ -11,15 +11,18 @@ use phpDocumentor\Reflection\Php\Class_;
 use phpDocumentor\Reflection\Php\Interface_;
 use phpDocumentor\Reflection\Php\Trait_;
 use PHPUnit\Framework\TestCase;
+
+use function array_keys;
 use function iterator_to_array;
 use function realpath;
+use function str_ends_with;
 
 class PhpDocumentorIteratorTest extends TestCase
 {
     public function testIteratorShouldWork(): void
     {
         $iterator = new PhpDocumentorIterator(
-            realpath(__DIR__ . '/../../../data/Composer/Psr4')
+            realpath(__DIR__ . '/../../../data/Composer/Psr4'),
         );
 
         $classes = iterator_to_array($iterator);
@@ -41,7 +44,7 @@ class PhpDocumentorIteratorTest extends TestCase
     public function testComposerIteratorShouldFilterNotIntersectingPath(): void
     {
         $iterator = new PhpDocumentorIterator(
-            realpath(__DIR__ . '/../../../data/Composer')
+            realpath(__DIR__ . '/../../../data/Composer'),
         );
 
         $iterator->in([__DIR__ . '/../../..' . '/data/Composer/Psr?']);
@@ -87,9 +90,9 @@ class PhpDocumentorIteratorTest extends TestCase
     {
         $iterator = new PhpDocumentorIterator(
             realpath(__DIR__ . '/../../../data/Composer/Psr4'),
-            pathCallback: function (string $path): bool {
-                return !str_ends_with($path, 'BarBar.php');
-            }
+            pathCallback: static function (string $path): bool {
+                return ! str_ends_with($path, 'BarBar.php');
+            },
         );
 
         $classes = iterator_to_array($iterator);

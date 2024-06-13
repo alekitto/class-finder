@@ -9,8 +9,10 @@ use Kcs\ClassFinder\Iterator\Psr4Iterator;
 use Kcs\ClassFinder\Reflection\NativeReflectorFactory;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+
 use function iterator_to_array;
 use function realpath;
+use function str_ends_with;
 
 class Psr4IteratorTest extends TestCase
 {
@@ -38,8 +40,8 @@ class Psr4IteratorTest extends TestCase
             'Kcs\\ClassFinder\\Fixtures\\Psr4\\',
             realpath(__DIR__ . '/../../../data/Composer/Psr4'),
             new NativeReflectorFactory(),
-            pathCallback: function (string $path): bool {
-                return !str_ends_with($path, 'BarBar.php');
+            pathCallback: static function (string $path): bool {
+                return ! str_ends_with($path, 'BarBar.php');
             },
         );
 

@@ -8,7 +8,7 @@ use FilterIterator;
 use Iterator;
 use ReflectionClass;
 
-use function strpos;
+use function str_starts_with;
 
 /**
  * @template-covariant TValue of ReflectionClass
@@ -31,7 +31,7 @@ final class NamespaceFilterIterator extends FilterIterator
         $reflectionClass = $this->getInnerIterator()->current();
 
         foreach ($this->namespaces as $namespace) {
-            if ($namespace === $reflectionClass->getNamespaceName() || strpos($reflectionClass->getNamespaceName(), $namespace . '\\') === 0) {
+            if ($namespace === $reflectionClass->getNamespaceName() || str_starts_with($reflectionClass->getNamespaceName(), $namespace . '\\')) {
                 return true;
             }
         }

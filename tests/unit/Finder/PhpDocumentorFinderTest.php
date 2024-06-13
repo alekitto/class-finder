@@ -14,7 +14,10 @@ use phpDocumentor\Reflection\Php\Trait_;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Traversable;
+
 use function iterator_to_array;
+use function method_exists;
+use function str_ends_with;
 
 class PhpDocumentorFinderTest extends TestCase
 {
@@ -121,9 +124,7 @@ class PhpDocumentorFinderTest extends TestCase
         self::assertInstanceOf(Class_::class, $classes[Psr4\AbstractClass::class]);
     }
 
-    /**
-     * @requires PHP >= 8.0
-     */
+    /** @requires PHP >= 8.0 */
     public function testFinderShouldFilterByAttribute(): void
     {
         $finder = new PhpDocumentorFinder(__DIR__ . '/../../../data');
@@ -131,7 +132,7 @@ class PhpDocumentorFinderTest extends TestCase
         $finder->withAttribute(Psr4\SubNs\FooBaz::class);
 
         // Not implemented yet
-        if (!method_exists(Class_::class, 'getAttributes')) {
+        if (! method_exists(Class_::class, 'getAttributes')) {
             $this->expectException(RuntimeException::class);
         }
 
@@ -159,7 +160,7 @@ class PhpDocumentorFinderTest extends TestCase
     {
         $finder = new PhpDocumentorFinder(__DIR__ . '/../../../data');
         $finder->in([__DIR__ . '/../../../data/Composer/Psr?']);
-        $finder->pathFilter(static fn (string $path): bool => !str_ends_with($path, 'BarBar.php'));
+        $finder->pathFilter(static fn (string $path): bool => ! str_ends_with($path, 'BarBar.php'));
 
         $classes = iterator_to_array($finder);
 

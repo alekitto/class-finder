@@ -12,6 +12,7 @@ use Kcs\ClassFinder\Iterator\ClassIterator;
 use Kcs\ClassFinder\Iterator\ComposerIterator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+
 use function iterator_to_array;
 use function str_ends_with;
 
@@ -20,7 +21,7 @@ class ComposerIteratorTest extends TestCase
     public function testComposerIteratorShouldSearchInClassMap(): void
     {
         $loader = new ClassLoader();
-        (Closure::bind(static function () use ($loader) {
+        (Closure::bind(static function () use ($loader): void {
             $loader->classMap = [
                 ClassIterator::class => __DIR__ . '/.' . '/ClassBax.php',
                 ComposerIterator::class => __DIR__ . '/.' . '/FooBar.php',
@@ -37,7 +38,7 @@ class ComposerIteratorTest extends TestCase
     public function testComposerIteratorShouldNotSearchesInPsrPrefixedDirsIfClassmapAuthoritativeFlagIsEnabled(): void
     {
         $loader = new ClassLoader();
-        (Closure::bind(static function () use ($loader) {
+        (Closure::bind(static function () use ($loader): void {
             $loader->classMapAuthoritative = true;
             $loader->classMap = [
                 ClassIterator::class => __DIR__ . '/.' . '/ClassBax.php',
@@ -61,7 +62,7 @@ class ComposerIteratorTest extends TestCase
     public function testComposerIteratorShouldSearchInPsr4PrefixedDir(): void
     {
         $loader = new ClassLoader();
-        (Closure::bind(static function () use ($loader) {
+        (Closure::bind(static function () use ($loader): void {
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
                     __DIR__ . '/../../..' . '/data/Composer/Psr4',
@@ -84,7 +85,7 @@ class ComposerIteratorTest extends TestCase
     public function testComposerIteratorShouldSearchInPsr0PrefixedDir(): void
     {
         $loader = new ClassLoader();
-        (Closure::bind(static function () use ($loader) {
+        (Closure::bind(static function () use ($loader): void {
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
                     __DIR__ . '/../../..' . '/data/Composer/Psr4',
@@ -118,7 +119,7 @@ class ComposerIteratorTest extends TestCase
     public function testComposerIteratorShouldSkipNonInstantiableClass(): void
     {
         $loader = new ClassLoader();
-        (Closure::bind(static function () use ($loader) {
+        (Closure::bind(static function () use ($loader): void {
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
                     __DIR__ . '/../../..' . '/data/Composer/Psr4',
@@ -138,7 +139,7 @@ class ComposerIteratorTest extends TestCase
     public function testComposerIteratorShouldNotYieldTheSameClassTwice(): void
     {
         $loader = new ClassLoader();
-        (Closure::bind(static function () use ($loader) {
+        (Closure::bind(static function () use ($loader): void {
             $loader->classMap = [
                 Psr4\FooInterface::class => __DIR__ . '/../../..' . '/data/Composer/Psr4/FooInterface.php',
                 Psr4\FooTrait::class => __DIR__ . '/../../..' . '/data/Composer/Psr4/FooTrait.php',
@@ -166,7 +167,7 @@ class ComposerIteratorTest extends TestCase
     public function testComposerIteratorShouldCallPathCallback(): void
     {
         $loader = new ClassLoader();
-        (Closure::bind(static function () use ($loader) {
+        (Closure::bind(static function () use ($loader): void {
             $loader->prefixDirsPsr4 = [
                 'Kcs\\ClassFinder\\Fixtures\\Psr4\\' => [
                     __DIR__ . '/../../..' . '/data/Composer/Psr4',
@@ -174,8 +175,8 @@ class ComposerIteratorTest extends TestCase
             ];
         }, null, ClassLoader::class))();
 
-        $iterator = new ComposerIterator($loader, null, ClassIterator::SKIP_NON_INSTANTIABLE, function (string $path): bool {
-            return !str_ends_with($path, 'BarBar.php');
+        $iterator = new ComposerIterator($loader, null, ClassIterator::SKIP_NON_INSTANTIABLE, static function (string $path): bool {
+            return ! str_ends_with($path, 'BarBar.php');
         });
 
         self::assertEquals([

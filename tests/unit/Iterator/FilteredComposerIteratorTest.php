@@ -11,6 +11,7 @@ use Kcs\ClassFinder\Fixtures\Psr4;
 use Kcs\ClassFinder\Iterator\FilteredComposerIterator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+
 use function iterator_to_array;
 use function str_ends_with;
 
@@ -21,7 +22,7 @@ class FilteredComposerIteratorTest extends TestCase
     protected function setUp(): void
     {
         $loader = new ClassLoader();
-        (Closure::bind(static function () use ($loader) {
+        (Closure::bind(static function () use ($loader): void {
             $loader->classMap = [__CLASS__ => __FILE__]; // phpcs:ignore
 
             $loader->prefixDirsPsr4 = [
@@ -62,8 +63,8 @@ class FilteredComposerIteratorTest extends TestCase
 
     public function testComposerIteratorShouldCallPathCallback(): void
     {
-        $iterator = new FilteredComposerIterator($this->loader, null, null, null, null, 0, function (string $path): bool {
-            return !str_ends_with($path, 'BarBar.php');
+        $iterator = new FilteredComposerIterator($this->loader, null, null, null, null, 0, static function (string $path): bool {
+            return ! str_ends_with($path, 'BarBar.php');
         });
 
         self::assertEquals([

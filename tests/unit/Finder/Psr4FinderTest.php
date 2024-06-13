@@ -9,7 +9,9 @@ use Kcs\ClassFinder\Fixtures\Psr4;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Traversable;
+
 use function iterator_to_array;
+use function str_ends_with;
 
 class Psr4FinderTest extends TestCase
 {
@@ -73,9 +75,7 @@ class Psr4FinderTest extends TestCase
         ], iterator_to_array($finder));
     }
 
-    /**
-     * @requires PHP >= 8.0
-     */
+    /** @requires PHP >= 8.0 */
     public function testFinderShouldFilterByAttribute(): void
     {
         $finder = new Psr4Finder('Kcs\ClassFinder\Fixtures\Psr4', __DIR__ . '/../../../data/Composer/Psr4');
@@ -89,7 +89,7 @@ class Psr4FinderTest extends TestCase
     public function testFinderShouldFilterByPathCallback(): void
     {
         $finder = new Psr4Finder('Kcs\ClassFinder\Fixtures\Psr4', __DIR__ . '/../../../data/Composer/Psr4');
-        $finder->pathFilter(static fn (string $path): bool => !str_ends_with($path, 'BarBar.php'));
+        $finder->pathFilter(static fn (string $path): bool => ! str_ends_with($path, 'BarBar.php'));
 
         self::assertEquals([
             Psr4\Foobar::class => new ReflectionClass(Psr4\Foobar::class),

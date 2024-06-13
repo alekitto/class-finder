@@ -7,11 +7,8 @@ namespace Kcs\ClassFinder\Iterator;
 use Closure;
 use Composer\Autoload\ClassLoader;
 use Generator;
-use Kcs\ClassFinder\PathNormalizer;
 use Kcs\ClassFinder\Reflection\NativeReflectorFactory;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
-use Kcs\ClassFinder\Util\ErrorHandler;
-use Throwable;
 
 /**
  * Iterates over classes defined in a composer-generated ClassLoader.
@@ -44,23 +41,10 @@ final class ComposerIterator extends ClassIterator
      */
     private function searchInClassMap(): Generator
     {
-        /** @var class-string $class */
-        foreach ($this->classLoader->getClassMap() as $class => $file) {
-            if ($this->pathCallback && ! ($this->pathCallback)(PathNormalizer::resolvePath($file))) {
-                continue;
-            }
+        $itr = new ClassMapIterator($this->classLoader->getClassMap(), $this->reflectorFactory, $this->flags); /** @phpstan-ignore-line */
+        $itr->pathCallback = $this->pathCallback;
 
-            ErrorHandler::register();
-            try {
-                $reflectionClass = $this->reflectorFactory->reflect($class);
-            } catch (Throwable) { /** @phpstan-ignore-line */
-                continue;
-            } finally {
-                ErrorHandler::unregister();
-            }
-
-            yield $class => $reflectionClass;
-        }
+        yield from $itr;
     }
 
     /**
