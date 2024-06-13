@@ -12,7 +12,13 @@ final class BogonFilesFilter
 {
     private const BOGON_FILES_REGEX = '#' .
         // https://github.com/alekitto/class-finder/issues/13#issuecomment-2010509501
-        '(?:symfony/(?:cache|symfony/Component/Cache)/Traits/(?:Redis(?:Cluster)?\dProxy|ValueWrapper)\.php$)' .
+        '(?:' .
+            '(?:symfony/(?:cache|symfony/Component/Cache)/Traits/(?:Redis(?:Cluster)?\dProxy|ValueWrapper)|' .
+            'php-coveralls/php-coveralls/src/Bundle/CoverallsBundle/Console/Application|' .
+            'dealerdirect/phpcodesniffer-composer-installer/src/Plugin|' .
+            'myclabs/php-enum/src/PHPUnit/Comparator|' .
+            'guzzlehttp/guzzle/src/functions)' .
+        '\.php$)' .
     '#x';
 
     public static function getFileFilterFn(Closure|null $filter = null): Closure
