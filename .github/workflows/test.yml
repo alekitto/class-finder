@@ -7,6 +7,10 @@ on:
 
 jobs:
     build:
+        permissions:
+            id-token: write
+            contents: read
+
         env:
             COMPOSER_ROOT_VERSION: dev-master
 
@@ -56,4 +60,5 @@ jobs:
               if: ${{ matrix.php_version == '8.2' }}
               uses: codecov/codecov-action@v4
               with:
+                  use_oidc: true
                   file: ./coverage.xml
