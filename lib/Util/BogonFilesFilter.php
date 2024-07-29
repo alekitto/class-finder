@@ -17,8 +17,9 @@ final class BogonFilesFilter
             'php-coveralls/php-coveralls/src/Bundle/CoverallsBundle/Console/Application|' .
             'dealerdirect/phpcodesniffer-composer-installer/src/Plugin|' .
             'myclabs/php-enum/src/PHPUnit/Comparator|' .
-            'guzzlehttp/guzzle/src/functions)' .
-        '\.php$)' .
+            'guzzlehttp/guzzle/src/functions|' .
+            'composer/(?:autoload_\w+|InstalledVersions)|' .
+        ')\.php$)' .
     '#x';
 
     public static function getFileFilterFn(Closure|null $filter = null): Closure
