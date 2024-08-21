@@ -24,9 +24,10 @@ final class ClassMapIterator extends ClassIterator
         private readonly array $classMap,
         ReflectorFactoryInterface|null $reflectorFactory,
         int $flags = 0,
+        array|null $excludeNamespaces = null,
         Closure|null $pathCallback = null,
     ) {
-        parent::__construct($flags, $pathCallback);
+        parent::__construct($flags, $excludeNamespaces, $pathCallback);
 
         $this->reflectorFactory = $reflectorFactory ?? new NativeReflectorFactory();
     }

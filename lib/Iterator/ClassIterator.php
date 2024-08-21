@@ -11,6 +11,7 @@ use ReflectionClass;
 
 use function assert;
 use function is_string;
+use function str_starts_with;
 
 /**
  * Abstract class iterator.
@@ -33,8 +34,11 @@ abstract class ClassIterator implements Iterator
     private mixed $_currentElement;
     private mixed $_current = null;
 
-    public function __construct(protected readonly int $flags = 0, protected Closure|null $pathCallback = null)
-    {
+    public function __construct(
+        protected readonly int $flags = 0,
+        protected readonly array|null $excludeNamespaces = null,
+        protected Closure|null $pathCallback = null,
+    ) {
         $this->apply(null);
     }
 
@@ -117,6 +121,19 @@ abstract class ClassIterator implements Iterator
         return $reflector instanceof ReflectionClass && $reflector->isInstantiable();
     }
 
+    protected function validNamespace(string $class): bool
+    {
+        if ($this->excludeNamespaces !== null) {
+            foreach ($this->excludeNamespaces as $namespace) {
+                if (str_starts_with($class, $namespace)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Do some basic validity checks on the given class.
      * Returns FALSE if the class is not valid or already
@@ -136,6 +153,9 @@ abstract class ClassIterator implements Iterator
         }
 
         $this->foundClasses[$className] = true;
+        if (! $this->validNamespace($className)) {
+            return false;
+        }
 
         return ! ($this->flags & self::SKIP_NON_INSTANTIABLE) || $this->isInstantiable($this->_currentElement);
     }

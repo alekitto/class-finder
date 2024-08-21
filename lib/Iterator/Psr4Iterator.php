@@ -21,7 +21,6 @@ use function ltrim;
 use function Safe\preg_match;
 use function str_replace;
 use function strlen;
-use function strpos;
 use function substr;
 
 final class Psr4Iterator extends ClassIterator
@@ -44,7 +43,7 @@ final class Psr4Iterator extends ClassIterator
         ReflectorFactoryInterface|null $reflectorFactory = null,
         int $flags = 0,
         array $classMap = [],
-        private readonly array|null $excludeNamespaces = null,
+        array|null $excludeNamespaces = null,
         Closure|null $pathCallback = null,
     ) {
         $this->path = PathNormalizer::resolvePath($path);
@@ -52,7 +51,7 @@ final class Psr4Iterator extends ClassIterator
         $this->prefixLen = strlen($this->path);
         $this->classMap = array_map(PathNormalizer::class . '::resolvePath', $classMap);
 
-        parent::__construct($flags, $pathCallback);
+        parent::__construct($flags, $excludeNamespaces, $pathCallback);
     }
 
     protected function getGenerator(): Generator
@@ -87,15 +86,7 @@ final class Psr4Iterator extends ClassIterator
 
             /** @phpstan-var class-string $class */
             $class = $this->namespace . ltrim(str_replace('/', '\\', substr($path, $this->prefixLen, -strlen($m[0]))), '\\');
-            if ($this->excludeNamespaces !== null) {
-                foreach ($this->excludeNamespaces as $namespace) {
-                    if (strpos($class, $namespace) === 0) {
-                        continue 2;
-                    }
-                }
-            }
-
-            if (! preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+$/', $class)) {
+            if (! $this->validNamespace($class)) {
                 continue;
             }
 

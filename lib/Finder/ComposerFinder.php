@@ -114,6 +114,7 @@ final class ComposerFinder implements FinderInterface
                 $this->loader,
                 $this->reflectorFactory,
                 $flags,
+                $this->notNamespaces,
                 $pathFilterCallback,
             );
         }

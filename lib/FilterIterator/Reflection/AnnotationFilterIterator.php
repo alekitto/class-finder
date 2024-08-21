@@ -22,7 +22,7 @@ final class AnnotationFilterIterator extends FilterIterator
      * @param T $iterator
      * @phpstan-param class-string $annotation
      */
-    public function __construct(Iterator $iterator, private string $annotation)
+    public function __construct(Iterator $iterator, private readonly string $annotation)
     {
         parent::__construct($iterator);
 

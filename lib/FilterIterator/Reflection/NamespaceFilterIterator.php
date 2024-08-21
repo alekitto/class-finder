@@ -21,7 +21,7 @@ final class NamespaceFilterIterator extends FilterIterator
      * @param T $iterator
      * @param string[] $namespaces
      */
-    public function __construct(Iterator $iterator, private array $namespaces)
+    public function __construct(Iterator $iterator, private readonly array $namespaces)
     {
         parent::__construct($iterator);
     }

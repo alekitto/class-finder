@@ -26,8 +26,9 @@ final class SuperClassFilterIterator extends FilterIterator
 
     public function accept(): bool
     {
-        $reflectionClass = $this->getInnerIterator()->current();
-
-        return $reflectionClass->isSubclassOf($this->superClass);
+        return $this
+            ->getInnerIterator()
+            ->current()
+            ->isSubclassOf($this->superClass);
     }
 }

@@ -39,9 +39,6 @@ final class FilteredComposerIterator extends ClassIterator
     private array|null $namespaces = null;
 
     /** @var string[]|null */
-    private array|null $notNamespaces = null;
-
-    /** @var string[]|null */
     private array|null $dirs;
 
     /**
@@ -70,10 +67,10 @@ final class FilteredComposerIterator extends ClassIterator
         }
 
         if ($notNamespaces !== null) {
-            $this->notNamespaces = array_unique($notNamespaces);
+            $notNamespaces = array_unique($notNamespaces);
         }
 
-        parent::__construct($flags, $pathCallback);
+        parent::__construct($flags, $notNamespaces, $pathCallback);
     }
 
     protected function getGenerator(): Generator
@@ -129,7 +126,7 @@ final class FilteredComposerIterator extends ClassIterator
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixesPsr4()) as $ns => $dir) {
-            $itr = new Psr4Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->notNamespaces, $this->pathCallback);
+            $itr = new Psr4Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->excludeNamespaces, $this->pathCallback);
             if (isset($this->fileFinder)) {
                 $itr->setFileFinder($this->fileFinder);
             }
@@ -138,7 +135,7 @@ final class FilteredComposerIterator extends ClassIterator
         }
 
         foreach ($this->traversePrefixes($this->classLoader->getPrefixes()) as $ns => $dir) {
-            $itr = new Psr0Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->notNamespaces, $this->pathCallback);
+            $itr = new Psr0Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->excludeNamespaces, $this->pathCallback);
             if (isset($this->fileFinder)) {
                 $itr->setFileFinder($this->fileFinder);
             }
@@ -167,14 +164,10 @@ final class FilteredComposerIterator extends ClassIterator
         }
     }
 
-    private function validNamespace(string $class): bool
+    protected function validNamespace(string $class): bool
     {
-        if ($this->notNamespaces !== null) {
-            foreach ($this->notNamespaces as $namespace) {
-                if (str_starts_with($class, $namespace)) {
-                    return false;
-                }
-            }
+        if (! parent::validNamespace($class)) {
+            return false;
         }
 
         if ($this->namespaces === null) {

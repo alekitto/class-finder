@@ -33,6 +33,7 @@ class RecursiveIteratorTest extends TestCase
         $iterator = new RecursiveIterator(
             __DIR__ . '/../../../data/Recursive',
             0,
+            null,
             static function (string $path): bool {
                 return str_starts_with(basename($path), 'class-');
             },

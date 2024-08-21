@@ -17,6 +17,7 @@ The following finders are available in this library:
   files with `require_once` and uses `get_declared_classes/interfaces/traits` to enumerate the symbols.
 - `PhpDocumentorFinder` - analyzes a directory with `phpdocumentor/reflection` package (version 4) to extract the
   symbols declared in the PHP files.
+- `ClassMapFinder` - uses a classmap array and finds classes contained into the map.
 
 All the finders implement the `Kcs\ClassFinder\Finder\FinderInterface` interface.
 

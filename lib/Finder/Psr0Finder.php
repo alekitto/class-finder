@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kcs\ClassFinder\Finder;
 
 use Iterator;
+use Kcs\ClassFinder\Iterator\ClassIterator;
 use Kcs\ClassFinder\Iterator\Psr0Iterator;
 use Kcs\ClassFinder\PathNormalizer;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
@@ -52,6 +53,11 @@ final class Psr0Finder implements FinderInterface
     /** @return Iterator<class-string, Reflector> */
     public function getIterator(): Iterator
     {
+        $flags = 0;
+        if ($this->skipNonInstantiable) {
+            $flags |= ClassIterator::SKIP_NON_INSTANTIABLE;
+        }
+
         $pathFilterCallback = $this->pathFilterCallback !== null ? ($this->pathFilterCallback)(...) : null;
         if ($this->skipBogonClasses) {
             $pathFilterCallback = BogonFilesFilter::getFileFilterFn($pathFilterCallback);
@@ -60,7 +66,8 @@ final class Psr0Finder implements FinderInterface
         $iterator = new Psr0Iterator(
             $this->namespace,
             $this->path,
-            reflectorFactory: $this->reflectorFactory,
+            $this->reflectorFactory,
+            $flags,
             pathCallback: $pathFilterCallback,
         );
 

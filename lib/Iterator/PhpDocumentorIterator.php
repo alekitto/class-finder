@@ -33,7 +33,7 @@ use function is_dir;
 use function ltrim;
 use function Safe\glob;
 use function Safe\preg_match;
-use function strpos;
+use function str_starts_with;
 
 use const GLOB_BRACE;
 use const GLOB_ONLYDIR;
@@ -55,7 +55,8 @@ final class PhpDocumentorIterator extends ClassIterator
     private ProjectFactoryStrategies $strategies;
     private DocBlockFactory|DocBlockFactoryInterface $docBlockFactory;
 
-    public function __construct(string $path, int $flags = 0, Closure|null $pathCallback = null)
+    /** @param string[]|null $excludeNamespaces */
+    public function __construct(string $path, int $flags = 0, array|null $excludeNamespaces = null, Closure|null $pathCallback = null)
     {
         $this->path = PathNormalizer::resolvePath($path);
         $this->docBlockFactory = DocBlockFactory::createInstance();
@@ -120,7 +121,7 @@ final class PhpDocumentorIterator extends ClassIterator
             $this->strategies->addStrategy(new Factory\Noop(), -1000);
         }
 
-        parent::__construct($flags, $pathCallback);
+        parent::__construct($flags, $excludeNamespaces, $pathCallback);
     }
 
     /**
@@ -212,7 +213,12 @@ final class PhpDocumentorIterator extends ClassIterator
     private function processClasses(array $classes): Generator
     {
         foreach ($classes as $reflector) {
-            yield ltrim((string) $reflector->getFqsen(), '\\') => $reflector;
+            $className = (string) $reflector->getFqsen();
+            if (! $this->validNamespace($className)) {
+                continue;
+            }
+
+            yield ltrim($className, '\\') => $reflector;
         }
     }
 
@@ -259,7 +265,7 @@ final class PhpDocumentorIterator extends ClassIterator
         }
 
         foreach ($this->dirs as $dir) {
-            if (strpos($path, $dir) === 0) {
+            if (str_starts_with($path, $dir)) {
                 return true;
             }
         }

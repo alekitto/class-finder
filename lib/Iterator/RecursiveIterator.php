@@ -20,11 +20,12 @@ final class RecursiveIterator extends ClassIterator
 {
     use RecursiveIteratorTrait;
 
-    public function __construct(string $path, int $flags = 0, Closure|null $pathCallback = null)
+    /** @param string[]|null $excludeNamespaces */
+    public function __construct(string $path, int $flags = 0, array|null $excludeNamespaces = null, Closure|null $pathCallback = null)
     {
         $this->path = PathNormalizer::resolvePath($path);
 
-        parent::__construct($flags, $pathCallback);
+        parent::__construct($flags, $excludeNamespaces, $pathCallback);
     }
 
     /** @return Generator<class-string, ReflectionClass> */
@@ -48,8 +49,11 @@ final class RecursiveIterator extends ClassIterator
         }
 
         foreach ($this->getDeclaredClasses() as $className) {
-            $reflClass = new ReflectionClass($className);
+            if (! $this->validNamespace($className)) {
+                continue;
+            }
 
+            $reflClass = new ReflectionClass($className);
             if (! in_array($reflClass->getFileName(), $includedFiles, true)) {
                 continue;
             }

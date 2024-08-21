@@ -23,11 +23,12 @@ final class ComposerIterator extends ClassIterator
         private readonly ClassLoader $classLoader,
         ReflectorFactoryInterface|null $reflectorFactory = null,
         int $flags = 0,
+        array|null $excludeNamespaces = null,
         Closure|null $pathCallback = null,
     ) {
         $this->reflectorFactory = $reflectorFactory ?? new NativeReflectorFactory();
 
-        parent::__construct($flags, $pathCallback);
+        parent::__construct($flags, $excludeNamespaces, $pathCallback);
     }
 
     protected function getGenerator(): Generator
@@ -42,7 +43,7 @@ final class ComposerIterator extends ClassIterator
     private function searchInClassMap(): Generator
     {
         /** @phpstan-ignore-next-line */
-        yield from new ClassMapIterator($this->classLoader->getClassMap(), $this->reflectorFactory, $this->flags, $this->pathCallback);
+        yield from new ClassMapIterator($this->classLoader->getClassMap(), $this->reflectorFactory, $this->flags, $this->excludeNamespaces, $this->pathCallback);
     }
 
     /**
@@ -60,7 +61,7 @@ final class ComposerIterator extends ClassIterator
 
         foreach ($this->classLoader->getPrefixesPsr4() as $ns => $dirs) {
             foreach ($dirs as $dir) {
-                $itr = new Psr4Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), pathCallback: $this->pathCallback);
+                $itr = new Psr4Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->excludeNamespaces, $this->pathCallback);
                 if (isset($this->fileFinder)) {
                     $itr->setFileFinder($this->fileFinder);
                 }
@@ -71,7 +72,7 @@ final class ComposerIterator extends ClassIterator
 
         foreach ($this->classLoader->getPrefixes() as $ns => $dirs) {
             foreach ($dirs as $dir) {
-                $itr = new Psr0Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), pathCallback: $this->pathCallback);
+                $itr = new Psr0Iterator($ns, $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->excludeNamespaces, $this->pathCallback);
                 if (isset($this->fileFinder)) {
                     $itr->setFileFinder($this->fileFinder);
                 }

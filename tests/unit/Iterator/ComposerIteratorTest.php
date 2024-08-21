@@ -175,7 +175,7 @@ class ComposerIteratorTest extends TestCase
             ];
         }, null, ClassLoader::class))();
 
-        $iterator = new ComposerIterator($loader, null, ClassIterator::SKIP_NON_INSTANTIABLE, static function (string $path): bool {
+        $iterator = new ComposerIterator($loader, null, ClassIterator::SKIP_NON_INSTANTIABLE, null, static function (string $path): bool {
             return ! str_ends_with($path, 'BarBar.php');
         });
 

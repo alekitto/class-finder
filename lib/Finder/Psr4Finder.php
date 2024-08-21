@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Kcs\ClassFinder\Finder;
 
 use Iterator;
+use Kcs\ClassFinder\Iterator\ClassIterator;
 use Kcs\ClassFinder\Iterator\Psr4Iterator;
 use Kcs\ClassFinder\PathNormalizer;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Kcs\ClassFinder\Util\BogonFilesFilter;
 use Reflector;
 
+use function str_ends_with;
 use function substr;
 
 use const DIRECTORY_SEPARATOR;
@@ -29,7 +31,7 @@ final class Psr4Finder implements FinderInterface
 
     public function __construct(string $namespace, string $path)
     {
-        if (substr($namespace, -1) !== '\\') {
+        if (! str_ends_with($namespace, '\\')) {
             $namespace .= '\\';
         }
 
@@ -52,6 +54,11 @@ final class Psr4Finder implements FinderInterface
     /** @return Iterator<class-string, Reflector> */
     public function getIterator(): Iterator
     {
+        $flags = 0;
+        if ($this->skipNonInstantiable) {
+            $flags |= ClassIterator::SKIP_NON_INSTANTIABLE;
+        }
+
         $pathFilterCallback = $this->pathFilterCallback !== null ? ($this->pathFilterCallback)(...) : null;
         if ($this->skipBogonClasses) {
             $pathFilterCallback = BogonFilesFilter::getFileFilterFn($pathFilterCallback);
@@ -61,6 +68,7 @@ final class Psr4Finder implements FinderInterface
             $this->namespace,
             $this->path,
             $this->reflectorFactory,
+            $flags,
             pathCallback: $pathFilterCallback,
         );
 

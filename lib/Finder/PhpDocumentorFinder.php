@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kcs\ClassFinder\Finder;
 
 use Iterator;
+use Kcs\ClassFinder\Iterator\ClassIterator;
 use Kcs\ClassFinder\Iterator\PhpDocumentorIterator;
 use phpDocumentor\Reflection\Element;
 use phpDocumentor\Reflection\Php\Class_;
@@ -30,8 +31,13 @@ final class PhpDocumentorFinder implements FinderInterface
     /** @return Iterator<class-string, Element> */
     public function getIterator(): Iterator
     {
+        $flags = 0;
+        if ($this->skipNonInstantiable) {
+            $flags |= ClassIterator::SKIP_NON_INSTANTIABLE;
+        }
+
         $pathCallback = $this->pathFilterCallback !== null ? ($this->pathFilterCallback)(...) : null;
-        $iterator = new PhpDocumentorIterator($this->dir, pathCallback: $pathCallback);
+        $iterator = new PhpDocumentorIterator($this->dir, $flags, $this->notNamespaces, $pathCallback);
         if (isset($this->fileFinder)) {
             $iterator->setFileFinder($this->fileFinder);
         }

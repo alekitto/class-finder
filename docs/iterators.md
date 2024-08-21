@@ -17,3 +17,4 @@ create new (possibly more specific) finders.
 - `Psr0Iterator`/`Psr4Iterator` - explore a psr prefix searching for classes.
 - `RecursiveIterator` - uses a `RecursiveIteratorIterator` to search for PHP files
 - `PhpDocumentorIterator` - analyzes a directory with php documentor and collects the found classes.
+- `ClassMapIterator` - analyzes a directory with php documentor and collects the found classes.
