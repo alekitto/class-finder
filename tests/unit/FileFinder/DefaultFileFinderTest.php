@@ -7,6 +7,11 @@ namespace Kcs\ClassFinder\Tests\unit\FileFinder;
 use Kcs\ClassFinder\FileFinder\DefaultFileFinder;
 use PHPUnit\Framework\TestCase;
 
+use function array_keys;
+use function iterator_to_array;
+use function realpath;
+use function sort;
+
 class DefaultFileFinderTest extends TestCase
 {
     public function testSearchInFolder(): void

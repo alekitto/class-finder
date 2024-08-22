@@ -7,12 +7,16 @@ namespace Kcs\ClassFinder\Tests\unit\Util;
 use Kcs\ClassFinder\Util\Error;
 use Kcs\ClassFinder\Util\ErrorHandler;
 use PHPUnit\Framework\TestCase;
+
 use function call_user_func_array;
+use function error_reporting;
 use function func_get_args;
 use function restore_error_handler;
 use function set_error_handler;
 use function trigger_error;
 use function unlink;
+
+use const E_ALL;
 use const E_USER_ERROR;
 use const E_USER_WARNING;
 
@@ -30,7 +34,7 @@ class ErrorHandlerTest extends TestCase
 
     public function testShouldPassNonErrorsToPreviousErrorHandler(): void
     {
-        set_error_handler(function (int $errno, string $errstr) {
+        set_error_handler(static function (int $errno, string $errstr): void {
             throw new \Error($errstr, $errno);
         }, E_USER_WARNING);
 
@@ -51,6 +55,7 @@ class ErrorHandlerTest extends TestCase
             trigger_error('This is an error', E_USER_ERROR);
         } catch (Error $e) {
             self::assertNotNull($e);
+
             return;
         } finally {
             error_reporting($prev);

@@ -10,6 +10,9 @@ use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
+use function array_keys;
+use function iterator_to_array;
+
 class CachedFileFinderTest extends TestCase
 {
     public function testSearchInFolder(): void
