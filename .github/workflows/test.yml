@@ -51,13 +51,17 @@ jobs:
 
             - run: vendor/bin/phpunit
               if: ${{ matrix.php_version != '8.2' }}
-            - run: vendor/bin/phpunit --coverage-clover coverage.xml
+            - run: vendor/bin/phpunit --coverage-clover coverage.xml --log-junit junit.xml
               if: ${{ matrix.php_version == '8.2' }}
               env:
                   XDEBUG_MODE: coverage
 
+            - name: Upload test results to Codecov
+              if: ${{ !cancelled() && matrix.php_version == '8.2' }}
+              uses: codecov/test-results-action@v1
+
             - name: Upload coverage to Codecov
-              if: ${{ matrix.php_version == '8.2' }}
+              if: ${{ !cancelled() && matrix.php_version == '8.2' }}
               uses: codecov/codecov-action@v4
               with:
                   use_oidc: true
