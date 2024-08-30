@@ -12,7 +12,9 @@ foreach ($finder as $className => $reflector) {
     ++$count;
 }
 
-echo "OK"
+if ($count > 0) {
+    echo "OK";
+}
 ?>
 --EXPECT--
 OK
