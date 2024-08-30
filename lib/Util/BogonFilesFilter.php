@@ -18,7 +18,7 @@ final class BogonFilesFilter
             'dealerdirect/phpcodesniffer-composer-installer/src/Plugin|' .
             'myclabs/php-enum/src/PHPUnit/Comparator|' .
             'guzzlehttp/guzzle/src/functions|' .
-            'composer/(?:autoload_\w+|InstalledVersions)|' .
+            'composer/(?:autoload_\w+|InstalledVersions)' .
         ')\.php$)' .
     '#x';
 
