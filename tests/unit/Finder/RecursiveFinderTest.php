@@ -9,6 +9,8 @@ use Kcs\ClassFinder\Finder\RecursiveFinder;
 use Kcs\ClassFinder\Fixtures\Psr0;
 use Kcs\ClassFinder\Fixtures\Psr4;
 use Kcs\ClassFinder\Fixtures\Recursive;
+use Logger;
+use LoggerInterface;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use SplFileInfo;
@@ -54,6 +56,8 @@ class RecursiveFinderTest extends TestCase
             Psr0\BarBar::class => new ReflectionClass(Psr0\BarBar::class),
             Psr0\Foobar::class => new ReflectionClass(Psr0\Foobar::class),
             Psr0\SubNs\FooBaz::class => new ReflectionClass(Psr0\SubNs\FooBaz::class),
+            Logger::class => new ReflectionClass(Logger::class),
+            LoggerInterface::class => new ReflectionClass(LoggerInterface::class),
         ], iterator_to_array($finder));
     }
 

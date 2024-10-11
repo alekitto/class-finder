@@ -142,6 +142,28 @@ final class FilteredComposerIterator extends ClassIterator
 
             yield from $itr;
         }
+
+        if (! $this->validNamespace('')) {
+            return;
+        }
+
+        foreach ($this->classLoader->getFallbackDirsPsr4() as $dir) {
+            $itr = new Psr4Iterator('', $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->excludeNamespaces, $this->pathCallback);
+            if (isset($this->fileFinder)) {
+                $itr->setFileFinder($this->fileFinder);
+            }
+
+            yield from $itr;
+        }
+
+        foreach ($this->classLoader->getFallbackDirs() as $dir) {
+            $itr = new Psr0Iterator('', $dir, $this->reflectorFactory, $this->flags, $this->classLoader->getClassMap(), $this->excludeNamespaces, $this->pathCallback);
+            if (isset($this->fileFinder)) {
+                $itr->setFileFinder($this->fileFinder);
+            }
+
+            yield from $itr;
+        }
     }
 
     /** @param array<string, string[]|string> $prefixes */
