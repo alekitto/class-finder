@@ -43,10 +43,12 @@
             "Kcs\\ClassFinder\\Benchmark\\": "bench/",
             "Kcs\\ClassFinder\\Tests\\": "tests/",
             "Kcs\\ClassFinder\\Fixtures\\Psr4\\": "data/Composer/Psr4/",
-            "Kcs\\ClassFinder\\Fixtures\\Psr4WithClassMap\\": "data/Psr4WithClassMap/"
+            "Kcs\\ClassFinder\\Fixtures\\Psr4WithClassMap\\": "data/Psr4WithClassMap/",
+            "": "data/Composer/Psr4Fallback"
         },
         "psr-0": {
-            "Kcs\\ClassFinder\\Fixtures\\Psr0\\": "data/Composer/Psr0/"
+            "Kcs\\ClassFinder\\Fixtures\\Psr0\\": "data/Composer/Psr0/",
+            "": "data/Composer/Psr0Fallback"
         },
         "classmap": [
             "data/Psr4WithClassMap/Map"

@@ -164,7 +164,7 @@ class PhpDocumentorFinderTest extends TestCase
 
         $classes = iterator_to_array($finder);
 
-        self::assertCount(8, $classes);
+        self::assertCount(11, $classes);
         self::assertArrayHasKey(Psr4\AbstractClass::class, $classes);
         self::assertInstanceOf(Class_::class, $classes[Psr4\AbstractClass::class]);
         self::assertArrayHasKey(Psr0\Foobar::class, $classes);

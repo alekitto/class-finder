@@ -8,6 +8,9 @@ use Kcs\ClassFinder\Finder\ComposerFinder;
 use Kcs\ClassFinder\Fixtures\Psr0;
 use Kcs\ClassFinder\Fixtures\Psr4;
 use Kcs\ClassFinder\Fixtures\Psr4WithClassMap;
+use Logger;
+use Logger4;
+use LoggerInterface;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Symfony\Component\ErrorHandler\DebugClassLoader as ErrorHandlerClassLoader;
@@ -74,6 +77,8 @@ class ComposerFinderTest extends TestCase
             Psr0\BarBar::class => new ReflectionClass(Psr0\BarBar::class),
             Psr0\Foobar::class => new ReflectionClass(Psr0\Foobar::class),
             Psr0\SubNs\FooBaz::class => new ReflectionClass(Psr0\SubNs\FooBaz::class),
+            Logger::class => new ReflectionClass(Logger::class),
+            LoggerInterface::class => new ReflectionClass(LoggerInterface::class),
         ], iterator_to_array($finder));
     }
 
@@ -96,6 +101,15 @@ class ComposerFinderTest extends TestCase
         self::assertEquals([
             Psr4\BarBar::class => new ReflectionClass(Psr4\BarBar::class),
             Psr0\BarBar::class => new ReflectionClass(Psr0\BarBar::class),
+        ], iterator_to_array($finder));
+
+        $finder = (new ComposerFinder())->useAutoloading(false);
+        $finder->in([__DIR__ . '/../../../data']);
+        $finder->implementationOf(LoggerInterface::class);
+
+        self::assertEquals([
+            Logger4::class => new ReflectionClass(Logger4::class),
+            Logger::class => new ReflectionClass(Logger::class),
         ], iterator_to_array($finder));
     }
 
@@ -187,6 +201,9 @@ class ComposerFinderTest extends TestCase
             Psr0\BarBar::class => new ReflectionClass(Psr0\BarBar::class),
             Psr0\Foobar::class => new ReflectionClass(Psr0\Foobar::class),
             Psr4WithClassMap\BarBar::class => new ReflectionClass(Psr4WithClassMap\BarBar::class),
+            Logger4::class => new ReflectionClass(Logger4::class),
+            Logger::class => new ReflectionClass(Logger::class),
+            LoggerInterface::class => new ReflectionClass(LoggerInterface::class),
         ], iterator_to_array($finder));
     }
 
@@ -205,6 +222,9 @@ class ComposerFinderTest extends TestCase
             Psr0\BarBar::class => new ReflectionClass(Psr0\BarBar::class),
             Psr0\Foobar::class => new ReflectionClass(Psr0\Foobar::class),
             Psr4WithClassMap\BarBar::class => new ReflectionClass(Psr4WithClassMap\BarBar::class),
+            Logger4::class => new ReflectionClass(Logger4::class),
+            Logger::class => new ReflectionClass(Logger::class),
+            LoggerInterface::class => new ReflectionClass(LoggerInterface::class),
         ], iterator_to_array($finder));
     }
 
@@ -222,6 +242,9 @@ class ComposerFinderTest extends TestCase
             Psr0\Foobar::class => new ReflectionClass(Psr0\Foobar::class),
             Psr4\SubNs\FooBaz::class => new ReflectionClass(Psr4\SubNs\FooBaz::class),
             Psr0\SubNs\FooBaz::class => new ReflectionClass(Psr0\SubNs\FooBaz::class),
+            Logger4::class => new ReflectionClass(Logger4::class),
+            Logger::class => new ReflectionClass(Logger::class),
+            LoggerInterface::class => new ReflectionClass(LoggerInterface::class),
         ], iterator_to_array($finder));
     }
 }
