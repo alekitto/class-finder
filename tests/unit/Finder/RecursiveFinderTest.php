@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Tests\unit\Finder;
 
+use FallbackNamespace0;
 use Kcs\ClassFinder\FileFinder\FileFinderInterface;
 use Kcs\ClassFinder\Finder\RecursiveFinder;
 use Kcs\ClassFinder\Fixtures\Psr0;
@@ -58,6 +59,7 @@ class RecursiveFinderTest extends TestCase
             Psr0\SubNs\FooBaz::class => new ReflectionClass(Psr0\SubNs\FooBaz::class),
             Logger::class => new ReflectionClass(Logger::class),
             LoggerInterface::class => new ReflectionClass(LoggerInterface::class),
+            FallbackNamespace0\MyClass::class => new ReflectionClass(FallbackNamespace0\MyClass::class),
         ], iterator_to_array($finder));
     }
 

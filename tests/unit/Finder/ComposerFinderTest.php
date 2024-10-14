@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Tests\unit\Finder;
 
+use FallbackNamespace;
+use FallbackNamespace0;
 use Kcs\ClassFinder\Finder\ComposerFinder;
 use Kcs\ClassFinder\Fixtures\Psr0;
 use Kcs\ClassFinder\Fixtures\Psr4;
@@ -54,6 +56,16 @@ class ComposerFinderTest extends TestCase
         ], iterator_to_array($finder));
     }
 
+    public function testFinderShouldFilterByNamespaceInFallbackDirs(): void
+    {
+        $finder = (new ComposerFinder())->useAutoloading(false);
+        $finder->inNamespace(['FallbackNamespace']);
+
+        self::assertEquals([
+            FallbackNamespace\MyClass::class => new ReflectionClass(FallbackNamespace\MyClass::class),
+        ], iterator_to_array($finder));
+    }
+
     public function testFinderShouldFilterByExcludedNamespace(): void
     {
         $finder = new ComposerFinder();
@@ -79,6 +91,7 @@ class ComposerFinderTest extends TestCase
             Psr0\SubNs\FooBaz::class => new ReflectionClass(Psr0\SubNs\FooBaz::class),
             Logger::class => new ReflectionClass(Logger::class),
             LoggerInterface::class => new ReflectionClass(LoggerInterface::class),
+            FallbackNamespace0\MyClass::class => new ReflectionClass(FallbackNamespace0\MyClass::class),
         ], iterator_to_array($finder));
     }
 
@@ -204,6 +217,8 @@ class ComposerFinderTest extends TestCase
             Logger4::class => new ReflectionClass(Logger4::class),
             Logger::class => new ReflectionClass(Logger::class),
             LoggerInterface::class => new ReflectionClass(LoggerInterface::class),
+            FallbackNamespace\MyClass::class => new ReflectionClass(FallbackNamespace\MyClass::class),
+            FallbackNamespace0\MyClass::class => new ReflectionClass(FallbackNamespace0\MyClass::class),
         ], iterator_to_array($finder));
     }
 
@@ -225,6 +240,8 @@ class ComposerFinderTest extends TestCase
             Logger4::class => new ReflectionClass(Logger4::class),
             Logger::class => new ReflectionClass(Logger::class),
             LoggerInterface::class => new ReflectionClass(LoggerInterface::class),
+            FallbackNamespace\MyClass::class => new ReflectionClass(FallbackNamespace\MyClass::class),
+            FallbackNamespace0\MyClass::class => new ReflectionClass(FallbackNamespace0\MyClass::class),
         ], iterator_to_array($finder));
     }
 
@@ -245,6 +262,8 @@ class ComposerFinderTest extends TestCase
             Logger4::class => new ReflectionClass(Logger4::class),
             Logger::class => new ReflectionClass(Logger::class),
             LoggerInterface::class => new ReflectionClass(LoggerInterface::class),
+            FallbackNamespace\MyClass::class => new ReflectionClass(FallbackNamespace\MyClass::class),
+            FallbackNamespace0\MyClass::class => new ReflectionClass(FallbackNamespace0\MyClass::class),
         ], iterator_to_array($finder));
     }
 }
