@@ -45,6 +45,7 @@ class RecursiveFinderTest extends TestCase
             Psr4\FooTrait::class => new ReflectionClass(Psr4\FooTrait::class),
             Psr4\HiddenClass::class => new ReflectionClass(Psr4\HiddenClass::class),
             Psr4\SubNs\FooBaz::class => new ReflectionClass(Psr4\SubNs\FooBaz::class),
+            Psr4\Foobarbar::class => new ReflectionClass(Psr4\Foobarbar::class),
         ], $classes);
     }
 
@@ -82,6 +83,7 @@ class RecursiveFinderTest extends TestCase
         self::assertEquals([
             Psr4\Foobar::class => new ReflectionClass(Psr4\Foobar::class),
             Psr0\Foobar::class => new ReflectionClass(Psr0\Foobar::class),
+            Psr4\Foobarbar::class => new ReflectionClass(Psr4\Foobarbar::class),
         ], iterator_to_array($finder));
     }
 

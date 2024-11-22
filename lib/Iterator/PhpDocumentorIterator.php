@@ -6,13 +6,14 @@ namespace Kcs\ClassFinder\Iterator;
 
 use Closure;
 use Generator;
-use InvalidArgumentException;
-use Kcs\ClassFinder\FilterIterator\Reflection\PathFilterIterator;
 use Kcs\ClassFinder\PathNormalizer;
+use Kcs\ClassFinder\Util\Offline\Metadata;
 use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\DocBlockFactoryInterface;
 use phpDocumentor\Reflection\File\LocalFile;
+use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\Php\Class_;
+use phpDocumentor\Reflection\Php\Enum_;
 use phpDocumentor\Reflection\Php\Factory;
 use phpDocumentor\Reflection\Php\File;
 use phpDocumentor\Reflection\Php\Interface_;
@@ -23,35 +24,21 @@ use phpDocumentor\Reflection\Php\Trait_;
 use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
 
 use function array_map;
-use function array_merge;
 use function array_push;
-use function array_unique;
+use function array_values;
 use function assert;
 use function class_exists;
-use function defined;
-use function is_dir;
 use function ltrim;
-use function Safe\glob;
+use function method_exists;
 use function Safe\preg_match;
-use function str_starts_with;
-
-use const GLOB_BRACE;
-use const GLOB_ONLYDIR;
 
 final class PhpDocumentorIterator extends ClassIterator
 {
+    use OfflineIteratorTrait;
     use RecursiveIteratorTrait;
 
     private const EXTENSION_PATTERN = '/\\.php$/i';
 
-    /** @var string[] */
-    private array|null $dirs = null;
-
-    /** @var string[] */
-    private array|null $paths = null;
-
-    /** @var string[] */
-    private array|null $notPaths = null;
     private ProjectFactoryStrategies $strategies;
     private DocBlockFactory|DocBlockFactoryInterface $docBlockFactory;
 
@@ -124,49 +111,6 @@ final class PhpDocumentorIterator extends ClassIterator
         parent::__construct($flags, $excludeNamespaces, $pathCallback);
     }
 
-    /**
-     * Adds a search directory.
-     *
-     * @param string|string[] $dirs
-     */
-    public function in(string|array $dirs): self
-    {
-        $resolvedDirs = [];
-        foreach ((array) $dirs as $dir) {
-            if (is_dir($dir)) {
-                $resolvedDirs[] = $dir;
-            } else {
-                $glob = glob($dir, (defined('GLOB_BRACE') ? GLOB_BRACE : 0) | GLOB_ONLYDIR);
-                if (empty($glob)) {
-                    throw new InvalidArgumentException('The "' . $dir . '" directory does not exist.');
-                }
-
-                array_push($resolvedDirs, ...$glob);
-            }
-        }
-
-        $resolvedDirs = array_map(PathNormalizer::class . '::resolvePath', $resolvedDirs);
-        $this->dirs = array_unique(array_merge($this->dirs ?? [], $resolvedDirs));
-
-        return $this;
-    }
-
-    /** @param string[] $patterns */
-    public function path(array $patterns): self
-    {
-        $this->paths = array_map(PathFilterIterator::class . '::toRegex', $patterns);
-
-        return $this;
-    }
-
-    /** @param string[] $patterns */
-    public function notPath(array $patterns): self
-    {
-        $this->notPaths = array_map(PathFilterIterator::class . '::toRegex', $patterns);
-
-        return $this;
-    }
-
     protected function isInstantiable(mixed $reflector): bool
     {
         return $reflector instanceof Class_ && ! $reflector->isAbstract();
@@ -174,11 +118,9 @@ final class PhpDocumentorIterator extends ClassIterator
 
     protected function getGenerator(): Generator
     {
-        foreach ($this->search() as $path => $info) {
-            if (! $this->accept(PathNormalizer::resolvePath($path))) {
-                continue;
-            }
+        $symbols = $files = [];
 
+        foreach ($this->search() as $path => $info) {
             if (! preg_match(self::EXTENSION_PATTERN, $path, $m) || ! $info->isReadable()) {
                 continue;
             }
@@ -196,19 +138,60 @@ final class PhpDocumentorIterator extends ClassIterator
             }
 
             assert($reflector instanceof File);
+            $enums = method_exists($reflector, 'getEnums') ? $reflector->getEnums() : [];
+            $fileSymbols = array_map(
+                static function (object $class) use (&$symbols): object {
+                    $symbols[(string) $class->getFqsen()] = $class;
 
-            yield from $this->processClasses($reflector->getClasses());
-            yield from $this->processClasses($reflector->getInterfaces());
-            yield from $this->processClasses($reflector->getTraits());
+                    return $class;
+                },
+                [...$reflector->getClasses(), ...$reflector->getInterfaces(), ...$reflector->getTraits(), ...$enums],
+            );
+
+            if (! $this->accept(PathNormalizer::resolvePath($path))) {
+                continue;
+            }
+
+            $files[] = $fileSymbols;
+        }
+
+        foreach ($files as $fileSymbols) {
+            foreach ($fileSymbols as $fileSymbol) {
+                if ($fileSymbol instanceof Class_) {
+                    $parents = [];
+                    $interfaces = [];
+                    $this->processInterfaces($interfaces, $fileSymbol->getInterfaces(), $symbols);
+
+                    $parent = $fileSymbol;
+                    while (($parentName = $parent->getParent())) {
+                        $parent = $symbols[(string) $parentName] ?? null;
+                        if ($parent === null) {
+                            break; // We don't have information on the parent class.
+                        }
+
+                        assert($parent instanceof Class_);
+                        $parents[] = $parent;
+                        $this->processInterfaces($interfaces, $parent->getInterfaces(), $symbols);
+                    }
+
+                    $fileSymbol->addMetadata(new Metadata([...$parents, ...array_values($interfaces)]));
+                } elseif ($fileSymbol instanceof Interface_) {
+                    $interfaces = [];
+                    $this->processInterfaces($interfaces, $fileSymbol->getParents(), $symbols);
+                    $fileSymbol->addMetadata(new Metadata(array_values($interfaces)));
+                }
+            }
+
+            yield from $this->processClasses($fileSymbols);
         }
     }
 
     /**
      * Processes classes array.
      *
-     * @param Class_[]|Interface_[]|Trait_[] $classes
+     * @param array<Class_|Interface_|Trait_|Enum_> $classes
      *
-     * @return Generator<string, (Class_|Interface_|Trait_)>
+     * @return Generator<string, Class_|Interface_|Trait_|Enum_>
      */
     private function processClasses(array $classes): Generator
     {
@@ -222,54 +205,26 @@ final class PhpDocumentorIterator extends ClassIterator
         }
     }
 
-    private function accept(string $path): bool
+    /**
+     * @param Interface_[] $interfaces
+     * @param Fqsen[] $parents
+     * @param array<string, object> $symbols
+     */
+    private function processInterfaces(array &$interfaces, array $parents, array &$symbols): void
     {
-        if ($this->pathCallback && ! ($this->pathCallback)($path)) {
-            return false;
-        }
-
-        return $this->acceptDirs($path) &&
-            $this->acceptPaths($path);
-    }
-
-    private function acceptPaths(string $path): bool
-    {
-        // should at least not match one rule to exclude
-        if ($this->notPaths !== null) {
-            foreach ($this->notPaths as $regex) {
-                if (preg_match($regex, $path)) {
-                    return false;
+        while ($parents) {
+            $currentLevel = [];
+            foreach ($parents as $parentName) {
+                $p = $symbols[(string) $parentName] ?? null;
+                if (! $p instanceof Interface_) {
+                    continue;
                 }
-            }
-        }
 
-        // should at least match one rule
-        if ($this->paths !== null) {
-            foreach ($this->paths as $regex) {
-                if (preg_match($regex, $path)) {
-                    return true;
-                }
+                $interfaces[(string) $parentName] = $p;
+                array_push($currentLevel, ...$p->getParents());
             }
 
-            return false;
+            $parents = $currentLevel;
         }
-
-        // If there is no match rules, the file is accepted
-        return true;
-    }
-
-    private function acceptDirs(string $path): bool
-    {
-        if ($this->dirs === null) {
-            return true;
-        }
-
-        foreach ($this->dirs as $dir) {
-            if (str_starts_with($path, $dir)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

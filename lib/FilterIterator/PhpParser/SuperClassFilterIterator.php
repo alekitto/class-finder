@@ -2,24 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Kcs\ClassFinder\FilterIterator\PhpDocumentor;
+namespace Kcs\ClassFinder\FilterIterator\PhpParser;
 
 use FilterIterator;
 use Iterator;
 use Kcs\ClassFinder\Util\Offline\Metadata;
-use phpDocumentor\Reflection\Element;
-use phpDocumentor\Reflection\Php\Class_;
-use phpDocumentor\Reflection\Php\Interface_;
+use PhpParser\Node\Stmt;
 
-use function array_filter;
 use function assert;
 use function ltrim;
-use function reset;
 
 final class SuperClassFilterIterator extends FilterIterator
 {
     /**
-     * @param Iterator<Element> $iterator
+     * @param Iterator<Stmt\ClassLike> $iterator
      * @phpstan-param class-string $superClass
      */
     public function __construct(Iterator $iterator, private readonly string $superClass)
@@ -30,14 +26,13 @@ final class SuperClassFilterIterator extends FilterIterator
     public function accept(): bool
     {
         $reflector = $this->getInnerIterator()->current();
-        if ($reflector instanceof Class_ || $reflector instanceof Interface_) {
-            $metadataSet = array_filter($reflector->getMetadata(), static fn (object $o) => $o instanceof Metadata);
-            $metadata = reset($metadataSet);
+        if ($reflector instanceof Stmt\Class_ || $reflector instanceof Stmt\Interface_) {
+            $metadata = $reflector->getAttribute(Metadata::METADATA_KEY);
             assert($metadata instanceof Metadata);
 
             foreach ($metadata->superclasses as $superClass) {
-                assert($superClass instanceof Class_ || $superClass instanceof Interface_);
-                $name = ltrim((string) $superClass->getFqsen(), '\\');
+                assert($superClass instanceof Stmt\Class_ || $superClass instanceof Stmt\Interface_);
+                $name = ltrim((string) $superClass->namespacedName, '\\');
                 if ($name === $this->superClass) {
                     return true;
                 }

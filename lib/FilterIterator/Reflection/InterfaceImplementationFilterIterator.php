@@ -8,6 +8,12 @@ use FilterIterator;
 use Iterator;
 use ReflectionClass;
 
+use function array_filter;
+use function array_map;
+use function assert;
+use function count;
+use function method_exists;
+
 /**
  * @template-covariant TValue of ReflectionClass
  * @template T of Iterator<class-string, TValue>
@@ -27,15 +33,24 @@ final class InterfaceImplementationFilterIterator extends FilterIterator
 
     public function accept(): bool
     {
-        $className = $this->getInnerIterator()->key();
         $reflectionClass = $this->getInnerIterator()->current();
-
-        foreach ($this->interfaces as $interface) {
-            if ($className !== $interface && $reflectionClass->implementsInterface($interface)) {
-                return true;
-            }
+        assert($reflectionClass instanceof ReflectionClass);
+        if (
+            $reflectionClass->isInterface() ||
+            $reflectionClass->isTrait() ||
+            (method_exists($reflectionClass, 'isEnum') && $reflectionClass->isEnum())
+        ) {
+            return false;
         }
 
-        return false;
+        return count(
+            array_filter(
+                array_map(
+                    static fn (string $interface) => $reflectionClass->implementsInterface($interface),
+                    $this->interfaces,
+                ),
+                static fn (bool $r) => $r === false,
+            ),
+        ) === 0;
     }
 }

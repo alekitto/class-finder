@@ -28,6 +28,7 @@ class ClassMapTest extends TestCase
             Psr4\FooInterface::class => new ReflectionClass(Psr4\FooInterface::class),
             Psr4\FooTrait::class => new ReflectionClass(Psr4\FooTrait::class),
             Psr4\SubNs\FooBaz::class => new ReflectionClass(Psr4\SubNs\FooBaz::class),
+            Psr4\Foobarbar::class => new ReflectionClass(Psr4\Foobarbar::class),
         ], iterator_to_array($classMap));
     }
 
@@ -42,6 +43,7 @@ class ClassMapTest extends TestCase
             Psr4\BarBar::class => new ReflectionClass(Psr4\BarBar::class),
             Psr4\Foobar::class => new ReflectionClass(Psr4\Foobar::class),
             Psr4\SubNs\FooBaz::class => new ReflectionClass(Psr4\SubNs\FooBaz::class),
+            Psr4\Foobarbar::class => new ReflectionClass(Psr4\Foobarbar::class),
         ], iterator_to_array($finder));
     }
 
@@ -57,6 +59,7 @@ class ClassMapTest extends TestCase
             Psr4\FooInterface::class => realpath(__DIR__ . '/../../../data/Composer/Psr4/FooInterface.php'),
             Psr4\FooTrait::class => realpath(__DIR__ . '/../../../data/Composer/Psr4/FooTrait.php'),
             Psr4\SubNs\FooBaz::class => realpath(__DIR__ . '/../../../data/Composer/Psr4/SubNs/FooBaz.php'),
+            Psr4\Foobarbar::class => realpath(__DIR__ . '/../../../data/Composer/Psr4/Foobarbar.php'),
         ], $classMap->getMap());
     }
 
@@ -72,6 +75,7 @@ class ClassMapTest extends TestCase
             Psr4\FooInterface::class => PathNormalizer::resolvePath('data/Composer/Psr4/FooInterface.php'),
             Psr4\FooTrait::class => PathNormalizer::resolvePath('data/Composer/Psr4/FooTrait.php'),
             Psr4\SubNs\FooBaz::class => PathNormalizer::resolvePath('data/Composer/Psr4/SubNs/FooBaz.php'),
+            Psr4\Foobarbar::class => PathNormalizer::resolvePath('data/Composer/Psr4/Foobarbar.php'),
         ], $classMap->getMap(__DIR__ . '/../../../'));
     }
 }

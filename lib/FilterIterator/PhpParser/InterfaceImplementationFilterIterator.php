@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Kcs\ClassFinder\FilterIterator\PhpDocumentor;
+namespace Kcs\ClassFinder\FilterIterator\PhpParser;
 
 use FilterIterator;
 use Iterator;
 use Kcs\ClassFinder\Util\Offline\Metadata;
-use phpDocumentor\Reflection\Element;
-use phpDocumentor\Reflection\Php\Class_;
-use phpDocumentor\Reflection\Php\Interface_;
+use PhpParser\Node\Stmt;
 
 use function array_filter;
 use function array_map;
@@ -17,12 +15,11 @@ use function assert;
 use function count;
 use function in_array;
 use function ltrim;
-use function reset;
 
 final class InterfaceImplementationFilterIterator extends FilterIterator
 {
     /**
-     * @param Iterator<Element> $iterator
+     * @param Iterator<Stmt\ClassLike> $iterator
      * @param string[] $interfaces
      * @phpstan-param class-string[] $interfaces
      */
@@ -34,17 +31,16 @@ final class InterfaceImplementationFilterIterator extends FilterIterator
     public function accept(): bool
     {
         $reflector = $this->getInnerIterator()->current();
-        if (! $reflector instanceof Class_) {
+        if (! $reflector instanceof Stmt\Class_) {
             return false;
         }
 
-        $metadataSet = array_filter($reflector->getMetadata(), static fn (object $o) => $o instanceof Metadata);
-        $metadata = reset($metadataSet);
+        $metadata = $reflector->getAttribute(Metadata::METADATA_KEY);
         assert($metadata instanceof Metadata);
 
         $implementations = array_map(
-            static fn (Interface_ $i) => ltrim((string) $i->getFqsen(), '\\'),
-            array_filter($metadata->superclasses, static fn (object $o) => $o instanceof Interface_),
+            static fn (Stmt\Interface_ $i) => ltrim((string) $i->namespacedName, '\\'),
+            array_filter($metadata->superclasses, static fn (object $o) => $o instanceof Stmt\Interface_),
         );
 
         return count(

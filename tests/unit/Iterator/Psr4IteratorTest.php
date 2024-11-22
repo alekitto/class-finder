@@ -31,6 +31,7 @@ class Psr4IteratorTest extends TestCase
             Psr4\FooInterface::class => new ReflectionClass(Psr4\FooInterface::class),
             Psr4\FooTrait::class => new ReflectionClass(Psr4\FooTrait::class),
             Psr4\SubNs\FooBaz::class => new ReflectionClass(Psr4\SubNs\FooBaz::class),
+            Psr4\Foobarbar::class => new ReflectionClass(Psr4\Foobarbar::class),
         ], iterator_to_array($iterator));
     }
 
@@ -51,6 +52,7 @@ class Psr4IteratorTest extends TestCase
             Psr4\FooInterface::class => new ReflectionClass(Psr4\FooInterface::class),
             Psr4\FooTrait::class => new ReflectionClass(Psr4\FooTrait::class),
             Psr4\SubNs\FooBaz::class => new ReflectionClass(Psr4\SubNs\FooBaz::class),
+            Psr4\Foobarbar::class => new ReflectionClass(Psr4\Foobarbar::class),
         ], iterator_to_array($iterator));
     }
 }

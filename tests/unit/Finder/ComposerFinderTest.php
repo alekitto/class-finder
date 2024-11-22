@@ -53,6 +53,7 @@ class ComposerFinderTest extends TestCase
             Psr4\FooInterface::class => new ReflectionClass(Psr4\FooInterface::class),
             Psr4\FooTrait::class => new ReflectionClass(Psr4\FooTrait::class),
             Psr4\SubNs\FooBaz::class => new ReflectionClass(Psr4\SubNs\FooBaz::class),
+            Psr4\Foobarbar::class => new ReflectionClass(Psr4\Foobarbar::class),
         ], iterator_to_array($finder));
     }
 
@@ -135,6 +136,7 @@ class ComposerFinderTest extends TestCase
         self::assertEquals([
             Psr4\Foobar::class => new ReflectionClass(Psr4\Foobar::class),
             Psr0\Foobar::class => new ReflectionClass(Psr0\Foobar::class),
+            Psr4\Foobarbar::class => new ReflectionClass(Psr4\Foobarbar::class),
         ], iterator_to_array($finder));
     }
 
@@ -219,6 +221,7 @@ class ComposerFinderTest extends TestCase
             LoggerInterface::class => new ReflectionClass(LoggerInterface::class),
             FallbackNamespace\MyClass::class => new ReflectionClass(FallbackNamespace\MyClass::class),
             FallbackNamespace0\MyClass::class => new ReflectionClass(FallbackNamespace0\MyClass::class),
+            Psr4\Foobarbar::class => new ReflectionClass(Psr4\Foobarbar::class),
         ], iterator_to_array($finder));
     }
 
@@ -242,6 +245,7 @@ class ComposerFinderTest extends TestCase
             LoggerInterface::class => new ReflectionClass(LoggerInterface::class),
             FallbackNamespace\MyClass::class => new ReflectionClass(FallbackNamespace\MyClass::class),
             FallbackNamespace0\MyClass::class => new ReflectionClass(FallbackNamespace0\MyClass::class),
+            Psr4\Foobarbar::class => new ReflectionClass(Psr4\Foobarbar::class),
         ], iterator_to_array($finder));
     }
 
@@ -264,6 +268,7 @@ class ComposerFinderTest extends TestCase
             LoggerInterface::class => new ReflectionClass(LoggerInterface::class),
             FallbackNamespace\MyClass::class => new ReflectionClass(FallbackNamespace\MyClass::class),
             FallbackNamespace0\MyClass::class => new ReflectionClass(FallbackNamespace0\MyClass::class),
+            Psr4\Foobarbar::class => new ReflectionClass(Psr4\Foobarbar::class),
         ], iterator_to_array($finder));
     }
 }
