@@ -1,0 +1,14 @@
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "../../.."
+        }
+    ],
+    "autoload": {
+        "Kcs\\ClassFinder\\FunctionalTests\\": "src/"
+    },
+    "require": {
+        "kcs/class-finder": "dev-master"
+    }
+}

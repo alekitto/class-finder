@@ -48,3 +48,17 @@ Criteria can be added to the finder using the following methods:
 - `pathFilter(callable $callback)` - Adds a custom file pathname filter callback.
 - `skipNonInstantiable(bool $skip = true)` - Whether to skip or not abstract classes, traits and interfaces.
 - `skipBogonFiles(bool $skip = true)` - Prevents the inclusion of files known to cause bugs and possible fatal errors.
+
+## Offline finders
+
+There are two "offline" finders: `PhpDocumentorFinder` and `PhpParserFinder` which analyse the php files searching for classes/interfaces/traits/enums without including them.
+These finders are slower can be useful in case you don't want to execute PHP files (untrusted sources, possibly invalid files, etc.)
+
+Some limitations apply:
+
+- `PhpParserFinder` uses a custom annotation reader, not fully tested, filtering by annotations could be buggy
+- `PhpDocumentorFinder` will skip classes with invalid phpdoc tags
+- offline finders will skip invalid files/classes if there's a syntax error
+- superclass and interface implementation filtering could be incomplete: all the symbols must be known to build a full class chain.
+  If a class in the chain is unknown, the finders cannot calculate interface implementations and class chain correctly.
+  To correctly calculate the class chain for extensions/core subclasses, you need to install stubs file (ex: using `jetbrains/phpstorm-stubs` package).

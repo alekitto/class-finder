@@ -22,6 +22,7 @@ use phpDocumentor\Reflection\Php\Project;
 use phpDocumentor\Reflection\Php\ProjectFactoryStrategies;
 use phpDocumentor\Reflection\Php\Trait_;
 use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
+use Throwable;
 
 use function array_map;
 use function array_push;
@@ -125,16 +126,20 @@ final class PhpDocumentorIterator extends ClassIterator
                 continue;
             }
 
-            if (class_exists(Factory\DocBlock::class)) {
-                // phpdoc/reflection 4.x
-                $factory = new Factory\File(NodesFactory::createInstance()); // @phpstan-ignore-line
-                $reflector = $factory->create(new LocalFile($path), $this->strategies); // @phpstan-ignore-line
-            } else {
-                $project = new Project('project');
-                $contextStack = new Factory\ContextStack($project);
-                $factory = new Factory\File($this->docBlockFactory, NodesFactory::createInstance());
-                $factory->create($contextStack, new LocalFile($path), $this->strategies);
-                $reflector = $project->getFiles()[$path];
+            try {
+                if (class_exists(Factory\DocBlock::class)) {
+                    // phpdoc/reflection 4.x
+                    $factory = new Factory\File(NodesFactory::createInstance()); // @phpstan-ignore-line
+                    $reflector = $factory->create(new LocalFile($path), $this->strategies); // @phpstan-ignore-line
+                } else {
+                    $project = new Project('project');
+                    $contextStack = new Factory\ContextStack($project);
+                    $factory = new Factory\File($this->docBlockFactory, NodesFactory::createInstance());
+                    $factory->create($contextStack, new LocalFile($path), $this->strategies);
+                    $reflector = $project->getFiles()[$path];
+                }
+            } catch (Throwable) {
+                continue;
             }
 
             assert($reflector instanceof File);
@@ -221,7 +226,7 @@ final class PhpDocumentorIterator extends ClassIterator
                 }
 
                 $interfaces[(string) $parentName] = $p;
-                array_push($currentLevel, ...$p->getParents());
+                array_push($currentLevel, ...array_values($p->getParents()));
             }
 
             $parents = $currentLevel;

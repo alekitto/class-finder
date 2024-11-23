@@ -10,6 +10,7 @@
     </testsuite>
     <testsuite name="Functional tests">
       <directory suffix=".phpt">tests/functional/error-handler/</directory>
+      <file>tests/functional/invalid-class/test.phpt</file>
       <file>tests/functional/nested-composer-projects/test.phpt</file>
       <file>tests/issue-13/test.phpt</file>
       <file>tests/issue-13/test-bogon-files-filter.phpt</file>

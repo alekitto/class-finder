@@ -9,6 +9,7 @@ use Generator;
 use Kcs\ClassFinder\PathNormalizer;
 use Kcs\ClassFinder\Util\Offline\Metadata;
 use Kcs\ClassFinder\Util\PhpParser\AnnotationParser;
+use PhpParser\Error;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
@@ -66,7 +67,11 @@ final class PhpParserIterator extends ClassIterator
                 continue;
             }
 
-            $stmts = $this->parser->parse($code);
+            try {
+                $stmts = $this->parser->parse($code);
+            } catch (Error) {
+                continue;
+            }
 
             $nodeVisitor = new class extends NodeVisitorAbstract {
                 /** @var Stmt\ClassLike[] */
