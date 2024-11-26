@@ -10,6 +10,7 @@ use Kcs\ClassFinder\Finder\FinderInterface;
 use Kcs\ClassFinder\Iterator\ClassMapIterator;
 use Kcs\ClassFinder\PathNormalizer;
 use Kcs\ClassFinder\Util\Offline\Metadata;
+use Kcs\ClassFinder\Util\PhpDocumentor\MetadataRegistry;
 use phpDocumentor\Reflection\Php\Class_;
 use phpDocumentor\Reflection\Php\Enum_;
 use phpDocumentor\Reflection\Php\Interface_;
@@ -26,6 +27,7 @@ use function assert;
 use function count;
 use function explode;
 use function implode;
+use function method_exists;
 use function rtrim;
 use function str_pad;
 
@@ -53,7 +55,8 @@ final class ClassMap implements IteratorAggregate
                 assert($metadata instanceof Metadata || $metadata === null);
                 $filename = $metadata?->filePath;
             } elseif ($reflector instanceof Class_ || $reflector instanceof Interface_ || $reflector instanceof Trait_ || $reflector instanceof Enum_) {
-                $metadata = $reflector->getMetadata()[Metadata::METADATA_KEY] ?? null;
+                $metadata = method_exists($reflector, 'getMetadata') ? $reflector->getMetadata() : MetadataRegistry::getInstance()->getMetadata($reflector);
+                $metadata = $metadata[Metadata::METADATA_KEY] ?? null;
                 assert($metadata instanceof Metadata || $metadata === null);
                 $filename = $metadata?->filePath;
             } else {

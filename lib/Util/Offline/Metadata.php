@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Util\Offline;
 
+include_once __DIR__ . '/../../../phpdoc-compat-metadata.php';
+
 use phpDocumentor\Reflection\Metadata\Metadata as PhpDocumentorMetadata;
 
 class Metadata implements PhpDocumentorMetadata

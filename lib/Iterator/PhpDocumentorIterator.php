@@ -8,10 +8,12 @@ use Closure;
 use Generator;
 use Kcs\ClassFinder\PathNormalizer;
 use Kcs\ClassFinder\Util\Offline\Metadata;
+use Kcs\ClassFinder\Util\PhpDocumentor\MetadataRegistry;
 use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\DocBlockFactoryInterface;
 use phpDocumentor\Reflection\File\LocalFile;
 use phpDocumentor\Reflection\Fqsen;
+use PhpDocumentor\Reflection\Metadata\Metadata as PhpDocMetadata;
 use phpDocumentor\Reflection\Php\Class_;
 use phpDocumentor\Reflection\Php\Enum_;
 use phpDocumentor\Reflection\Php\Factory;
@@ -119,8 +121,18 @@ final class PhpDocumentorIterator extends ClassIterator
 
     protected function getGenerator(): Generator
     {
-        $symbols = $files = [];
+        if (class_exists(Factory\DocBlock::class)) {
+            // phpdoc/reflection 4.x
+            $addMetadata = static function (object $target, PhpDocMetadata $metadata): void {
+                MetadataRegistry::getInstance()->addMetadata($target, $metadata);
+            };
+        } else {
+            $addMetadata = static function (object $target, PhpDocMetadata $metadata): void {
+                $target->addMetadata($metadata);
+            };
+        }
 
+        $symbols = $files = [];
         foreach ($this->search() as $path => $info) {
             if (! preg_match(self::EXTENSION_PATTERN, $path, $m) || ! $info->isReadable()) {
                 continue;
@@ -179,13 +191,13 @@ final class PhpDocumentorIterator extends ClassIterator
                         $this->processInterfaces($interfaces, $parent->getInterfaces(), $symbols);
                     }
 
-                    $fileSymbol->addMetadata(new Metadata($path, [...$parents, ...array_values($interfaces)]));
+                    $addMetadata($fileSymbol, new Metadata($path, [...$parents, ...array_values($interfaces)]));
                 } elseif ($fileSymbol instanceof Interface_) {
                     $interfaces = [];
                     $this->processInterfaces($interfaces, $fileSymbol->getParents(), $symbols);
-                    $fileSymbol->addMetadata(new Metadata($path, array_values($interfaces)));
+                    $addMetadata($fileSymbol, new Metadata($path, array_values($interfaces)));
                 } elseif ($fileSymbol instanceof Trait_ || $fileSymbol instanceof Enum_) {
-                    $fileSymbol->addMetadata(new Metadata($path, []));
+                    $addMetadata($fileSymbol, new Metadata($path, []));
                 }
             }
 

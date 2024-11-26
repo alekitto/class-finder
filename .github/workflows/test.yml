@@ -6,7 +6,7 @@ on:
     pull_request_target:
 
 jobs:
-    build:
+    tests:
         permissions:
             id-token: write
             contents: read
@@ -65,6 +65,64 @@ jobs:
 
             - name: Upload coverage to Codecov
               if: ${{ !cancelled() && matrix.php_version == '8.2' }}
+              uses: codecov/codecov-action@v4
+              with:
+                  use_oidc: true
+                  file: ./coverage.xml
+
+    phpdocumentor_tests:
+        permissions:
+            id-token: write
+            contents: read
+
+        env:
+            COMPOSER_ROOT_VERSION: dev-master
+
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                phpdocumentor_version:
+                    - '4.0'
+                    - '5.0'
+
+                composer_flags:
+                    - ''
+                    - '-o'
+
+        name: 'phpDocumentor ${{ matrix.phpdocumentor_version }} (on PHP 8.2 composer_flags: "${{ matrix.composer_flags }}")'
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup PHP with pecl extension
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.2'
+                  extensions: :opcache, pcov
+
+            - name: Require phpDocumentor ${{ matrix.phpdocumentor_version }}
+              run: composer require --no-update -n "phpdocumentor/reflection:^${{ matrix.phpdocumentor_version }}"
+
+            - name: Install Composer dependencies
+              uses: ramsey/composer-install@v3
+              with:
+                  composer-options: ${{ matrix.composer_flags }}
+
+            - name: Install Composer dependencies (tests)
+              run: php tests/install-deps.php
+              env:
+                  COMPOSER_FLAGS: ${{ matrix.composer_flags }}
+
+            - run: vendor/bin/phpunit --coverage-clover coverage.xml --log-junit junit.xml
+              env:
+                  XDEBUG_MODE: coverage
+
+            - name: Upload test results to Codecov
+              if: ${{ !cancelled() }}
+              uses: codecov/test-results-action@v1
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+
+            - name: Upload coverage to Codecov
+              if: ${{ !cancelled() }}
               uses: codecov/codecov-action@v4
               with:
                   use_oidc: true
