@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Tests\unit\Util;
 
+use Kcs\ClassFinder\Finder\PhpDocumentorFinder;
+use Kcs\ClassFinder\Finder\PhpParserFinder;
 use Kcs\ClassFinder\Finder\Psr4Finder;
 use Kcs\ClassFinder\Fixtures\Psr4;
 use Kcs\ClassFinder\PathNormalizer;
@@ -76,6 +78,40 @@ class ClassMapTest extends TestCase
             Psr4\FooTrait::class => PathNormalizer::resolvePath('data/Composer/Psr4/FooTrait.php'),
             Psr4\SubNs\FooBaz::class => PathNormalizer::resolvePath('data/Composer/Psr4/SubNs/FooBaz.php'),
             Psr4\Foobarbar::class => PathNormalizer::resolvePath('data/Composer/Psr4/Foobarbar.php'),
+        ], $classMap->getMap(__DIR__ . '/../../../'));
+    }
+
+    public function testClassmapFromPhpDocumentorFinder(): void
+    {
+        $finder = new PhpDocumentorFinder(__DIR__ . '/../../../data/Composer/Psr4');
+        $classMap = ClassMap::fromFinder($finder);
+
+        self::assertEquals([
+            Psr4\BarBar::class => PathNormalizer::resolvePath('data/Composer/Psr4/BarBar.php'),
+            Psr4\Foobar::class => PathNormalizer::resolvePath('data/Composer/Psr4/Foobar.php'),
+            Psr4\AbstractClass::class => PathNormalizer::resolvePath('data/Composer/Psr4/AbstractClass.php'),
+            Psr4\FooInterface::class => PathNormalizer::resolvePath('data/Composer/Psr4/FooInterface.php'),
+            Psr4\FooTrait::class => PathNormalizer::resolvePath('data/Composer/Psr4/FooTrait.php'),
+            Psr4\SubNs\FooBaz::class => PathNormalizer::resolvePath('data/Composer/Psr4/SubNs/FooBaz.php'),
+            Psr4\Foobarbar::class => PathNormalizer::resolvePath('data/Composer/Psr4/Foobarbar.php'),
+            Psr4\HiddenClass::class => PathNormalizer::resolvePath('data/Composer/Psr4/NotAClass.php'),
+        ], $classMap->getMap(__DIR__ . '/../../../'));
+    }
+
+    public function testClassmapFromPhpParserFinder(): void
+    {
+        $finder = new PhpParserFinder(__DIR__ . '/../../../data/Composer/Psr4');
+        $classMap = ClassMap::fromFinder($finder);
+
+        self::assertEquals([
+            Psr4\BarBar::class => PathNormalizer::resolvePath('data/Composer/Psr4/BarBar.php'),
+            Psr4\Foobar::class => PathNormalizer::resolvePath('data/Composer/Psr4/Foobar.php'),
+            Psr4\AbstractClass::class => PathNormalizer::resolvePath('data/Composer/Psr4/AbstractClass.php'),
+            Psr4\FooInterface::class => PathNormalizer::resolvePath('data/Composer/Psr4/FooInterface.php'),
+            Psr4\FooTrait::class => PathNormalizer::resolvePath('data/Composer/Psr4/FooTrait.php'),
+            Psr4\SubNs\FooBaz::class => PathNormalizer::resolvePath('data/Composer/Psr4/SubNs/FooBaz.php'),
+            Psr4\Foobarbar::class => PathNormalizer::resolvePath('data/Composer/Psr4/Foobarbar.php'),
+            Psr4\HiddenClass::class => PathNormalizer::resolvePath('data/Composer/Psr4/NotAClass.php'),
         ], $classMap->getMap(__DIR__ . '/../../../'));
     }
 }

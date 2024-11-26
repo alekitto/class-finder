@@ -108,7 +108,6 @@ class ClassMapFinderTest extends TestCase
         ], iterator_to_array($finder));
     }
 
-    /** @requires PHP >= 8.0 */
     public function testFinderShouldFilterByAttribute(): void
     {
         $finder = new ClassMapFinder([

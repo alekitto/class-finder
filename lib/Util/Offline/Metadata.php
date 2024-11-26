@@ -12,6 +12,7 @@ class Metadata implements PhpDocumentorMetadata
 
     /** @param object[] $superclasses */
     public function __construct(
+        public string $filePath,
         public array $superclasses,
     ) {
     }

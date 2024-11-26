@@ -35,6 +35,14 @@ final class ClassMapIterator extends ClassIterator
     /** @return Generator<class-string, ReflectionClass> */
     protected function getGenerator(): Generator
     {
+        $include = Closure::bind(
+            static function (string $path): void {
+                include_once $path;
+            },
+            null,
+            null,
+        );
+
         foreach ($this->classMap as $className => $path) {
             $path = PathNormalizer::resolvePath($path);
             if ($this->pathCallback && ! ($this->pathCallback)($path)) {
@@ -42,6 +50,7 @@ final class ClassMapIterator extends ClassIterator
             }
 
             ErrorHandler::register();
+            @$include($path);
             try {
                 $reflectionClass = $this->reflectorFactory->reflect($className);
             } catch (Throwable) { /** @phpstan-ignore-line */

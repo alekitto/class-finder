@@ -157,10 +157,10 @@ final class PhpDocumentorIterator extends ClassIterator
                 continue;
             }
 
-            $files[] = $fileSymbols;
+            $files[$path] = $fileSymbols;
         }
 
-        foreach ($files as $fileSymbols) {
+        foreach ($files as $path => $fileSymbols) {
             foreach ($fileSymbols as $fileSymbol) {
                 if ($fileSymbol instanceof Class_) {
                     $parents = [];
@@ -179,11 +179,13 @@ final class PhpDocumentorIterator extends ClassIterator
                         $this->processInterfaces($interfaces, $parent->getInterfaces(), $symbols);
                     }
 
-                    $fileSymbol->addMetadata(new Metadata([...$parents, ...array_values($interfaces)]));
+                    $fileSymbol->addMetadata(new Metadata($path, [...$parents, ...array_values($interfaces)]));
                 } elseif ($fileSymbol instanceof Interface_) {
                     $interfaces = [];
                     $this->processInterfaces($interfaces, $fileSymbol->getParents(), $symbols);
-                    $fileSymbol->addMetadata(new Metadata(array_values($interfaces)));
+                    $fileSymbol->addMetadata(new Metadata($path, array_values($interfaces)));
+                } elseif ($fileSymbol instanceof Trait_ || $fileSymbol instanceof Enum_) {
+                    $fileSymbol->addMetadata(new Metadata($path, []));
                 }
             }
 

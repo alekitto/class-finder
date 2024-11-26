@@ -9,7 +9,15 @@ use Kcs\ClassFinder\Finder\ClassMapFinder;
 use Kcs\ClassFinder\Finder\FinderInterface;
 use Kcs\ClassFinder\Iterator\ClassMapIterator;
 use Kcs\ClassFinder\PathNormalizer;
+use Kcs\ClassFinder\Util\Offline\Metadata;
+use phpDocumentor\Reflection\Php\Class_;
+use phpDocumentor\Reflection\Php\Enum_;
+use phpDocumentor\Reflection\Php\Interface_;
+use phpDocumentor\Reflection\Php\Trait_;
+use PhpParser\Node\Stmt\ClassLike;
 use ReflectionClass;
+use Roave\BetterReflection;
+use RuntimeException;
 use Traversable;
 
 use function array_map;
@@ -38,9 +46,21 @@ final class ClassMap implements IteratorAggregate
 
         /** @var class-string $className */
         foreach ($finder as $className => $reflector) {
-            assert($reflector instanceof ReflectionClass);
-            $filename = $reflector->getFileName();
-            if ($filename === false) {
+            if ($reflector instanceof ReflectionClass || $reflector instanceof BetterReflection\Reflection\ReflectionClass) {
+                $filename = $reflector->getFileName();
+            } elseif ($reflector instanceof ClassLike) {
+                $metadata = $reflector->getAttribute(Metadata::METADATA_KEY);
+                assert($metadata instanceof Metadata || $metadata === null);
+                $filename = $metadata?->filePath;
+            } elseif ($reflector instanceof Class_ || $reflector instanceof Interface_ || $reflector instanceof Trait_ || $reflector instanceof Enum_) {
+                $metadata = $reflector->getMetadata()[Metadata::METADATA_KEY] ?? null;
+                assert($metadata instanceof Metadata || $metadata === null);
+                $filename = $metadata?->filePath;
+            } else {
+                throw new RuntimeException('Cannot create classmap from reflector class ' . $reflector::class);
+            }
+
+            if ($filename === null || $filename === false) {
                 continue;
             }
 

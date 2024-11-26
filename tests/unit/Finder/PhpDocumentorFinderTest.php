@@ -126,7 +126,6 @@ class PhpDocumentorFinderTest extends TestCase
         self::assertInstanceOf(Class_::class, $classes[Psr4\AbstractClass::class]);
     }
 
-    /** @requires PHP >= 8.0 */
     public function testFinderShouldFilterByAttribute(): void
     {
         $finder = new PhpDocumentorFinder(__DIR__ . '/../../../data');

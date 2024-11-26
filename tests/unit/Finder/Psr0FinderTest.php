@@ -73,7 +73,6 @@ class Psr0FinderTest extends TestCase
         ], iterator_to_array($finder));
     }
 
-    /** @requires PHP >= 8.0 */
     public function testFinderShouldFilterByAttribute(): void
     {
         $finder = new Psr0Finder('Kcs\ClassFinder\Fixtures\Psr0', __DIR__ . '/../../../data/Composer/Psr0');

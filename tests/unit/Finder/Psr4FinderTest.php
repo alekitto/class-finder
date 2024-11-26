@@ -77,7 +77,6 @@ class Psr4FinderTest extends TestCase
         ], iterator_to_array($finder));
     }
 
-    /** @requires PHP >= 8.0 */
     public function testFinderShouldFilterByAttribute(): void
     {
         $finder = new Psr4Finder('Kcs\ClassFinder\Fixtures\Psr4', __DIR__ . '/../../../data/Composer/Psr4');

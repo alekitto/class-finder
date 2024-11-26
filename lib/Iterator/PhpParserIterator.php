@@ -104,10 +104,10 @@ final class PhpParserIterator extends ClassIterator
                 continue;
             }
 
-            $files[] = $fileSymbols;
+            $files[$path] = $fileSymbols;
         }
 
-        foreach ($files as $fileSymbols) {
+        foreach ($files as $path => $fileSymbols) {
             foreach ($fileSymbols as $fileSymbol) {
                 if ($fileSymbol instanceof Stmt\Class_) {
                     $parents = [];
@@ -126,11 +126,13 @@ final class PhpParserIterator extends ClassIterator
                         $this->processInterfaces($interfaces, $parent->implements, $symbols);
                     }
 
-                    $fileSymbol->setAttribute(Metadata::METADATA_KEY, new Metadata([...$parents, ...array_values($interfaces)]));
+                    $fileSymbol->setAttribute(Metadata::METADATA_KEY, new Metadata($path, [...$parents, ...array_values($interfaces)]));
                 } elseif ($fileSymbol instanceof Stmt\Interface_) {
                     $interfaces = [];
                     $this->processInterfaces($interfaces, $fileSymbol->extends, $symbols);
-                    $fileSymbol->setAttribute(Metadata::METADATA_KEY, new Metadata(array_values($interfaces)));
+                    $fileSymbol->setAttribute(Metadata::METADATA_KEY, new Metadata($path, array_values($interfaces)));
+                } elseif ($fileSymbol instanceof Stmt\Trait_ || $fileSymbol instanceof Stmt\Enum_) {
+                    $fileSymbol->setAttribute(Metadata::METADATA_KEY, new Metadata($path, []));
                 }
             }
 
