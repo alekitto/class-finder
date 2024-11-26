@@ -22,6 +22,7 @@ use function array_map;
 use function array_push;
 use function array_values;
 use function assert;
+use function class_exists;
 use function file_get_contents;
 use function ltrim;
 use function Safe\preg_match;
@@ -43,7 +44,9 @@ final class PhpParserIterator extends ClassIterator
         $this->parser = (new ParserFactory())->createForHostVersion();
         $this->traverser = new NodeTraverser();
         $this->traverser->addVisitor($nameResolver = new NameResolver());
-        $this->traverser->addVisitor(new AnnotationParser($nameResolver));
+        if (class_exists(AnnotationParser::class)) {
+            $this->traverser->addVisitor(new AnnotationParser($nameResolver));
+        }
 
         parent::__construct($flags, $excludeNamespaces, $pathCallback);
     }

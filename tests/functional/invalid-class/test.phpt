@@ -1,5 +1,7 @@
 --TEST--
-ComposerFinder - nested composer projects
+Offline finders - skip invalid files/classes
+--INI--
+error_reporting=E_ALL & ~E_NOTICE & ~E_DEPRECATED
 --FILE--
 <?php
 require_once 'vendor/autoload.php';

@@ -50,8 +50,8 @@ final class ClassMapIterator extends ClassIterator
             }
 
             ErrorHandler::register();
-            @$include($path);
             try {
+                @$include($path);
                 $reflectionClass = $this->reflectorFactory->reflect($className);
             } catch (Throwable) { /** @phpstan-ignore-line */
                 continue;

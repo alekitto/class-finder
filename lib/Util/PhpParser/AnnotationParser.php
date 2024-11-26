@@ -11,11 +11,16 @@ use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
 
 use function assert;
+use function class_exists;
 use function in_array;
 use function strlen;
 use function strpos;
 use function substr;
 use function trim;
+
+if (! class_exists(NodeVisitorAbstract::class)) {
+    return;
+}
 
 class AnnotationParser extends NodeVisitorAbstract
 {

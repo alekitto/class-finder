@@ -25,13 +25,12 @@ jobs:
                     - '8.1'
                     - '8.2'
                     - '8.3'
-                    - '8.4'
 
                 composer_flags:
                     - ''
                     - '-o'
 
-        name: 'PHP ${{ matrix.php_version }} (composer_flags: "${{ matrix.composer_flags }}")'
+        name: 'PHP ${{ matrix.php_version }} (os: ${{ matrix.os }} composer_flags: "${{ matrix.composer_flags }}")'
         steps:
             - uses: actions/checkout@v4
             - name: Setup PHP with pecl extension
@@ -99,12 +98,13 @@ jobs:
                   extensions: :opcache, pcov
 
             - name: Require phpDocumentor ${{ matrix.phpdocumentor_version }}
-              run: composer require --no-update -n "phpdocumentor/reflection:^${{ matrix.phpdocumentor_version }}"
+              run: composer require --dev --no-update -n "phpdocumentor/reflection:^${{ matrix.phpdocumentor_version }}"
 
             - name: Install Composer dependencies
               uses: ramsey/composer-install@v3
               with:
                   composer-options: ${{ matrix.composer_flags }}
+                  dependency-versions: highest
 
             - name: Install Composer dependencies (tests)
               run: php tests/install-deps.php
