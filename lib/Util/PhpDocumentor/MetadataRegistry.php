@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\Util\PhpDocumentor;
 
-use PhpDocumentor\Reflection\Metadata\Metadata;
+use phpDocumentor\Reflection\Metadata\Metadata;
 use WeakMap;
 
 final class MetadataRegistry

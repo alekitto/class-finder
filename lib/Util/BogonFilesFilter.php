@@ -14,6 +14,7 @@ final class BogonFilesFilter
         // https://github.com/alekitto/class-finder/issues/13#issuecomment-2010509501
         '(?:' .
             '(?:symfony/(?:cache|symfony/Component/Cache)/Traits/(?:Redis(?:Cluster)?\dProxy|ValueWrapper)|' .
+            'symfony/polyfill-[^/]+/Resources/stubs/(?:Attribute|Normalizer)|' .
             'php-coveralls/php-coveralls/src/Bundle/CoverallsBundle/Console/Application|' .
             'dealerdirect/phpcodesniffer-composer-installer/src/Plugin|' .
             'myclabs/php-enum/src/PHPUnit/Comparator|' .
@@ -22,9 +23,14 @@ final class BogonFilesFilter
         ')\.php$)' .
     '#x';
 
+    /**
+     * @param Closure(string):bool|null $filter
+     *
+     * @return Closure(string):bool
+     */
     public static function getFileFilterFn(Closure|null $filter = null): Closure
     {
-        $filter ??= static fn () => true;
+        $filter ??= static fn (string $unused) => true;
 
         return static function (string $path) use ($filter): bool {
             if (preg_match(self::BOGON_FILES_REGEX, $path) === 1) {

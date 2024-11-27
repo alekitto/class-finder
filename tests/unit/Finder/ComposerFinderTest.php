@@ -249,6 +249,7 @@ class ComposerFinderTest extends TestCase
         ], iterator_to_array($finder));
     }
 
+    /** @runInSeparateProcess */
     public function testFinderShouldFilterByPathCallback(): void
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
@@ -270,5 +271,13 @@ class ComposerFinderTest extends TestCase
             FallbackNamespace0\MyClass::class => new ReflectionClass(FallbackNamespace0\MyClass::class),
             Psr4\Foobarbar::class => new ReflectionClass(Psr4\Foobarbar::class),
         ], iterator_to_array($finder));
+    }
+
+    /** @runInSeparateProcess */
+    public function testBogonFilesFilter(): void
+    {
+        $finder = (new ComposerFinder())->skipBogonFiles();
+
+        self::assertNotEmpty(iterator_to_array($finder));
     }
 }

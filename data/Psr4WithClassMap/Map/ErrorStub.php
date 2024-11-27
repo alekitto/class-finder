@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
-class Error
-{
+if (!class_exists(Error::class, false)) {
+    class Error
+    {
+    }
 }

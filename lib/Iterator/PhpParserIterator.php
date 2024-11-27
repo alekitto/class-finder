@@ -24,6 +24,7 @@ use function array_values;
 use function assert;
 use function class_exists;
 use function file_get_contents;
+use function is_string;
 use function ltrim;
 use function Safe\preg_match;
 
@@ -111,6 +112,8 @@ final class PhpParserIterator extends ClassIterator
         }
 
         foreach ($files as $path => $fileSymbols) {
+            assert(is_string($path));
+
             foreach ($fileSymbols as $fileSymbol) {
                 if ($fileSymbol instanceof Stmt\Class_) {
                     $parents = [];

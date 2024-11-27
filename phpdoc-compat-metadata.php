@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDocumentor\Reflection\Metadata;
+namespace phpDocumentor\Reflection\Metadata;
 
 use function interface_exists;
 

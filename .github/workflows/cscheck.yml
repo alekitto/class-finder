@@ -1,6 +1,7 @@
 name: Check CS
 
 on:
+    push:
     pull_request_target:
 
 jobs:

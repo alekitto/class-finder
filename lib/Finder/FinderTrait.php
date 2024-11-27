@@ -50,10 +50,10 @@ trait FinderTrait
     /** @var string[] */
     private array|null $notPaths = null;
 
-    /** @var callable|null */
+    /** @var callable(object, string):bool|null */
     private $filterCallback = null;
 
-    /** @var callable|null */
+    /** @var callable(string):bool|null */
     private $pathFilterCallback = null;
 
     private bool $skipNonInstantiable = false;

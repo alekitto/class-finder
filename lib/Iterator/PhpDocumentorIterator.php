@@ -13,7 +13,7 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\DocBlockFactoryInterface;
 use phpDocumentor\Reflection\File\LocalFile;
 use phpDocumentor\Reflection\Fqsen;
-use PhpDocumentor\Reflection\Metadata\Metadata as PhpDocMetadata;
+use phpDocumentor\Reflection\Metadata\Metadata as PhpDocMetadata;
 use phpDocumentor\Reflection\Php\Class_;
 use phpDocumentor\Reflection\Php\Enum_;
 use phpDocumentor\Reflection\Php\Factory;
@@ -31,6 +31,7 @@ use function array_push;
 use function array_values;
 use function assert;
 use function class_exists;
+use function is_string;
 use function ltrim;
 use function method_exists;
 use function Safe\preg_match;
@@ -128,6 +129,7 @@ final class PhpDocumentorIterator extends ClassIterator
             };
         } else {
             $addMetadata = static function (object $target, PhpDocMetadata $metadata): void {
+                assert(method_exists($target, 'addMetadata'));
                 $target->addMetadata($metadata);
             };
         }
@@ -150,7 +152,7 @@ final class PhpDocumentorIterator extends ClassIterator
                     $factory->create($contextStack, new LocalFile($path), $this->strategies);
                     $reflector = $project->getFiles()[$path];
                 }
-            } catch (Throwable) {
+            } catch (Throwable) { /** @phpstan-ignore-line */
                 continue;
             }
 
@@ -173,6 +175,8 @@ final class PhpDocumentorIterator extends ClassIterator
         }
 
         foreach ($files as $path => $fileSymbols) {
+            assert(is_string($path));
+
             foreach ($fileSymbols as $fileSymbol) {
                 if ($fileSymbol instanceof Class_) {
                     $parents = [];

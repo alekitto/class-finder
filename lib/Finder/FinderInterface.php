@@ -85,6 +85,8 @@ interface FinderInterface extends IteratorAggregate
      * Sets a custom callback for class filtering.
      * The callback will receive the class name as the only argument.
      *
+     * @param callable(object, string):bool|null $callback
+     *
      * @return $this
      */
     public function filter(callable|null $callback): static;
@@ -124,6 +126,8 @@ interface FinderInterface extends IteratorAggregate
     /**
      * Sets a custom callback for file filtering.
      * The callback will receive the full filepath as the only argument.
+     *
+     * @param callable(string):bool|null $callback
      *
      * @return $this
      */

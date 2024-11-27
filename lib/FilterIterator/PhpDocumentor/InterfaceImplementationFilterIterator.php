@@ -36,7 +36,7 @@ final class InterfaceImplementationFilterIterator extends FilterIterator
         parent::__construct($iterator);
 
         $this->getMetadata = method_exists(Class_::class, 'getMetadata') ?
-            static fn (object $reflector) => $reflector->getMetadata() :
+            static fn (object $reflector) => $reflector->getMetadata() : /** @phpstan-ignore-line */
             static fn (object $reflector) => MetadataRegistry::getInstance()->getMetadata($reflector);
     }
 
