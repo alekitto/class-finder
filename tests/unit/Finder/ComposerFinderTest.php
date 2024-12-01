@@ -276,7 +276,9 @@ class ComposerFinderTest extends TestCase
     /** @runInSeparateProcess */
     public function testBogonFilesFilter(): void
     {
-        $finder = (new ComposerFinder())->skipBogonFiles();
+        $finder = (new ComposerFinder())
+            ->useAutoloading(false)
+            ->skipBogonFiles();
 
         self::assertNotEmpty(iterator_to_array($finder));
     }

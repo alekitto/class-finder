@@ -24,7 +24,7 @@ foreach (glob(__DIR__ . '/*') as $path) {
             continue;
         }
 
-        if (str_contains(dirname($info->getPath()), '/vendor/')) {
+        if (str_contains(dirname(str_replace(DIRECTORY_SEPARATOR, '/', $info->getPath())), '/vendor/')) {
             continue;
         }
 
