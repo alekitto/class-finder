@@ -80,7 +80,7 @@ final class Psr0Iterator extends ClassIterator
                 continue;
             }
 
-            if ($this->pathCallback && ! ($this->pathCallback)($path)) {
+            if ($this->pathCallback && ! ($this->pathCallback)(PathNormalizer::normalize($path))) {
                 continue;
             }
 

@@ -95,7 +95,7 @@ final class FilteredComposerIterator extends ClassIterator
                 continue;
             }
 
-            if ($this->pathCallback && ! ($this->pathCallback)($file)) {
+            if ($this->pathCallback && ! ($this->pathCallback)(PathNormalizer::normalize($file))) {
                 continue;
             }
 

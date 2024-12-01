@@ -15,6 +15,14 @@ use const DIRECTORY_SEPARATOR;
 final class PathNormalizer
 {
     /**
+     * Normalizes path separator to '/'.
+     */
+    public static function normalize(string $path): string
+    {
+        return str_replace(DIRECTORY_SEPARATOR, '/', $path);
+    }
+
+    /**
      * Resolve a path.
      *
      * This is different from the realpath resolution as it

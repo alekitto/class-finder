@@ -77,7 +77,7 @@ trait OfflineIteratorTrait
 
     private function accept(string $path): bool
     {
-        if ($this->pathCallback && ! ($this->pathCallback)($path)) {
+        if ($this->pathCallback && ! ($this->pathCallback)(PathNormalizer::normalize($path))) {
             return false;
         }
 

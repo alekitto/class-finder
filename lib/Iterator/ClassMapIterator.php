@@ -45,7 +45,7 @@ final class ClassMapIterator extends ClassIterator
 
         foreach ($this->classMap as $className => $path) {
             $path = PathNormalizer::resolvePath($path);
-            if ($this->pathCallback && ! ($this->pathCallback)($path)) {
+            if ($this->pathCallback && ! ($this->pathCallback)(PathNormalizer::normalize($path))) {
                 continue;
             }
 
