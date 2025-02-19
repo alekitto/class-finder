@@ -1,5 +1,7 @@
 --TEST--
 ErrorHandler - Test User Error does throw Error
+--INI--
+error_reporting=22527
 --FILE--
 <?php
 

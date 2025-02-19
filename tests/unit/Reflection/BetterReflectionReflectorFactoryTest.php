@@ -12,6 +12,10 @@ class BetterReflectionReflectorFactoryTest extends TestCase
 {
     public function testShouldReturnABetterReflectionReflectorObject(): void
     {
+        if (!class_exists(ReflectionClass::class)) {
+            self::markTestSkipped();
+        }
+
         $factory = new BetterReflectionReflectorFactory();
         self::assertInstanceOf(ReflectionClass::class, $factory->reflect(self::class));
     }

@@ -50,7 +50,7 @@ class ErrorHandlerTest extends TestCase
 
     public function testShouldThrowErrorOnErrorOrUserError(): void
     {
-        $prev = error_reporting(E_ALL);
+        $prev = error_reporting(E_ALL & ~E_DEPRECATED);
         try {
             trigger_error('This is an error', E_USER_ERROR);
         } catch (Error $e) {

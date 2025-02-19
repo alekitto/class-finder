@@ -39,8 +39,12 @@ jobs:
                   php-version: ${{ matrix.php_version }}
                   extensions: :opcache, pcov
 
+            - run: composer remove --dev roave/better-reflection
+              if: ${{ matrix.php_version == '8.4' }} # Temporary: better reflection does not support 8.4
+
             - name: Install Composer dependencies
               uses: ramsey/composer-install@v3
+              if: ${{ matrix.php_version != '8.4' }}
               with:
                   composer-options: ${{ matrix.composer_flags }}
 
@@ -50,20 +54,20 @@ jobs:
                   COMPOSER_FLAGS: ${{ matrix.composer_flags }}
 
             - run: vendor/bin/phpunit
-              if: ${{ matrix.php_version != '8.2' }}
+              if: ${{ matrix.php_version != '8.3' }}
             - run: vendor/bin/phpunit --coverage-clover coverage.xml --log-junit junit.xml
-              if: ${{ matrix.php_version == '8.2' }}
+              if: ${{ matrix.php_version == '8.3' }}
               env:
                   XDEBUG_MODE: coverage
 
             - name: Upload test results to Codecov
-              if: ${{ !cancelled() && matrix.php_version == '8.2' }}
+              if: ${{ !cancelled() && matrix.php_version == '8.3' }}
               uses: codecov/test-results-action@v1
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
 
             - name: Upload coverage to Codecov
-              if: ${{ !cancelled() && matrix.php_version == '8.2' }}
+              if: ${{ !cancelled() && matrix.php_version == '8.3' }}
               uses: codecov/codecov-action@v4
               with:
                   use_oidc: true
@@ -88,13 +92,13 @@ jobs:
                     - ''
                     - '-o'
 
-        name: 'phpDocumentor ${{ matrix.phpdocumentor_version }} (on PHP 8.2 composer_flags: "${{ matrix.composer_flags }}")'
+        name: 'phpDocumentor ${{ matrix.phpdocumentor_version }} (on PHP 8.3 composer_flags: "${{ matrix.composer_flags }}")'
         steps:
             - uses: actions/checkout@v4
             - name: Setup PHP with pecl extension
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: '8.2'
+                  php-version: '8.3'
                   extensions: :opcache, pcov
 
             - name: Require phpDocumentor ${{ matrix.phpdocumentor_version }}
