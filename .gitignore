@@ -1,4 +1,4 @@
 vendor/
 .phpunit.result.cache
 .php_cs.cache
-tests/**/composer.lock
+composer.lock

@@ -25,6 +25,7 @@ jobs:
                     - '8.1'
                     - '8.2'
                     - '8.3'
+                    - '8.4'
 
                 composer_flags:
                     - ''
@@ -39,12 +40,11 @@ jobs:
                   php-version: ${{ matrix.php_version }}
                   extensions: :opcache, pcov
 
-            - run: composer remove --dev roave/better-reflection
+            - run: composer remove --dev --no-update roave/better-reflection
               if: ${{ matrix.php_version == '8.4' }} # Temporary: better reflection does not support 8.4
 
             - name: Install Composer dependencies
               uses: ramsey/composer-install@v3
-              if: ${{ matrix.php_version != '8.4' }}
               with:
                   composer-options: ${{ matrix.composer_flags }}
 
