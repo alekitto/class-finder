@@ -18,6 +18,7 @@ final class BogonFilesFilter
             'php-coveralls/php-coveralls/src/Bundle/CoverallsBundle/Console/Application|' .
             'dealerdirect/phpcodesniffer-composer-installer/src/Plugin|' .
             'myclabs/php-enum/src/PHPUnit/Comparator|' .
+            'nikic/php-parser/lib/PhpParser/Node/(?:Expr/(?:ArrayItem|ClosureUse)|Scalar/(Encapsed|EncapsedStringPart|DNumber|LNumber)|Stmt/(DeclareDeclare|PropertyProperty|StaticVar|UseUse))|' .
             'guzzlehttp/guzzle/src/functions|' .
             'phpbench/phpbench/lib/Report/Func/functions|' .
             'composer/(?:autoload_\w+|InstalledVersions)' .
