@@ -35,6 +35,28 @@ class Psr4IteratorTest extends TestCase
         ], iterator_to_array($iterator));
     }
 
+    public function testIteratorShouldSkipFilesInClassMap(): void
+    {
+        $dir = realpath(__DIR__ . '/../../../data/Composer/Psr4');
+        $iterator = new Psr4Iterator(
+            'Kcs\\ClassFinder\\Fixtures\\Psr4\\',
+            $dir,
+            new NativeReflectorFactory(),
+            classMap: [
+                Psr4\BarBar::class => $dir . '/BarBar.php',
+                Psr4\SubNs\FooBaz::class => $dir . '/SubNs/FooBaz.php',
+            ],
+        );
+
+        self::assertEquals([
+            Psr4\Foobar::class => new ReflectionClass(Psr4\Foobar::class),
+            Psr4\AbstractClass::class => new ReflectionClass(Psr4\AbstractClass::class),
+            Psr4\FooInterface::class => new ReflectionClass(Psr4\FooInterface::class),
+            Psr4\FooTrait::class => new ReflectionClass(Psr4\FooTrait::class),
+            Psr4\Foobarbar::class => new ReflectionClass(Psr4\Foobarbar::class),
+        ], iterator_to_array($iterator));
+    }
+
     public function testIteratorShouldCallPathCallback(): void
     {
         $iterator = new Psr4Iterator(

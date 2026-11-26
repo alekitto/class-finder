@@ -13,11 +13,11 @@ use Kcs\ClassFinder\Util\ErrorHandler;
 use ReflectionClass;
 use Throwable;
 
+use function array_flip;
 use function array_map;
 use function assert;
 use function class_exists;
 use function defined;
-use function in_array;
 use function ltrim;
 use function preg_match;
 use function str_replace;
@@ -32,7 +32,7 @@ final class Psr4Iterator extends ClassIterator
     private int $prefixLen;
     private ReflectorFactoryInterface $reflectorFactory;
 
-    /** @var array<string, mixed> */
+    /** @var array<string, string> path => class */
     private array $classMap;
 
     /**
@@ -51,7 +51,7 @@ final class Psr4Iterator extends ClassIterator
         $this->path = PathNormalizer::resolvePath($path);
         $this->reflectorFactory = $reflectorFactory ?? new NativeReflectorFactory();
         $this->prefixLen = strlen($this->path);
-        $this->classMap = array_map(PathNormalizer::class . '::resolvePath', $classMap);
+        $this->classMap = array_flip(array_map(PathNormalizer::class . '::resolvePath', $classMap));
 
         parent::__construct($flags, $excludeNamespaces, $pathCallback);
     }
@@ -78,7 +78,7 @@ final class Psr4Iterator extends ClassIterator
                 continue;
             }
 
-            if (in_array($path, $this->classMap, true)) {
+            if (isset($this->classMap[$path])) {
                 continue;
             }
 
