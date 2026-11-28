@@ -6,7 +6,10 @@
         }
     ],
     "autoload": {
-        "Kcs\\ClassFinder\\FunctionalTests\\": "src/"
+        "psr-4": {
+            "Kcs\\ClassFinder\\FunctionalTests\\": "src/",
+            "": "fall/"
+        }
     },
     "require": {
         "kcs/class-finder": "dev-master",
