@@ -10,7 +10,7 @@ use phpDocumentor\Reflection\Metadata\Metadata as PhpDocumentorMetadata;
 
 class Metadata implements PhpDocumentorMetadata
 {
-    public const METADATA_KEY = self::class;
+    public const string METADATA_KEY = self::class;
 
     /** @param object[] $superclasses */
     public function __construct(

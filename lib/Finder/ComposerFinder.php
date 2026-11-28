@@ -11,6 +11,7 @@ use Kcs\ClassFinder\Iterator\ComposerIterator;
 use Kcs\ClassFinder\Iterator\FilteredComposerIterator;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Kcs\ClassFinder\Util\BogonFilesFilter;
+use ReflectionClass;
 use Reflector;
 use RuntimeException;
 use Symfony\Component\ErrorHandler\DebugClassLoader;
@@ -24,6 +25,8 @@ use function spl_autoload_functions;
 
 /**
  * Finds classes/namespaces using the registered autoloader by composer.
+ *
+ * @implements FinderInterface<ReflectionClass<object>>
  */
 final class ComposerFinder implements FinderInterface
 {

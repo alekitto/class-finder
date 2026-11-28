@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kcs\ClassFinder\FileFinder;
 
+use ErrorException;
 use FilesystemIterator;
 use Kcs\ClassFinder\PathNormalizer;
 use RecursiveCallbackFilterIterator;
@@ -11,16 +12,26 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
 
+use function error_get_last;
+use function glob;
 use function is_dir;
 use function is_file;
-use function Safe\glob;
+
+use const E_ERROR;
 
 final class DefaultFileFinder implements FileFinderInterface
 {
     /** @inheritDoc */
     public function search(string $pattern): iterable
     {
-        foreach (glob($pattern) as $path) {
+        $matches = glob($pattern);
+        if ($matches === false) {
+            $error = error_get_last();
+
+            throw new ErrorException($error['message'] ?? 'An error occurred while searching for files', 0, $error['type'] ?? E_ERROR);
+        }
+
+        foreach ($matches as $path) {
             if (is_dir($path)) {
                 $files = new RecursiveIteratorIterator(
                     new RecursiveCallbackFilterIterator(

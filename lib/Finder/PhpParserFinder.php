@@ -18,6 +18,8 @@ use function class_exists;
 
 /**
  * Finds classes/namespaces using the registered autoloader by composer.
+ *
+ * @implements FinderInterface<Stmt\ClassLike>
  */
 final class PhpParserFinder implements FinderInterface
 {

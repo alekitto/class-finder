@@ -12,8 +12,8 @@ use function array_merge;
 use function array_push;
 use function array_unique;
 use function defined;
+use function glob;
 use function is_dir;
-use function Safe\glob;
 
 use const GLOB_BRACE;
 use const GLOB_ONLYDIR;

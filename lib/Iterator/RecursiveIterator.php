@@ -14,8 +14,9 @@ use function get_declared_classes;
 use function get_declared_interfaces;
 use function get_declared_traits;
 use function in_array;
-use function Safe\preg_match;
+use function preg_match;
 
+/** @extends ClassIterator<ReflectionClass<object>> */
 final class RecursiveIterator extends ClassIterator
 {
     use RecursiveIteratorTrait;
@@ -28,7 +29,7 @@ final class RecursiveIterator extends ClassIterator
         parent::__construct($flags, $excludeNamespaces, $pathCallback);
     }
 
-    /** @return Generator<class-string, ReflectionClass> */
+    /** @return Generator<class-string, ReflectionClass<object>> */
     protected function getGenerator(): Generator
     {
         $includedFiles = [];

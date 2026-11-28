@@ -19,6 +19,10 @@ use function ltrim;
 use function method_exists;
 use function reset;
 
+/**
+ * @template TKey
+ * @extends FilterIterator<TKey, Element, Iterator<TKey, Element>>
+ */
 final class SuperClassFilterIterator extends FilterIterator
 {
     private Closure $getMetadata;

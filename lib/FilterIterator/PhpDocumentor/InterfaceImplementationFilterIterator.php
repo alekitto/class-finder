@@ -13,15 +13,19 @@ use phpDocumentor\Reflection\Element;
 use phpDocumentor\Reflection\Php\Class_;
 use phpDocumentor\Reflection\Php\Interface_;
 
+use function array_all;
 use function array_filter;
 use function array_map;
 use function assert;
-use function count;
 use function in_array;
 use function ltrim;
 use function method_exists;
 use function reset;
 
+/**
+ * @template TKey
+ * @extends FilterIterator<TKey, Element, Iterator<TKey, Element>>
+ */
 final class InterfaceImplementationFilterIterator extends FilterIterator
 {
     private Closure $getMetadata;
@@ -56,14 +60,9 @@ final class InterfaceImplementationFilterIterator extends FilterIterator
             array_filter($metadata->superclasses, static fn (object $o) => $o instanceof Interface_),
         );
 
-        return count(
-            array_filter(
-                array_map(
-                    static fn (string $interface) => in_array($interface, $implementations, true),
-                    $this->interfaces,
-                ),
-                static fn (bool $r) => $r === false,
-            ),
-        ) === 0;
+        return array_all(
+            $this->interfaces,
+            static fn (string $interface) => in_array($interface, $implementations, true),
+        );
     }
 }

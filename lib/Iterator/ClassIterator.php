@@ -9,6 +9,7 @@ use Generator;
 use Iterator;
 use ReflectionClass;
 
+use function array_all;
 use function assert;
 use function is_string;
 use function str_starts_with;
@@ -19,11 +20,14 @@ use function str_starts_with;
  * This could be used to implement other iterators,
  * as it does some checks for you, like class existence,
  * duplicate skipping and non-instantiable filtering.
+ *
+ * @template TValue
+ * @implements Iterator<class-string, TValue>
  */
 abstract class ClassIterator implements Iterator
 {
-    public const SKIP_NON_INSTANTIABLE = 0x01;
-    public const USE_AUTOLOADING = 0x02;
+    public const int SKIP_NON_INSTANTIABLE = 0x01;
+    public const int USE_AUTOLOADING = 0x02;
 
     private Generator|null $generator = null;
 
@@ -34,6 +38,7 @@ abstract class ClassIterator implements Iterator
     private mixed $_currentElement;
     private mixed $_current = null;
 
+    /** @param string[]|null $excludeNamespaces */
     public function __construct(
         protected readonly int $flags = 0,
         protected readonly array|null $excludeNamespaces = null,
@@ -45,7 +50,7 @@ abstract class ClassIterator implements Iterator
     public function current(): mixed
     {
         if (! $this->valid()) {
-            return null;
+            return null; // @phpstan-ignore-line
         }
 
         if ($this->_current === null) {
@@ -123,15 +128,11 @@ abstract class ClassIterator implements Iterator
 
     protected function validNamespace(string $class): bool
     {
-        if ($this->excludeNamespaces !== null) {
-            foreach ($this->excludeNamespaces as $namespace) {
-                if (str_starts_with($class, $namespace)) {
-                    return false;
-                }
-            }
+        if ($this->excludeNamespaces === null) {
+            return true;
         }
 
-        return true;
+        return array_all($this->excludeNamespaces, static fn (string $namespace) => ! str_starts_with($class, $namespace));
     }
 
     /**

@@ -8,12 +8,16 @@ use FilterIterator;
 use Iterator;
 use phpDocumentor\Reflection\Element;
 
-use function assert;
+use function array_any;
 use function ltrim;
 use function str_starts_with;
 use function strrpos;
 use function substr;
 
+/**
+ * @template TKey
+ * @extends FilterIterator<TKey, Element, Iterator<TKey, Element>>
+ */
 final class NamespaceFilterIterator extends FilterIterator
 {
     /**
@@ -28,18 +32,14 @@ final class NamespaceFilterIterator extends FilterIterator
     public function accept(): bool
     {
         $reflector = $this->getInnerIterator()->current();
-        assert($reflector instanceof Element);
 
         $fqen = (string) $reflector->getFqsen();
         $index = strrpos($fqen, '\\');
         $classNamespace = ltrim($index !== false ? substr($fqen, 0, $index) : $fqen, '\\');
 
-        foreach ($this->namespaces as $namespace) {
-            if ($classNamespace === $namespace || str_starts_with($classNamespace, $namespace . '\\')) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $this->namespaces,
+            static fn (string $namespace) => $classNamespace === $namespace || str_starts_with($classNamespace, $namespace . '\\'),
+        );
     }
 }

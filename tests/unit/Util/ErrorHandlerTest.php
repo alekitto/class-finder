@@ -6,6 +6,8 @@ namespace Kcs\ClassFinder\Tests\unit\Util;
 
 use Kcs\ClassFinder\Util\Error;
 use Kcs\ClassFinder\Util\ErrorHandler;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 
 use function call_user_func_array;
@@ -48,6 +50,8 @@ class ErrorHandlerTest extends TestCase
         }
     }
 
+    #[RunInSeparateProcess]
+    #[IgnoreDeprecations]
     public function testShouldThrowErrorOnErrorOrUserError(): void
     {
         $prev = error_reporting(E_ALL & ~E_DEPRECATED);
@@ -64,6 +68,7 @@ class ErrorHandlerTest extends TestCase
         self::fail('Expected error');
     }
 
+    #[RunInSeparateProcess]
     public function testShouldPassErrorsToPreviousErrorHandlerIfSilenced(): void
     {
         $error = null;
@@ -82,6 +87,7 @@ class ErrorHandlerTest extends TestCase
         self::assertEquals('unlink(this_file_does_not_exist.bad_idea): No such file or directory', $error[1]);
     }
 
+    #[RunInSeparateProcess]
     public function testShouldNotCrashIfPreviousErrorHandlerReturnsNullOrVoid(): void
     {
         $this->expectNotToPerformAssertions();

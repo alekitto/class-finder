@@ -12,7 +12,6 @@ use PhpParser\NodeVisitorAbstract;
 
 use function assert;
 use function class_exists;
-use function in_array;
 use function strlen;
 use function strpos;
 use function substr;
@@ -24,7 +23,7 @@ if (! class_exists(NodeVisitorAbstract::class)) {
 
 class AnnotationParser extends NodeVisitorAbstract
 {
-    private const CLASS_IDENTIFIERS = [
+    private const array CLASS_IDENTIFIERS = [
         DocLexer::T_IDENTIFIER,
         DocLexer::T_TRUE,
         DocLexer::T_FALSE,
@@ -58,16 +57,18 @@ class AnnotationParser extends NodeVisitorAbstract
 
         $annotations = [];
         while ($this->lexer->lookahead !== null) {
-            if ($this->lexer->lookahead['type'] !== DocLexer::T_AT) {
+            $token = $this->lexer->token;
+            $lookahead = $this->lexer->lookahead;
+            if ($lookahead->type !== DocLexer::T_AT) {
                 $this->lexer->moveNext();
                 continue;
             }
 
             // make sure the @ is preceded by non-catchable pattern
             if (
-                $this->lexer->token !== null &&
-                $this->lexer->lookahead['position'] === $this->lexer->token['position'] + strlen(
-                    $this->lexer->token['value'],
+                $token !== null &&
+                $lookahead->position === $token->position + strlen(
+                    $token->value,
                 )
             ) {
                 $this->lexer->moveNext();
@@ -79,12 +80,8 @@ class AnnotationParser extends NodeVisitorAbstract
             $peek = $this->lexer->glimpse();
             if (
                 ($peek === null)
-                || $peek['position'] !== $this->lexer->lookahead['position'] + 1
-                || ($peek['type'] !== DocLexer::T_NAMESPACE_SEPARATOR && ! in_array(
-                    $peek['type'],
-                    self::CLASS_IDENTIFIERS,
-                    true,
-                ))
+                || $peek->position !== $lookahead->position + 1
+                || ! $peek->isA(DocLexer::T_NAMESPACE_SEPARATOR, ...self::CLASS_IDENTIFIERS)
             ) {
                 $this->lexer->moveNext();
                 continue;
@@ -169,26 +166,21 @@ class AnnotationParser extends NodeVisitorAbstract
         }
 
         $this->lexer->moveNext();
-        $className = $this->lexer->token['value']; /** @phpstan-ignore-line */
+        $className = $this->lexer->token->value; /** @phpstan-ignore-line */
 
         while (
             $this->lexer->lookahead !== null &&
-            $this->lexer->lookahead['position'] === ($this->lexer->token['position'] + /** @phpstan-ignore-line */
-                strlen($this->lexer->token['value'])) && /** @phpstan-ignore-line */
+            $this->lexer->lookahead->position === ($this->lexer->token->position + /** @phpstan-ignore-line */
+                strlen($this->lexer->token->value)) && /** @phpstan-ignore-line */
             $this->lexer->isNextToken(DocLexer::T_NAMESPACE_SEPARATOR)
         ) {
-            if (! $this->lexer->isNextToken(DocLexer::T_NAMESPACE_SEPARATOR)) {
-                return null;
-            }
-
             $this->lexer->moveNext();
-
             if (! $this->lexer->isNextTokenAny(self::CLASS_IDENTIFIERS)) {
                 return null;
             }
 
             $this->lexer->moveNext();
-            $className .= '\\' . $this->lexer->token['value']; /** @phpstan-ignore-line */
+            $className .= '\\' . $this->lexer->token->value; /** @phpstan-ignore-line */
         }
 
         return new Node\Name($className);

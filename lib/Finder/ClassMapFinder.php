@@ -9,10 +9,13 @@ use Kcs\ClassFinder\Iterator\ClassIterator;
 use Kcs\ClassFinder\Iterator\ClassMapIterator;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Kcs\ClassFinder\Util\BogonFilesFilter;
+use ReflectionClass;
 use Reflector;
 
 /**
  * Finds classes into a classmap.
+ *
+ * @implements FinderInterface<ReflectionClass<object>>
  */
 final class ClassMapFinder implements FinderInterface
 {

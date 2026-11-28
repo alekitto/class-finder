@@ -6,6 +6,10 @@ namespace Kcs\ClassFinder\Finder;
 
 use IteratorAggregate;
 
+/**
+ * @template TValue
+ * @extends IteratorAggregate<class-string, TValue>
+ */
 interface FinderInterface extends IteratorAggregate
 {
     /**

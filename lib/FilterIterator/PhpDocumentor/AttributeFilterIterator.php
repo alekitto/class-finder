@@ -19,6 +19,10 @@ use function count;
 use function ltrim;
 use function method_exists;
 
+/**
+ * @template TKey
+ * @extends FilterIterator<TKey, Element, Iterator<TKey, Element>>
+ */
 final class AttributeFilterIterator extends FilterIterator
 {
     /**

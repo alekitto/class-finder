@@ -13,9 +13,9 @@ use function array_merge;
 use function array_push;
 use function array_unique;
 use function defined;
+use function glob;
 use function is_dir;
-use function Safe\glob;
-use function Safe\preg_match;
+use function preg_match;
 use function str_starts_with;
 
 use const GLOB_BRACE;

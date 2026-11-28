@@ -10,6 +10,7 @@ use Kcs\ClassFinder\Util\BogonFilesFilter;
 use ReflectionClass;
 use Traversable;
 
+/** @implements FinderInterface<ReflectionClass<object>> */
 final class RecursiveFinder implements FinderInterface
 {
     use ReflectionFilterTrait;
@@ -23,7 +24,7 @@ final class RecursiveFinder implements FinderInterface
         $this->path = $path;
     }
 
-    /** @return Traversable<class-string, ReflectionClass> */
+    /** @return Traversable<class-string, ReflectionClass<object>> */
     public function getIterator(): Traversable
     {
         $pathFilterCallback = $this->pathFilterCallback !== null ? ($this->pathFilterCallback)(...) : null;

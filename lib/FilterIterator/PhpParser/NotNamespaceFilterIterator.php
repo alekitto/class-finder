@@ -6,6 +6,7 @@ namespace Kcs\ClassFinder\FilterIterator\PhpParser;
 
 use FilterIterator;
 use Iterator;
+use PhpParser\Node;
 use PhpParser\Node\Stmt;
 
 use function assert;
@@ -14,10 +15,11 @@ use function str_starts_with;
 use function strrpos;
 use function substr;
 
+/** @extends FilterIterator<class-string, Node, Iterator<class-string, Node>> */
 final class NotNamespaceFilterIterator extends FilterIterator
 {
     /**
-     * @param Iterator<Stmt\ClassLike> $iterator
+     * @param Iterator<class-string, Node> $iterator
      * @param string[] $namespaces
      */
     public function __construct(Iterator $iterator, private readonly array $namespaces)

@@ -19,7 +19,6 @@ use PhpParser\Node\Stmt\ClassLike;
 use ReflectionClass;
 use Roave\BetterReflection;
 use RuntimeException;
-use Traversable;
 
 use function array_map;
 use function array_shift;
@@ -33,6 +32,7 @@ use function str_pad;
 
 use const DIRECTORY_SEPARATOR;
 
+/** @implements IteratorAggregate<class-string, ReflectionClass<object>|null> */
 final class ClassMap implements IteratorAggregate
 {
     /** @var array<class-string, string> */
@@ -42,6 +42,11 @@ final class ClassMap implements IteratorAggregate
     {
     }
 
+    /**
+     * @param FinderInterface<TValue> $finder
+     *
+     * @template TValue
+     */
     public static function fromFinder(FinderInterface $finder): self
     {
         $classMap = new self();
@@ -55,7 +60,7 @@ final class ClassMap implements IteratorAggregate
                 assert($metadata instanceof Metadata || $metadata === null);
                 $filename = $metadata?->filePath;
             } elseif ($reflector instanceof Class_ || $reflector instanceof Interface_ || $reflector instanceof Trait_ || $reflector instanceof Enum_) {
-                $metadata = method_exists($reflector, 'getMetadata') ? $reflector->getMetadata() : MetadataRegistry::getInstance()->getMetadata($reflector);
+                $metadata = method_exists($reflector, 'getMetadata') ? $reflector->getMetadata() : MetadataRegistry::getInstance()->getMetadata($reflector); // @phpstan-ignore-line
                 $metadata = $metadata[Metadata::METADATA_KEY] ?? null;
                 assert($metadata instanceof Metadata || $metadata === null);
                 $filename = $metadata?->filePath;
@@ -88,8 +93,7 @@ final class ClassMap implements IteratorAggregate
         return array_map(static fn (string $fn) => self::relativePath($relativeTo, $fn), $this->map);
     }
 
-    /** @return Traversable<class-string, ReflectionClass> */
-    public function getIterator(): Traversable
+    public function getIterator(): ClassMapIterator
     {
         return new ClassMapIterator($this->map, null);
     }

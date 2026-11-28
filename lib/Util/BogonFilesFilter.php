@@ -10,7 +10,7 @@ use function preg_match;
 
 final class BogonFilesFilter
 {
-    private const BOGON_FILES_REGEX = '#' .
+    private const string BOGON_FILES_REGEX = '#' .
         // https://github.com/alekitto/class-finder/issues/13#issuecomment-2010509501
         '(?:' .
             '(?:symfony/(?:cache|symfony/Component/Cache)/Traits/(?:Redis(?:Cluster)?\dProxy|ValueWrapper)|' .

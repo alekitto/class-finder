@@ -13,6 +13,10 @@ use phpDocumentor\Reflection\Php\Trait_;
 
 use function assert;
 
+/**
+ * @template TKey
+ * @extends FilterIterator<TKey, Element, Iterator<TKey, Element>>
+ */
 final class AnnotationFilterIterator extends FilterIterator
 {
     /**

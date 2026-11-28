@@ -10,6 +10,7 @@ use Kcs\ClassFinder\PathNormalizer;
 use Kcs\ClassFinder\Reflection\NativeReflectorFactory;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Kcs\ClassFinder\Util\ErrorHandler;
+use ReflectionClass;
 use Throwable;
 
 use function array_map;
@@ -18,11 +19,12 @@ use function class_exists;
 use function defined;
 use function in_array;
 use function ltrim;
-use function Safe\preg_match;
+use function preg_match;
 use function str_replace;
 use function strlen;
 use function substr;
 
+/** @extends ClassIterator<ReflectionClass<object>> */
 final class Psr4Iterator extends ClassIterator
 {
     use PsrIteratorTrait;

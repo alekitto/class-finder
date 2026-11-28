@@ -8,9 +8,7 @@ use FilterIterator;
 use Iterator;
 use ReflectionClass;
 
-use function assert;
-use function Safe\preg_match;
-use function substr;
+use function preg_match;
 
 /**
  * @template-covariant TValue of ReflectionClass
@@ -51,9 +49,8 @@ abstract class MultiplePcreFilterIterator extends FilterIterator
     public static function isRegex(string $str): bool
     {
         if (preg_match('/^(.{3,}?)[imsxuADU]*$/', $str, $m)) {
-            assert(isset($m[1]));
-            $start = substr($m[1], 0, 1);
-            $end = substr($m[1], -1);
+            $start = $m[1][0];
+            $end = $m[1][-1];
 
             if ($start === $end) {
                 return ! preg_match('/[*?[:alnum:] \\\\]/', $start);

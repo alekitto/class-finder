@@ -7,15 +7,17 @@ namespace Kcs\ClassFinder\FilterIterator\PhpParser;
 use FilterIterator;
 use Iterator;
 use Kcs\ClassFinder\Util\Offline\Metadata;
+use PhpParser\Node;
 use PhpParser\Node\Stmt;
 
 use function assert;
 use function ltrim;
 
+/** @extends FilterIterator<class-string, Node, Iterator<class-string, Node>> */
 final class SuperClassFilterIterator extends FilterIterator
 {
     /**
-     * @param Iterator<Stmt\ClassLike> $iterator
+     * @param Iterator<class-string, Node> $iterator
      * @phpstan-param class-string $superClass
      */
     public function __construct(Iterator $iterator, private readonly string $superClass)

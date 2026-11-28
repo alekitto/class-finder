@@ -15,11 +15,15 @@ use Throwable;
 
 use function assert;
 
+/** @extends ClassIterator<ReflectionClass<object>> */
 final class ClassMapIterator extends ClassIterator
 {
     private readonly ReflectorFactoryInterface $reflectorFactory;
 
-    /** @param array<class-string, string> $classMap */
+    /**
+     * @param array<class-string, string> $classMap
+     * @param string[]|null $excludeNamespaces
+     */
     public function __construct(
         private readonly array $classMap,
         ReflectorFactoryInterface|null $reflectorFactory,
@@ -32,7 +36,7 @@ final class ClassMapIterator extends ClassIterator
         $this->reflectorFactory = $reflectorFactory ?? new NativeReflectorFactory();
     }
 
-    /** @return Generator<class-string, ReflectionClass> */
+    /** @return Generator<class-string, ReflectionClass<object>> */
     protected function getGenerator(): Generator
     {
         $include = Closure::bind(

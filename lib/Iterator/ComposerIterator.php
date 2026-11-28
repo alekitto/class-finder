@@ -9,9 +9,12 @@ use Composer\Autoload\ClassLoader;
 use Generator;
 use Kcs\ClassFinder\Reflection\NativeReflectorFactory;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
+use ReflectionClass;
 
 /**
  * Iterates over classes defined in a composer-generated ClassLoader.
+ *
+ * @extends ClassIterator<ReflectionClass<object>>
  */
 final class ComposerIterator extends ClassIterator
 {
@@ -19,6 +22,7 @@ final class ComposerIterator extends ClassIterator
 
     private ReflectorFactoryInterface $reflectorFactory;
 
+    /** @param string[]|null $excludeNamespaces */
     public function __construct(
         private readonly ClassLoader $classLoader,
         ReflectorFactoryInterface|null $reflectorFactory = null,

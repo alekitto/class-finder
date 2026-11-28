@@ -24,16 +24,16 @@ use function array_values;
 use function assert;
 use function class_exists;
 use function file_get_contents;
-use function is_string;
 use function ltrim;
-use function Safe\preg_match;
+use function preg_match;
 
+/** @extends ClassIterator<Stmt\ClassLike> */
 final class PhpParserIterator extends ClassIterator
 {
     use OfflineIteratorTrait;
     use RecursiveIteratorTrait;
 
-    private const EXTENSION_PATTERN = '/\\.php$/i';
+    private const string EXTENSION_PATTERN = '/\\.php$/i';
 
     private Parser $parser;
     private NodeTraverser $traverser;
@@ -112,8 +112,6 @@ final class PhpParserIterator extends ClassIterator
         }
 
         foreach ($files as $path => $fileSymbols) {
-            assert(is_string($path));
-
             foreach ($fileSymbols as $fileSymbol) {
                 if ($fileSymbol instanceof Stmt\Class_) {
                     $parents = [];

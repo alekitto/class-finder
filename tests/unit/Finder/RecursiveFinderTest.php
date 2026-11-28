@@ -12,6 +12,7 @@ use Kcs\ClassFinder\Fixtures\Psr4;
 use Kcs\ClassFinder\Fixtures\Recursive;
 use Logger;
 use LoggerInterface;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use SplFileInfo;
@@ -121,6 +122,7 @@ class RecursiveFinderTest extends TestCase
         ], iterator_to_array($finder));
     }
 
+    #[RunInSeparateProcess]
     public function testFinderShouldFilterByIteratorCallback(): void
     {
         $finder = new RecursiveFinder(__DIR__ . '/../../../data/Recursive');

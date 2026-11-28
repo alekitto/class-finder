@@ -11,6 +11,7 @@ use Kcs\ClassFinder\PathNormalizer;
 use Kcs\ClassFinder\Reflection\NativeReflectorFactory;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Kcs\ClassFinder\Util\ErrorHandler;
+use ReflectionClass;
 use Throwable;
 
 use function array_map;
@@ -28,6 +29,8 @@ use function str_starts_with;
  * would lead to bad results.
  *
  * @internal
+ *
+ * @extends ClassIterator<ReflectionClass<object>>
  */
 final class FilteredComposerIterator extends ClassIterator
 {

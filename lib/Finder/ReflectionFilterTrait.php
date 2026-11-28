@@ -18,9 +18,9 @@ trait ReflectionFilterTrait
     /**
      * @param T $iterator
      *
-     * @return Iterator<class-string, ReflectionClass>
+     * @return Iterator<class-string, ReflectionClass<object>>
      *
-     * @template T of Iterator<class-string, ReflectionClass>
+     * @template T of Iterator<class-string, ReflectionClass<object>>
      */
     private function applyFilters(Iterator $iterator): Iterator
     {

@@ -7,6 +7,7 @@ namespace Kcs\ClassFinder\FilterIterator\PhpParser;
 use FilterIterator;
 use Iterator;
 use Kcs\ClassFinder\Util\Offline\Metadata;
+use PhpParser\Node;
 use PhpParser\Node\Stmt;
 
 use function array_filter;
@@ -16,10 +17,11 @@ use function count;
 use function in_array;
 use function ltrim;
 
+/** @extends FilterIterator<class-string, Node, Iterator<class-string, Node>> */
 final class InterfaceImplementationFilterIterator extends FilterIterator
 {
     /**
-     * @param Iterator<Stmt\ClassLike> $iterator
+     * @param Iterator<class-string, Node> $iterator
      * @param string[] $interfaces
      * @phpstan-param class-string[] $interfaces
      */

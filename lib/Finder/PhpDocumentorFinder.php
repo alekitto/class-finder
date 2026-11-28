@@ -9,12 +9,17 @@ use Kcs\ClassFinder\Iterator\ClassIterator;
 use Kcs\ClassFinder\Iterator\PhpDocumentorIterator;
 use phpDocumentor\Reflection\Element;
 use phpDocumentor\Reflection\Php\Class_;
+use PhpParser\Node\Stmt\Enum_;
+use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Trait_;
 use RuntimeException;
 
 use function class_exists;
 
 /**
  * Finds classes/namespaces using the registered autoloader by composer.
+ *
+ * @implements FinderInterface<Class_|Enum_|Interface_|Trait_>
  */
 final class PhpDocumentorFinder implements FinderInterface
 {

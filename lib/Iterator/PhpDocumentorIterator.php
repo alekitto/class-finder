@@ -31,17 +31,17 @@ use function array_push;
 use function array_values;
 use function assert;
 use function class_exists;
-use function is_string;
 use function ltrim;
 use function method_exists;
-use function Safe\preg_match;
+use function preg_match;
 
+/** @extends ClassIterator<Class_|Enum_|Interface_|Trait_> */
 final class PhpDocumentorIterator extends ClassIterator
 {
     use OfflineIteratorTrait;
     use RecursiveIteratorTrait;
 
-    private const EXTENSION_PATTERN = '/\\.php$/i';
+    private const string EXTENSION_PATTERN = '/\\.php$/i';
 
     private ProjectFactoryStrategies $strategies;
     private DocBlockFactory|DocBlockFactoryInterface $docBlockFactory;
@@ -175,8 +175,6 @@ final class PhpDocumentorIterator extends ClassIterator
         }
 
         foreach ($files as $path => $fileSymbols) {
-            assert(is_string($path));
-
             foreach ($fileSymbols as $fileSymbol) {
                 if ($fileSymbol instanceof Class_) {
                     $parents = [];

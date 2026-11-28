@@ -13,6 +13,7 @@ use Kcs\ClassFinder\Fixtures\Psr4WithClassMap;
 use Logger;
 use Logger4;
 use LoggerInterface;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Symfony\Component\ErrorHandler\DebugClassLoader as ErrorHandlerClassLoader;
@@ -249,7 +250,7 @@ class ComposerFinderTest extends TestCase
         ], iterator_to_array($finder));
     }
 
-    /** @runInSeparateProcess */
+    #[RunInSeparateProcess]
     public function testFinderShouldFilterByPathCallback(): void
     {
         $finder = (new ComposerFinder())->useAutoloading(false);
@@ -273,7 +274,7 @@ class ComposerFinderTest extends TestCase
         ], iterator_to_array($finder));
     }
 
-    /** @runInSeparateProcess */
+    #[RunInSeparateProcess]
     public function testBogonFilesFilter(): void
     {
         $finder = (new ComposerFinder())

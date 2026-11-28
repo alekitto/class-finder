@@ -9,15 +9,15 @@ use Iterator;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 
-use function array_filter;
+use function array_any;
 use function array_push;
 use function assert;
-use function count;
 
+/** @extends FilterIterator<class-string, Node, Iterator<class-string, Node>> */
 final class AttributeFilterIterator extends FilterIterator
 {
     /**
-     * @param Iterator<Node> $iterator
+     * @param Iterator<class-string, Node> $iterator
      * @phpstan-param class-string $attribute
      */
     public function __construct(Iterator $iterator, private readonly string $attribute)
@@ -35,9 +35,9 @@ final class AttributeFilterIterator extends FilterIterator
             array_push($attrs, ...$attrGroup->attrs);
         }
 
-        return count(array_filter(
+        return array_any(
             $attrs,
             fn (Node\Attribute $attr): bool => $attr->name->toString() === $this->attribute,
-        )) > 0;
+        );
     }
 }

@@ -10,6 +10,7 @@ use Kcs\ClassFinder\Iterator\Psr0Iterator;
 use Kcs\ClassFinder\PathNormalizer;
 use Kcs\ClassFinder\Reflection\ReflectorFactoryInterface;
 use Kcs\ClassFinder\Util\BogonFilesFilter;
+use ReflectionClass;
 use Reflector;
 
 use function substr;
@@ -18,6 +19,8 @@ use const DIRECTORY_SEPARATOR;
 
 /**
  * Finds classes respecting psr-0 standard.
+ *
+ * @implements FinderInterface<ReflectionClass<object>>
  */
 final class Psr0Finder implements FinderInterface
 {

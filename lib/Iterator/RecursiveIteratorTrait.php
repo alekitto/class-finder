@@ -6,6 +6,7 @@ namespace Kcs\ClassFinder\Iterator;
 
 use Kcs\ClassFinder\FileFinder\DefaultFileFinder;
 use Kcs\ClassFinder\FileFinder\FileFinderInterface;
+use SplFileInfo;
 
 trait RecursiveIteratorTrait
 {
@@ -17,7 +18,7 @@ trait RecursiveIteratorTrait
         $this->fileFinder = $fileFinder;
     }
 
-    /** @inheritDoc */
+    /** @return iterable<string, SplFileInfo> */
     private function search(): iterable
     {
         yield from ($this->fileFinder ?? new DefaultFileFinder())
