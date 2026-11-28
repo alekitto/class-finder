@@ -10,7 +10,6 @@ use ReflectionClass;
 
 use function array_filter;
 use function array_map;
-use function assert;
 use function count;
 use function method_exists;
 
@@ -34,11 +33,11 @@ final class InterfaceImplementationFilterIterator extends FilterIterator
     public function accept(): bool
     {
         $reflectionClass = $this->getInnerIterator()->current();
-        assert($reflectionClass instanceof ReflectionClass);
+
         if (
             $reflectionClass->isInterface() ||
             $reflectionClass->isTrait() ||
-            (method_exists($reflectionClass, 'isEnum') && $reflectionClass->isEnum())
+            (method_exists($reflectionClass, 'isEnum') && $reflectionClass->isEnum()) // @phpstan-ignore-line
         ) {
             return false;
         }

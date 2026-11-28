@@ -157,7 +157,7 @@ final class PhpDocumentorIterator extends ClassIterator
             }
 
             assert($reflector instanceof File);
-            $enums = method_exists($reflector, 'getEnums') ? $reflector->getEnums() : [];
+            $enums = method_exists($reflector, 'getEnums') ? $reflector->getEnums() : []; // @phpstan-ignore-line
             $fileSymbols = array_map(
                 static function (object $class) use (&$symbols): object {
                     $symbols[(string) $class->getFqsen()] = $class;
@@ -200,7 +200,7 @@ final class PhpDocumentorIterator extends ClassIterator
                     $interfaces = [];
                     $this->processInterfaces($interfaces, $fileSymbol->getParents(), $symbols);
                     $addMetadata($fileSymbol, new Metadata($path, array_values($interfaces)));
-                } elseif ($fileSymbol instanceof Trait_ || $fileSymbol instanceof Enum_) {
+                } elseif ($fileSymbol instanceof Trait_ || $fileSymbol instanceof Enum_) { // @phpstan-ignore-line
                     $addMetadata($fileSymbol, new Metadata($path, []));
                 }
             }

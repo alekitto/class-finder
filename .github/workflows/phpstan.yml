@@ -24,6 +24,7 @@ jobs:
             - name: Install Composer dependencies
               uses: ramsey/composer-install@v2
               with:
+                  composer-options: '--ignore-platform-reqs'
                   # Bust the cache at least once a month - output format: YYYY-MM.
                   custom-cache-suffix: $(date -u "+%Y-%m")
 

@@ -35,7 +35,7 @@ final class AttributeFilterIterator extends FilterIterator
         $reflector = $this->getInnerIterator()->current();
         assert($reflector instanceof Class_ || $reflector instanceof Interface_ || $reflector instanceof Trait_);
 
-        if (! method_exists($reflector, 'getAttributes')) {
+        if (! method_exists($reflector, 'getAttributes')) { // @phpstan-ignore-line
             throw new RuntimeException('Attributes support is not implemented in phpdocumentor');
         }
 

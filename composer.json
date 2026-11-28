@@ -27,7 +27,7 @@
         "phpunit/phpunit": "^10.5",
         "roave/better-reflection": "^6.0",
         "roave/security-advisories": "dev-master",
-        "solido/php-coding-standards": "dev-master",
+        "solido/php-coding-standards": "dev-master#d1261766bcd217ad37cd36b197c96303da852226",
         "symfony/cache": "^5.0 || ^6.0 || ^7.0",
         "symfony/error-handler": "^5.0 || ^6.0 || ^7.0"
     },
