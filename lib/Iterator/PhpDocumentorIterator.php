@@ -51,66 +51,31 @@ final class PhpDocumentorIterator extends ClassIterator
     {
         $this->path = PathNormalizer::resolvePath($path);
         $this->docBlockFactory = DocBlockFactory::createInstance();
-        if (class_exists(Factory\DocBlock::class)) {
-            // phpdoc/reflection 4.x
-            $this->strategies = new ProjectFactoryStrategies([ // @phpstan-ignore-line
-                new Factory\Argument(new PrettyPrinter()), // @phpstan-ignore-line
-                new Factory\Class_(), // @phpstan-ignore-line
-                new Factory\Define(new PrettyPrinter()), // @phpstan-ignore-line
-                new Factory\GlobalConstant(new PrettyPrinter()), // @phpstan-ignore-line
-                new Factory\ClassConstant(new PrettyPrinter()), // @phpstan-ignore-line
-                new Factory\DocBlock($this->docBlockFactory),
-                new Factory\File(NodesFactory::createInstance()), // @phpstan-ignore-line
-                new Factory\Function_(), // @phpstan-ignore-line
-                new Factory\Interface_(), // @phpstan-ignore-line
-                new Factory\Method(), // @phpstan-ignore-line
-                new Factory\Property(new PrettyPrinter()), // @phpstan-ignore-line
-                new Factory\Trait_(), // @phpstan-ignore-line
-            ]);
-        } elseif (class_exists(Factory\Argument::class)) {
-            $this->strategies = new ProjectFactoryStrategies([ // @phpstan-ignore-line
-                new Factory\Argument(new PrettyPrinter()),
-                new Factory\Class_($this->docBlockFactory),
-                new Factory\Define($this->docBlockFactory, new PrettyPrinter()),
-                new Factory\GlobalConstant($this->docBlockFactory, new PrettyPrinter()),
-                new Factory\ClassConstant($this->docBlockFactory, new PrettyPrinter()),
-                new Factory\File($this->docBlockFactory, NodesFactory::createInstance()),
-                new Factory\Function_($this->docBlockFactory),
-                new Factory\Namespace_(),
-                new Factory\Interface_($this->docBlockFactory),
-                new Factory\Method($this->docBlockFactory),
-                new Factory\Property($this->docBlockFactory, new PrettyPrinter()),
-                new Factory\Trait_($this->docBlockFactory),
-            ]);
+        $attributeReducer = new Factory\Reducer\Attribute();
+        $parameterReducer = new Factory\Reducer\Parameter(new PrettyPrinter());
+        $methodStrategy = new Factory\Method($this->docBlockFactory, [$attributeReducer, $parameterReducer]);
 
-            $this->strategies->addStrategy(new Factory\Noop(), -1000);
-        } else {
-            $attributeReducer = new Factory\Reducer\Attribute();
-            $parameterReducer = new Factory\Reducer\Parameter(new PrettyPrinter());
-            $methodStrategy = new Factory\Method($this->docBlockFactory, [$attributeReducer, $parameterReducer]);
+        $this->strategies = new ProjectFactoryStrategies([
+            new Factory\Namespace_(),
+            new Factory\Class_($this->docBlockFactory, [$attributeReducer]),
+            new Factory\Enum_($this->docBlockFactory, [$attributeReducer]),
+            new Factory\EnumCase($this->docBlockFactory, new PrettyPrinter()),
+            new Factory\Define($this->docBlockFactory, new PrettyPrinter()),
+            new Factory\GlobalConstant($this->docBlockFactory, new PrettyPrinter()),
+            new Factory\ClassConstant($this->docBlockFactory, new PrettyPrinter()),
+            new Factory\File($this->docBlockFactory, NodesFactory::createInstance()),
+            new Factory\Function_($this->docBlockFactory, [$attributeReducer, $parameterReducer]),
+            new Factory\Interface_($this->docBlockFactory),
+            $methodStrategy,
+            new Factory\Property($this->docBlockFactory, new PrettyPrinter()),
+            new Factory\Trait_($this->docBlockFactory),
 
-            $this->strategies = new ProjectFactoryStrategies([
-                new Factory\Namespace_(),
-                new Factory\Class_($this->docBlockFactory, [$attributeReducer]),
-                new Factory\Enum_($this->docBlockFactory, [$attributeReducer]),
-                new Factory\EnumCase($this->docBlockFactory, new PrettyPrinter()),
-                new Factory\Define($this->docBlockFactory, new PrettyPrinter()),
-                new Factory\GlobalConstant($this->docBlockFactory, new PrettyPrinter()),
-                new Factory\ClassConstant($this->docBlockFactory, new PrettyPrinter()),
-                new Factory\File($this->docBlockFactory, NodesFactory::createInstance()),
-                new Factory\Function_($this->docBlockFactory, [$attributeReducer, $parameterReducer]),
-                new Factory\Interface_($this->docBlockFactory),
-                $methodStrategy,
-                new Factory\Property($this->docBlockFactory, new PrettyPrinter()),
-                new Factory\Trait_($this->docBlockFactory),
+            new Factory\IfStatement(),
+            new Factory\TraitUse(),
+        ]);
 
-                new Factory\IfStatement(),
-                new Factory\TraitUse(),
-            ]);
-
-            $this->strategies->addStrategy(new Factory\ConstructorPromotion($methodStrategy, $this->docBlockFactory, new PrettyPrinter()), -1000);
-            $this->strategies->addStrategy(new Factory\Noop(), -1000);
-        }
+        $this->strategies->addStrategy(new Factory\ConstructorPromotion($methodStrategy, $this->docBlockFactory, new PrettyPrinter()), -1000);
+        $this->strategies->addStrategy(new Factory\Noop(), -1000);
 
         parent::__construct($flags, $excludeNamespaces, $pathCallback);
     }
