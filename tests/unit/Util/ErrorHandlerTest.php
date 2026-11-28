@@ -84,7 +84,11 @@ class ErrorHandlerTest extends TestCase
         @unlink('this_file_does_not_exist.bad_idea');
 
         self::assertNotNull($error);
-        self::assertEquals('unlink(this_file_does_not_exist.bad_idea): No such file or directory', $error[1]);
+        if (PHP_VERSION_ID >= 80600) {
+            self::assertEquals('unlink(): No such file or directory', $error[1]);
+        } else {
+            self::assertEquals('unlink(this_file_does_not_exist.bad_idea): No such file or directory', $error[1]);
+        }
     }
 
     #[RunInSeparateProcess]

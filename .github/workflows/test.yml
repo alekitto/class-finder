@@ -27,8 +27,8 @@ jobs:
                     - '8.6'
 
                 composer_flags:
-                    - ''
-                    - '-o'
+                    - '--ignore-platform-req php'
+                    - '--ignore-platform-req php -o'
 
         name: 'PHP ${{ matrix.php_version }} (os: ${{ matrix.os }} composer_flags: "${{ matrix.composer_flags }}")'
         steps:
